@@ -1,6 +1,7 @@
 {
   "name": "react-bufen",
   "version": "0.1.0",
+  "homepage": "../src/main/resources/static/",
   "private": true,
   "dependencies": {
     "@babel/core": "^7.16.0",
