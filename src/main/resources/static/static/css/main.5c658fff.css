@@ -1,0 +1,2 @@
+.App{justify-content:center}.App,.loginBox{align-items:center;display:flex}.loginBox{border:1px;border-radius:10px;flex-direction:column;height:500px;justify-content:space-evenly;left:calc(50% - 350px);position:absolute;top:calc(50% - 250px);width:700px}.loginBox:hover{box-shadow:10px 5px 5px #b1afaf}.login-form{width:400px}.login-form-forgot{float:right}.ant-col-rtl .login-form-forgot{float:left}.login-form-button{width:100%}
+/*# sourceMappingURL=main.5c658fff.css.map*/

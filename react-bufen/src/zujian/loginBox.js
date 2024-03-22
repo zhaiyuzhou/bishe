@@ -1,17 +1,19 @@
 import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import './css/login.css'
+import '../css/login.css'
 
 
 const LoginBox = () => {
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
+    const JSONdata = JSON.stringify(values);
+    console.log(JSONdata);
     fetch(
       '/login',
       {
         method: 'POST',
-        body: values,
+        body: JSONdata,
         headers: {
           'content-type': 'application/json'
         }
@@ -38,60 +40,45 @@ const LoginBox = () => {
         rules={[
           {
             required: true,
-            message: 'Please input your Username!',
+            message: '请输入你的用户名!',
           },
         ]}
       >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="用户名" />
       </Form.Item>
       <Form.Item
         name="password"
         rules={[
           {
             required: true,
-            message: 'Please input your Password!',
+            message: '请输入密码!',
           },
         ]}
       >
         <Input
           prefix={<LockOutlined className="site-form-item-icon" />}
           type="password"
-          placeholder="Password"
+          placeholder="密码"
         />
       </Form.Item>
       <Form.Item>
         <Form.Item name="remember" valuePropName="checked" noStyle>
-          <Checkbox>Remember me</Checkbox>
+          <Checkbox>记住我</Checkbox>
         </Form.Item>
 
         <a className="login-form-forgot" href="">
-          Forgot password
+          忘记密码
         </a>
       </Form.Item>
 
       <Form.Item>
         <Button type="primary" htmlType="submit" className="login-form-button">
-          Log in
+          登陆
         </Button>
-        Or <a href="">register now!</a>
+        Or <a href="">注册!</a>
       </Form.Item>
     </Form>
   );
 };
 
-function App() {
-
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-  };
-
-  return (
-  <div className="App">
-    <div className='loginBox'>
-      <LoginBox></LoginBox>
-    </div>
-  </div>
-  );
-}
-
-export default App;
+export default LoginBox;
