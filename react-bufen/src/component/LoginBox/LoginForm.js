@@ -1,10 +1,11 @@
 import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import '../css/login.css'
+import './login.css'
 
 
-const LoginBox = () => {
+const LoginForm = () => {
+
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
     const JSONdata = JSON.stringify(values);
@@ -81,4 +82,4 @@ const LoginBox = () => {
   );
 };
 
-export default LoginBox;
+export default LoginForm;
