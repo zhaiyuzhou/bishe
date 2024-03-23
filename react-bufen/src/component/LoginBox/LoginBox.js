@@ -1,7 +1,13 @@
 import React from 'react';
+import LoginForm from './LoginForm';
 
-function LoginBox () {
+const LoginBox = () =>{
 
-}
+return (
+    <div className='loginBox'>
+        <LoginForm></LoginForm>
+    </div>
+    );
+};
 
 export default LoginBox;

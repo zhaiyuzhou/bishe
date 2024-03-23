@@ -1,0 +1,17 @@
+.title{
+    color: rgb(64, 64, 223);
+    font-size: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+Header{
+    position: 'sticky';
+    top: 0;
+    zIndex: 1;
+    width: '100%';
+    display: 'flex';
+    alignItems: 'center';
+}
