@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const getPublicUrlOrPath = require('react-dev-utils/getPublicUrlOrPath');
+const htmlName = 'index';
 
 // Make sure any symlinks in the project folder are resolved:
 // https://github.com/facebook/create-react-app/issues/637
@@ -21,7 +22,7 @@ const publicUrlOrPath = getPublicUrlOrPath(
   process.env.PUBLIC_URL
 );
 
-const buildPath = process.env.BUILD_PATH || '../src/main/resources/static/';
+const buildPath = process.env.BUILD_PATH || '../src/main/resources/static/' + htmlName;
 
 const moduleFileExtensions = [
   'web.mjs',
@@ -56,8 +57,11 @@ module.exports = {
   appPath: resolveApp('.'),
   appBuild: resolveApp(buildPath),
   appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+
+  appHtml: resolveApp('public/'+htmlName+'.html'),
+  appIndexJs: resolveModule(resolveApp, 'src/' + htmlName),
+  appHtmlName: resolveApp(htmlName),
+
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),
   appTsConfig: resolveApp('tsconfig.json'),

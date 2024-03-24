@@ -5,7 +5,7 @@ import './login.css'
 
 
 const LoginForm = () => {
-
+  
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
     const JSONdata = JSON.stringify(values);
@@ -27,6 +27,7 @@ const LoginForm = () => {
         console.log(myJson);
       });
   };
+
   return (
     <Form
       name="normal_login"
@@ -38,6 +39,7 @@ const LoginForm = () => {
     >
       <Form.Item
         name="username"
+        className='input-up'
         rules={[
           {
             required: true,
@@ -49,6 +51,7 @@ const LoginForm = () => {
       </Form.Item>
       <Form.Item
         name="password"
+        className='input-up'
         rules={[
           {
             required: true,
@@ -76,7 +79,7 @@ const LoginForm = () => {
         <Button type="primary" htmlType="submit" className="login-form-button">
           登陆
         </Button>
-        Or <a href="">注册!</a>
+        Or <a href='/signhtml'>注册!</a>
       </Form.Item>
     </Form>
   );

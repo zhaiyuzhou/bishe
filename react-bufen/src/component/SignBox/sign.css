@@ -1,0 +1,30 @@
+& {
+    user-select: none;
+}
+
+.sign-box {
+    width: 600px;
+    height: 500px;
+    position: absolute;
+    top: calc(50% - 250px);
+    left: calc(50% - 450px);
+}
+
+.pure-color {
+    width: 300px;
+    height: 500px;
+    float: left;
+    background-color: #00b96b;
+}
+
+.demo-logo {
+    background-image: url("../../imgs/whwhlin.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 200px;
+    width: 200px;
+    user-select: none;
+    position: relative;
+    top: 50px;
+    left: 50px;
+}
