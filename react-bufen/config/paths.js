@@ -60,7 +60,6 @@ module.exports = {
 
   appHtml: resolveApp('public/'+htmlName+'.html'),
   appIndexJs: resolveModule(resolveApp, 'src/' + htmlName),
-  appHtmlName: resolveApp(htmlName),
 
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('src'),

@@ -17,10 +17,19 @@
         user-select:none;
         float: left;
     }
+    .search{
+        position: relative;
+        left: calc(50% - 250px);
+    }
     .login-but{
         display: inline-block;
         position: absolute;
         right: 10px;
+        border: 0px;
+    }
+    .ava-popo{
+        position: absolute;
+        right: 30px;
         border: 0px;
     }
 }

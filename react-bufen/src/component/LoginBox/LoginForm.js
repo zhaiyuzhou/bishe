@@ -2,21 +2,21 @@ import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import './login.css'
-
+import qs from 'qs'
 
 const LoginForm = () => {
   
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
-    const JSONdata = JSON.stringify(values);
-    console.log(JSONdata);
+    const data = qs.stringify(values);
+    console.log(data);
     fetch(
       '/login',
       {
         method: 'POST',
-        body: JSONdata,
+        body: data,
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/x-www-form-urlencoded'
         }
       }
     )
