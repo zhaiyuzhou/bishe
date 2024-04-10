@@ -63,7 +63,7 @@ const SignBox = () => {
                 console.log(myJson);
             })
             .then(function(){
-                // window.location.assign('');
+                location.assign('/')
             });
     };
     const prefixSelector = (

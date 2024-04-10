@@ -1,0 +1,62 @@
+.dynamic-div{
+    width: 700px;
+    min-width: 500px;
+    background-color: rgb(231, 231, 231);
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.dynamic-head{
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 90px;
+}
+
+.dynamic-avatar{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    left: 10px;
+    top: 15px;
+}
+
+
+.dynamic-nickname{
+    position: absolute;
+    left: 80px;
+    font-weight: 600;
+}
+
+.dynamic-describe{
+    position: absolute;
+    left: 80px;
+    top: 30px;
+    font-weight: 50;
+}
+
+.dynamic-body{
+    display: inline-block;
+    position: relative;
+    left: 50px;
+
+}
+
+.dynamic-tag{
+    position: relative;
+}
+
+.dynamic-content{
+    position: relative;
+    display: inline-block;
+    word-wrap:break-word;
+    width: 400px;
+}
+
+.dynamic-bottom{
+    padding-bottom: 10px;
+}
+
+.dynamic-button{
+    margin-left: 100px;
+}

@@ -1,10 +1,13 @@
 import './app.css'
 import React, { useState } from 'react';
 import { Button, Breadcrumb, Layout, theme, Input, Menu } from 'antd';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
+import { LaptopOutlined, NotificationOutlined, HomeOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import LoginBox from '../LoginBox/LoginBox';
 import Avapopover from '../Avapopover/Avapopover';
 import Sider from 'antd/es/layout/Sider';
+import Dynamic from '../Dynamic/Dynamic';
+import cookie from 'react-cookies'
+
 const { Search } = Input;
 
 const { Header, Content } = Layout;
@@ -13,6 +16,7 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // 登陆气泡框显示
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -23,87 +27,103 @@ const App = () => {
     setIsModalOpen(false);
   };
 
+  // 搜索内容
   const onSearch = (value, _e, info) => console.log(info?.source, value);
 
-  const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
-    const key = String(index + 1);
-    return {
-      key: `sub${key}`,
-      icon: React.createElement(icon),
-      label: `subnav ${key}`,
-      children: new Array(4).fill(null).map((_, j) => {
-        const subKey = index * 4 + j + 1;
+  // 标签
+  const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他']
+
+  const items2 = [
+    {
+      key: 'sider1',
+      icon: React.createElement(HomeOutlined),
+      label: '主页',
+    },
+    {
+      key: 'sider2',
+      icon: React.createElement(UnorderedListOutlined),
+      label: '分类',
+      children: tags.map((tag, index) => {
         return {
-          key: subKey,
-          label: `option${subKey}`,
-        };
-      }),
-    };
-  });
+          key: 'category' + index,
+          label: tag
+        }
+      })
+    }
+  ]
+
+  const isLogin = (cookie.load('islogin') == 'false');
 
   return (
-
-    <Layout>
+    <div className='index'>
       <div className='model' style={{ display: (isModalOpen ? 'inline-block' : 'none') }}>
         <div className='mask' onClick={closeModel}></div>
         <LoginBox />
       </div>
-      <Header className='header-style'>
-        <div className="demo-logo" />
-        <Search
-          className='search'
-          placeholder="input search text"
-          onSearch={onSearch}
-          style={{
-            width: 500,
-          }}
-        />
-        <Button type='primary' className='login-but' style={{ display: 'none' }} onClick={showModal}>登陆</Button>
-        <Avapopover />
-      </Header>
       <Layout>
-        <Sider
-          width={200}
-          style={{
-            background: colorBgContainer,
-          }}
-        >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
+        <Header className='header-style'>
+          <div className="demo-logo" />
+          <Search
+            className='search'
+            placeholder="input search text"
+            onSearch={onSearch}
             style={{
-              height: '100%',
-              borderRight: 0,
+              width: 500,
             }}
-            items={items2}
           />
-        </Sider>
-        <Layout
-          style={{
-            padding: '0 24px 24px',
-          }}
-        >
-          <Breadcrumb
+          <Button type='primary' className='login-but' style={{ display: (isLogin ? 'inline-block' : 'none') }} onClick={showModal}>登陆</Button>
+          <Avapopover style={{ display: (isLogin ? 'none' : 'inline-block') }} />
+        </Header>
+        <Layout>
+          <Sider
+            width={200}
             style={{
-              margin: '16px 0',
-            }}
-          >
-          </Breadcrumb>
-          <Content
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
               background: colorBgContainer,
-              borderRadius: borderRadiusLG,
             }}
           >
-            Content
-          </Content>
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={['1']}
+              defaultOpenKeys={['sub1']}
+              style={{
+                height: '100%',
+                borderRight: 0,
+              }}
+              items={items2}
+            />
+          </Sider>
+          <Layout
+            style={{
+              padding: '0 24px 24px',
+            }}
+          >
+            <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+            >
+            </Breadcrumb>
+            <Content
+              style={{
+                padding: 24,
+                margin: 0,
+                minHeight: 280,
+                minWidth: 800,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              <Dynamic></Dynamic>
+              <Dynamic></Dynamic>
+              <Dynamic></Dynamic>
+              <Dynamic></Dynamic>
+              <Dynamic></Dynamic>
+              <Dynamic></Dynamic>
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+    </div>
 
   );
 };
