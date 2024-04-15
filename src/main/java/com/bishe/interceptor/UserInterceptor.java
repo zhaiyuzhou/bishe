@@ -12,6 +12,12 @@ public class UserInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+//        HttpSession session = request.getSession();
+//        User user = (User) session.getAttribute("user");
+//        if(user == null){
+//            String HomePageUrl = "/";
+//            response.sendRedirect(HomePageUrl);
+//        }
 
         // 只有返回true才会继续向下执行，返回false取消当前请求
         return HandlerInterceptor.super.preHandle(request, response, handler);

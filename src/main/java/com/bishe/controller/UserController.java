@@ -3,7 +3,13 @@ package com.bishe.controller;
 import com.alibaba.fastjson.JSON;
 import com.bishe.dao.UserDAO;
 import com.bishe.dataobject.UserDO;
-import org.apache.commons.lang3.StringUtils;
+import com.bishe.model.User;
+import com.bishe.result.Result;
+import com.bishe.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +22,9 @@ public class UserController {
 
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserDAO userDAO;
 
     @GetMapping("/signhtml")
@@ -25,7 +34,8 @@ public class UserController {
 
     @PostMapping("/sign")
     @ResponseBody
-    public UserDO sign(@RequestBody String body) {
+    public Result<User> sign(@RequestBody String body) {
+        Result<User> result = new Result<>();
 
         Map<String, Object> map = JSON.parseObject(body, HashMap.class);
 
@@ -38,33 +48,48 @@ public class UserController {
         userDO.setPhone(map.get("phone").toString());
         userDO.setPassword(map.get("password").toString());
 
-        userDAO.add(userDO);
 
-        return userDO;
+        String message = userService.sign(userDO);
+
+        if (!("success".equals(message))) {
+            result.error(message);
+            return result;
+        }
+
+        User user = userDO.toModel();
+
+        result.success(user);
+
+        return result;
     }
 
     @PostMapping("/login")
     @ResponseBody
-    public String login(@RequestParam("username") String userName,
+    public Result<User> login(@RequestParam("username") String userName,
                         @RequestParam("password") String password,
-                        @RequestParam("remember") Boolean remember
-
+                              @RequestParam("remember") Boolean remember,
+                              HttpServletRequest request, HttpServletResponse response
     ) {
-        if (StringUtils.isEmpty(userName)) {
-            return "username为空";
-        }
-        if (StringUtils.isEmpty(password)) {
-            return "password为空";
-        }
+        Result<User> result = new Result<>();
+        String message = userService.login(userName, password);
+
+        User user = new User();
+        user.setUserName(userName);
+        user.setPassword(password);
+
         if (remember == null) {
-            return "remember为空";
+            message = "remember为空";
+        } else {
+            // 写session
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            Cookie cookie = new Cookie("islogin", "true");
+            response.addCookie(cookie);
         }
 
-        UserDO userDO = userDAO.selectByUserName(userName);
-        if (userDO.getPassword().equals(password)) {
-            return "true";
-        }
-        return "false";
+        result.success(user);
+
+        return result;
     }
 
 }

@@ -1,7 +1,11 @@
 package com.bishe.service;
 
+import com.bishe.dataobject.UserDO;
+
 public interface UserService {
 
-    void login(String username, String password);
+    String login(String userName, String password);
+
+    String sign(UserDO userDO);
 
 }

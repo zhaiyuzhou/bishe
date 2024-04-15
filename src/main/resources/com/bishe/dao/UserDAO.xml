@@ -32,4 +32,26 @@
         </where>
     </select>
 
+    <select id="selectByEmail" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, gmt_created, gmt_modified
+        FROM
+        `user`
+        <where>
+            <if test="email != null">
+                email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByPhone" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, gmt_created, gmt_modified
+        FROM
+        `user`
+        <where>
+            <if test="phone != null">
+                phone = #{phone}
+            </if>
+        </where>
+    </select>
+
 </mapper>

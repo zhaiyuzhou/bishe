@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-    Button,
-    Checkbox,
-    Form,
-    Input,
-    Select,
-} from 'antd';
+import {Button, Checkbox, Form, Input, notification, Select,} from 'antd';
 import './sign.css'
-import qs from 'qs'
+import md5 from 'js-md5';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -40,10 +34,16 @@ const tailFormItemLayout = {
         },
     },
 };
+
 const SignBox = () => {
     const [form] = Form.useForm();
+
+    // 错误提示
+    const [api, contextHolder] = notification.useNotification();
+
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
+        values.password = md5(values.password);
         const data = JSON.stringify(values);
         console.log(data);
         fetch(
@@ -61,11 +61,19 @@ const SignBox = () => {
             })
             .then(function (myJson) {
                 console.log(myJson);
+                return myJson.message;
             })
-            .then(function(){
-                location.assign('/')
+            .then(function (msg) {
+                api.open({
+                    message: msg,
+                });
+                if ("success" == msg) {
+                    window.location.assign('/');
+                }
             });
     };
+
+
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
             <Select
@@ -231,6 +239,7 @@ const SignBox = () => {
                     </Checkbox>
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
+                    {contextHolder}
                     <Button type="primary" htmlType="submit">
                         注册
                     </Button>

@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './component/App/App';
-import { ConfigProvider } from 'antd';
-import Dynamic from './component/Dynamic/Dynamic';
-import PubDyn from './component/Pubdyn/Pubdyn';
+import {ConfigProvider} from 'antd';
 
 // 主界面
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -21,9 +19,10 @@ root.render(
         },
       }}
     >
-      {/* <App></App> */}
+        {/* <SignBox></SignBox> */}
+        <App></App>
       {/* <Dynamic></Dynamic> */}
-      <PubDyn></PubDyn>
+        {/* <Pubdyn></Pubdyn> */}
     </ConfigProvider>
   </React.StrictMode>
 

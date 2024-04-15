@@ -1,12 +1,13 @@
 import './app.css'
-import React, { useState } from 'react';
-import { Button, Breadcrumb, Layout, theme, Input, Menu } from 'antd';
-import { LaptopOutlined, NotificationOutlined, HomeOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Breadcrumb, Button, Input, Layout, Menu, theme} from 'antd';
+import {HomeOutlined, UnorderedListOutlined} from '@ant-design/icons';
 import LoginBox from '../LoginBox/LoginBox';
 import Avapopover from '../Avapopover/Avapopover';
 import Sider from 'antd/es/layout/Sider';
 import Dynamic from '../Dynamic/Dynamic';
 import cookie from 'react-cookies'
+import Pubdyn from '../Pubdyn/Pubdyn';
 
 const { Search } = Input;
 
@@ -52,7 +53,7 @@ const App = () => {
     }
   ]
 
-  const isLogin = (cookie.load('islogin') == 'false');
+    const isLogin = (cookie.load('islogin') == 'true');
 
   return (
     <div className='index'>
@@ -71,8 +72,9 @@ const App = () => {
               width: 500,
             }}
           />
-          <Button type='primary' className='login-but' style={{ display: (isLogin ? 'inline-block' : 'none') }} onClick={showModal}>登陆</Button>
-          <Avapopover style={{ display: (isLogin ? 'none' : 'inline-block') }} />
+            <Button type='primary' className='login-but' style={{display: (isLogin ? 'none' : 'inline-block')}}
+                    onClick={showModal}>登陆</Button>
+            <Avapopover style={{display: (isLogin ? 'inline-block' : 'none')}}/>
         </Header>
         <Layout>
           <Sider
@@ -113,6 +115,7 @@ const App = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
+                <Pubdyn></Pubdyn>
               <Dynamic></Dynamic>
               <Dynamic></Dynamic>
               <Dynamic></Dynamic>
