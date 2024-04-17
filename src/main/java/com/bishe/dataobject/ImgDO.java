@@ -21,7 +21,7 @@ public class ImgDO {
 
     private LocalDateTime gmtModified;
 
-    private ImgDO() {
+    public ImgDO() {
 
     }
 
