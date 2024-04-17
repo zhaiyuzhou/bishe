@@ -16,10 +16,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(String userName, String password) {
 
-        if (StringUtils.isEmpty(userName)) {
+        if (StringUtils.isBlank(userName)) {
             return "username为空";
         }
-        if (StringUtils.isEmpty(password)) {
+        if (StringUtils.isBlank(password)) {
             return "password为空";
         }
         UserDO userDO = userDAO.selectByUserName(userName);
@@ -43,29 +43,29 @@ public class UserServiceImpl implements UserService {
         }
 
         String username = userDO.getUserName();
-        if (StringUtils.isEmpty(username)) {
+        if (StringUtils.isBlank(username)) {
             return "传入用户名为空";
         }
 
-        if (StringUtils.isEmpty(userDO.getPassword())) {
+        if (StringUtils.isBlank(userDO.getPassword())) {
             return "传入密码为空";
         }
 
         String email = userDO.getEmail();
-        if (StringUtils.isEmpty(email)) {
+        if (StringUtils.isBlank(email)) {
             return "传入邮箱为空";
         }
 
-        if (StringUtils.isEmpty(userDO.getGender())) {
+        if (StringUtils.isBlank(userDO.getGender())) {
             return "传入性别为空";
         }
 
         String phone = userDO.getPhone();
-        if (StringUtils.isEmpty(phone)) {
+        if (StringUtils.isBlank(phone)) {
             return "传入电话为空";
         }
 
-        if (StringUtils.isEmpty(userDO.getNickName())) {
+        if (StringUtils.isBlank(userDO.getNickName())) {
             return "传入昵称为空";
         }
 

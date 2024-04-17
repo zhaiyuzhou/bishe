@@ -1,5 +1,8 @@
 package com.bishe.result;
 
+import lombok.Data;
+
+@Data
 public class Result<T> {
 
     public static final String CODE_SUCCESS = "200";
@@ -21,36 +24,12 @@ public class Result<T> {
         this.data = data;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public boolean isSuccess() {
         return isSuccess;
     }
 
     public void setSuccess(boolean success) {
         isSuccess = success;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 
     public void success() {

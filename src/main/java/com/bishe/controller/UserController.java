@@ -15,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -27,7 +26,7 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
-    @GetMapping("/signhtml")
+    @GetMapping("/signal")
     public String signHtml() {
         return "sign/index";
     }
@@ -37,7 +36,7 @@ public class UserController {
     public Result<User> sign(@RequestBody String body) {
         Result<User> result = new Result<>();
 
-        Map<String, Object> map = JSON.parseObject(body, HashMap.class);
+        HashMap map = JSON.parseObject(body, HashMap.class);
 
         UserDO userDO = new UserDO();
 
@@ -66,7 +65,7 @@ public class UserController {
     @PostMapping("/login")
     @ResponseBody
     public Result<User> login(@RequestParam("username") String userName,
-                        @RequestParam("password") String password,
+                              @RequestParam("password") String password,
                               @RequestParam("remember") Boolean remember,
                               HttpServletRequest request, HttpServletResponse response
     ) {
@@ -76,6 +75,11 @@ public class UserController {
         User user = new User();
         user.setUserName(userName);
         user.setPassword(password);
+
+        if (!("success".equals(message))) {
+            result.error(message);
+            return result;
+        }
 
         if (remember == null) {
             message = "remember为空";

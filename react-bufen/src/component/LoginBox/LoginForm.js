@@ -80,7 +80,7 @@ const LoginForm = () => {
         <Button type="primary" htmlType="submit" className="login-form-button">
           登陆
         </Button>
-        Or <a href='/signhtml'>注册!</a>
+          Or <a href='/signal'>注册!</a>
       </Form.Item>
     </Form>
   );

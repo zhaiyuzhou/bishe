@@ -21,7 +21,7 @@ root.render(
     >
         {/* <SignBox></SignBox> */}
         <App></App>
-      {/* <Dynamic></Dynamic> */}
+        {/* <Dynamic></Dynamic> */}
         {/* <Pubdyn></Pubdyn> */}
     </ConfigProvider>
   </React.StrictMode>

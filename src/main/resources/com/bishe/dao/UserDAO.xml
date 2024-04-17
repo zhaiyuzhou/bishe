@@ -12,46 +12,116 @@
         <result column="phone" property="phone"/>
         <result column="email" property="email"/>
         <result column="gender" property="gender"/>
+        <result column="like_num" property="likeNum"/>
         <result column="gmt_created" property="gmtCreated"/>
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
     <insert id="add" parameterType="com.bishe.dataobject.UserDO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO user (user_name, pass_word, nick_name,avatar,phone,email,gender,gmt_created,gmt_modified)
-        VALUES(#{userName}, #{password}, #{nickName}, #{avatar},#{phone},#{email},#{gender},now(),now())
+        INSERT INTO `user` (user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created,
+                            gmt_modified)
+        VALUES (#{userName}, #{password}, #{nickName}, #{avatar}, #{phone}, #{email}, #{gender}, #{likeNum}, now(),
+                now())
     </insert>
 
+    <select id="selectById" parameterType="java.lang.Long" resultMap="userResultMap">
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
+        FROM `user`
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
     <select id="selectByUserName" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
         FROM
         `user`
         <where>
-            <if test="userName != null">
+            <if test="userName != null and userName !=''">
                 user_name = #{userName}
             </if>
         </where>
     </select>
 
     <select id="selectByEmail" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
         FROM
         `user`
         <where>
-            <if test="email != null">
+            <if test="email != null and email !=''">
                 email = #{email}
             </if>
         </where>
     </select>
 
     <select id="selectByPhone" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
         FROM
         `user`
         <where>
-            <if test="phone != null">
+            <if test="phone != null and phone !=''">
                 phone = #{phone}
             </if>
         </where>
     </select>
+
+    <update id="update" parameterType="com.bishe.dataobject.UserDO">
+        UPDATE `user`
+        <set>
+            <if test="userName != null and userName !=''">
+                user_name = #{userName},
+            </if>
+            <if test="password != null and password !=''">
+                pass_word = #{password},
+            </if>
+            <if test="nickName != null and nickName !=''">
+                nick_name = #{nickName},
+            </if>
+            <if test="avatar != null and avatar !=''">
+                avatar = #{avatar},
+            </if>
+            <if test="phone != null and phone !=''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email !=''">
+                email = #{email},
+            </if>
+            <if test="gender != null and gender !=''">
+                gender = #{gender},
+            </if>
+            <if test="likeNum != null">
+                like_num = #{likeNum},
+            </if>
+            <if test="gmtCreated!=null">
+                gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+            </if>
+            gmt_modified = now()
+        </set>
+        <where>
+            <if test="id!=null">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        <if test="id != null">
+            DELETE FROM `user`
+            <where>
+                id = #{id}
+            </where>
+        </if>
+    </delete>
+
+    <delete id="deleteByUserName" parameterType="java.lang.String">
+        <if test="userName != null and userName != ''">
+            DELETE FROM `user`
+            <where>
+                user_name = #{userName}
+            </where>
+        </if>
+    </delete>
 
 </mapper>

@@ -7,8 +7,13 @@
     width: 700px;
 }
 
+.Pubdyn-upload {
+    display: flex;
+
+}
+
 .Pubdyn-upload-img{
-    display: block;
+    display: inline-block;
 }
 
 .Pubdyn-upload-video {
