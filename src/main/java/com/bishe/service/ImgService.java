@@ -9,8 +9,8 @@ public interface ImgService {
     /**
      * 增加img
      *
-     * @param imgDO imgDO对象
-     * @return 返回1成功，0失败
+     * @param imgDO ImgDO对象
+     * @return 返回服务信息
      **/
     String add(ImgDO imgDO);
 

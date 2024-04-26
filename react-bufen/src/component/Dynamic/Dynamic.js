@@ -1,27 +1,25 @@
 import React from "react";
-import { Avatar, Button } from 'antd';
-import { UserOutlined, ExportOutlined, MessageOutlined, LikeOutlined } from '@ant-design/icons';
-import { Flex, Tag } from 'antd';
+import {Avatar, Button, Flex, Image, Tag} from 'antd';
+import {ExportOutlined, LikeOutlined, MessageOutlined, UserOutlined} from '@ant-design/icons';
 import './Dynamic.css'
 
 
-const Dynamic = () => {
+const Dynamic = (props) => {
 
     return (
         <div className="dynamic-div">
             <div className="dynamic-head">
-                <Avatar className="dynamic-avatar" icon={<UserOutlined />} />
-                <p className="dynamic-nickname">nickname</p>
-                <p className="dynamic-describe">发布于******* ********</p>
+                <Avatar className="dynamic-avatar" icon={<UserOutlined/>} srcSet={props.avatar}/>
+                <p className="dynamic-nickname">{props.nickName}</p>
+                <p className="dynamic-describe">发布于{props.postedDate}</p>
             </div>
             <div className="dynamic-body">
                 <Flex className="dynamic-tag" gap="4px 0" wrap="wrap">
-                    <Tag color="#f50">#f50</Tag>
-                    <Tag color="#2db7f5">#2db7f5</Tag>
-                    <Tag color="#87d068">#87d068</Tag>
-                    <Tag color="#108ee9">#108ee9</Tag>
+                    <Tag color="#f50">{props.tag}</Tag>
                 </Flex>
-                <p className="dynamic-content">*********************************************************************************************************************************</p>
+                <p className="dynamic-content">{props.content}</p>
+                <Image src={props.imgs}/>
+                
             </div>
             <div className="dynamic-bottom">
                 <Button className="dynamic-button" type="link" shape="circle" icon={<ExportOutlined />} />

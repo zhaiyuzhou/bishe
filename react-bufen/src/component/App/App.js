@@ -2,12 +2,13 @@ import './app.css'
 import React, {useState} from 'react';
 import {Breadcrumb, Button, Input, Layout, Menu, theme} from 'antd';
 import {HomeOutlined, UnorderedListOutlined} from '@ant-design/icons';
+import {Route, Routes, useNavigate} from 'react-router'
 import LoginBox from '../LoginBox/LoginBox';
 import Avapopover from '../Avapopover/Avapopover';
 import Sider from 'antd/es/layout/Sider';
-import Dynamic from '../Dynamic/Dynamic';
 import cookie from 'react-cookies'
 import Pubdyn from '../Pubdyn/Pubdyn';
+import Dynamicbody from '../../pages/Dynamicbody/Dynamicbody';
 
 const { Search } = Input;
 
@@ -33,10 +34,11 @@ const App = () => {
 
   // 标签
   const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他']
+    const tagsEn = ['news', 'movie', 'show', 'animated', 'bangumi', 'game', 'music', 'art', 'animal', 'knowledge', 'technology', 'food', 'car', 'movement', 'live', 'other']
 
   const items2 = [
     {
-      key: 'sider1',
+        key: '/home',
       icon: React.createElement(HomeOutlined),
       label: '主页',
     },
@@ -46,14 +48,17 @@ const App = () => {
       label: '分类',
       children: tags.map((tag, index) => {
         return {
-          key: 'category' + index,
+            key: '/' + tag,
           label: tag
         }
       })
     }
   ]
 
-    const isLogin = (cookie.load('islogin') == 'true');
+    // 检查登录
+    const isLogin = (cookie.load('isLogin') === 'true');
+
+    const navigate = useNavigate()
 
   return (
     <div className='index'>
@@ -89,9 +94,14 @@ const App = () => {
               defaultOpenKeys={['sub1']}
               style={{
                 height: '100%',
+                  width: 200,
                 borderRight: 0,
+                  position: 'fixed',
               }}
               items={items2}
+              onClick={(e) => {
+                  navigate(e.key, {replace: true})
+              }}
             />
           </Sider>
           <Layout
@@ -115,13 +125,15 @@ const App = () => {
                 borderRadius: borderRadiusLG,
               }}
             >
-                <Pubdyn></Pubdyn>
-              <Dynamic></Dynamic>
-              <Dynamic></Dynamic>
-              <Dynamic></Dynamic>
-              <Dynamic></Dynamic>
-              <Dynamic></Dynamic>
-              <Dynamic></Dynamic>
+                <Pubdyn/>
+                <Routes>
+                    <Route path='/home' element={<Dynamicbody/>}/>
+                    {tags.map((tag, index) => {
+                        return (
+                            <Route path={'/' + tag} element={<Dynamicbody tag={tagsEn[index]}/>}/>
+                        )
+                    })}
+                </Routes>
             </Content>
           </Layout>
         </Layout>

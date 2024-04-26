@@ -1,27 +1,28 @@
 import React, {useState} from 'react';
-import {Button, Image, Input, Upload} from 'antd';
+import {Button, Image, Input, Select, Upload} from 'antd';
 import './Pubdyn.css';
 import {CloudUploadOutlined, CustomerServiceTwoTone, PictureOutlined, PlaySquareOutlined} from '@ant-design/icons';
+import cookie from 'react-cookies'
 import axios from 'axios';
 
 const { TextArea } = Input;
-
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
 
 const Pubdyn = () => {
 
     // 上传文字
   const [value, setValue] = useState('');
+    const [imgName, setImgName] = useState([]);
+    const [videoName, setVideoName] = useState([]);
+    const [musicName, setMusicName] = useState([]);
+    const [tag, setTag] = useState('news');
 
     const propsContent = () => {
         axios.post('/dynamicText', {
             content: value,
+            tag: tag,
+            imgName: imgName,
+            videoName: videoName,
+            musicName: musicName,
         })
             .then(function (response) {
                 console.log(response);
@@ -29,6 +30,77 @@ const Pubdyn = () => {
             .catch(function (error) {
                 console.log(error);
             });
+    }
+    // 选项
+    const tagItem = [
+        {
+            value: 'news',
+            label: '新闻',
+        },
+        {
+            label: '电影',
+            value: 'movie',
+        },
+        {
+            label: '电视剧',
+            value: 'show',
+        },
+        {
+            label: '动画',
+            value: 'animated',
+        },
+        {
+            label: '番剧',
+            value: 'bangumi',
+        },
+        {
+            label: '游戏',
+            value: 'game',
+        },
+        {
+            label: '音乐',
+            value: 'music',
+        },
+        {
+            label: '美术',
+            value: 'art',
+        },
+        {
+            label: '动物',
+            value: 'animal',
+        },
+        {
+            label: '知识',
+            value: 'knowledge',
+        },
+        {
+            label: '科技',
+            value: 'technology',
+        },
+        {
+            label: '美食',
+            value: 'food',
+        },
+        {
+            label: '汽车',
+            value: 'car',
+        },
+        {
+            label: '运动',
+            value: 'movement',
+        },
+        {
+            label: '生活',
+            value: 'live',
+        },
+        {
+            label: '其他',
+            value: 'other',
+        },
+    ]
+
+    const chageTag = (value) => {
+        setTag(value);
     }
 
   // 改变视图
@@ -51,51 +123,28 @@ const Pubdyn = () => {
   // 上传的图片
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
-  const [fileList, setFileList] = useState([]);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
+
+    const [props, setProps] = useState();
+
+    //上传照片
+    const propsImg = {
+        action: '/updateImg',
+        listType: 'picture',
+        onChange({file}) {
+            if (imgName.indexOf(file.name) === -1) {
+                setImgName([...imgName, file.name]);
+            }
+        },
   };
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: 'none',
-      }}
-      type="button"
-    >
-        <CloudUploadOutlined/>
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-          图片
-      </div>
-    </button>
-  );
 
     //上传视频
     const propsVideo = {
         action: '/updateVideo',
-        listType: 'video',
-        previewFile(file) {
-            if (file.type === 'video/mp4') {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = (error) => reject(error);
-                });
-            } else {
-                return new Promise(async (resolve) => {
-                    const img = await getBase64(file);
-                    resolve(img);
-                });
+        listType: 'picture',
+        onChange({file}) {
+            console.log(file);
+            if (videoName.indexOf(file.name) === -1) {
+                setVideoName([...videoName, file.name]);
             }
         },
     };
@@ -103,23 +152,28 @@ const Pubdyn = () => {
     // 上传音乐
     const propsMusic = {
         action: '/updateMusic',
-        listType: 'music',
-        previewFile(file) {
-            if (file.type === 'video/mp4') {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                    reader.onerror = (error) => reject(error);
-                });
-            } else {
-                return new Promise(async (resolve) => {
-                    const img = await getBase64(file);
-                    resolve(img);
-                });
+        listType: 'picture',
+        onChange({file}) {
+            if (musicName.indexOf(file.name) === -1) {
+                setMusicName([...musicName, file.name]);
             }
         },
     };
+
+    const chageToImg = () => {
+        setProps(propsImg);
+    }
+
+    const chageToVideo = () => {
+        setProps(propsVideo);
+    }
+
+    const chageToMusic = () => {
+        setProps(propsMusic);
+    }
+
+    // 检查登录
+    const isLogin = (cookie.load('isLogin') === 'true');
 
   return (
     <div className='Pubdyn-div'>
@@ -132,42 +186,49 @@ const Pubdyn = () => {
           maxRows: 5,
         }}
       />
-        <Button type="text" icon={<PictureOutlined/>} onClick={showImgload}/>
-        <Button type="text" icon={<PlaySquareOutlined/>} onClick={showvideoload}/>
-        <Button type="text" icon={<CustomerServiceTwoTone twoToneColor="black"/>} onClick={showmusicload}/>
-        <Button className='Pubdyn-input' type="primary" onClick={propsContent}>发布</Button>
+        <Select
+            defaultValue="新闻"
+            style={{
+                width: 120,
+            }}
+            onChange={chageTag}
+            options={tagItem}
+        />
+        <Button type="text" icon={<PictureOutlined/>} onClick={showImgload} disabled={!isLogin}/>
+        <Button type="text" icon={<PlaySquareOutlined/>} onClick={showvideoload} disabled={!isLogin}/>
+        <Button type="text" icon={<CustomerServiceTwoTone twoToneColor="black"/>} onClick={showmusicload}
+                disabled={!isLogin}/>
+        <Button className='Pubdyn-input' type="primary" onClick={propsContent} disabled={!isLogin}>发布</Button>
         <div className='Pubdyn-upload'>
-            <div className='Pubdyn-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
-                <Upload
-            action="/updateImg"
-            listType="picture"
-            fileList={fileList}
-            onPreview={handlePreview}
-            onChange={handleChange}
-                >
-                    {fileList.length >= 8 ? null : uploadButton}
-                </Upload>
-                {previewImage && (
-                    <Image
-                        wrapperStyle={{
-                            display: 'none',
-                        }}
-                        preview={{
-                            visible: previewOpen,
-                            onVisibleChange: (visible) => setPreviewOpen(visible),
-                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                        }}
-                        src={previewImage}
-                    />
-                )}
-            </div>
-            <div className='Pubdyn-upload-video' style={{display: (isvideoload ? 'inline-block' : 'none')}}>
-                <Upload {...propsVideo}>
+            <Upload
+                {...props}
+            >
+                <div className='Pubdyn-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
                     <button
                         style={{
                             border: 0,
                             background: 'none',
                         }}
+                        type="button"
+                        onClick={chageToImg}
+                    >
+                        <CloudUploadOutlined/>
+                        <div
+                            style={{
+                                marginTop: 8,
+                            }}
+                        >
+                            图片
+                        </div>
+                    </button>
+                </div>
+                <div className='Pubdyn-upload-video' style={{display: (isvideoload ? 'inline-block' : 'none')}}>
+                    <button
+                        style={{
+                            border: 0,
+                            background: 'none',
+                        }}
+                        onClick={chageToVideo}
                         type="button"
                     >
                         <CloudUploadOutlined/>
@@ -179,15 +240,14 @@ const Pubdyn = () => {
                             视频
                         </div>
                     </button>
-                </Upload>
-            </div>
-            <div className='Pubdyn-upload-music' style={{display: (ismusicload ? 'inline-block' : 'none')}}>
-                <Upload {...propsMusic}>
+                </div>
+                <div className='Pubdyn-upload-music' style={{display: (ismusicload ? 'inline-block' : 'none')}}>
                     <button
                         style={{
                             border: 0,
                             background: 'none',
                         }}
+                        onClick={chageToMusic}
                         type="button"
                     >
                         <CloudUploadOutlined/>
@@ -199,8 +259,21 @@ const Pubdyn = () => {
                             音乐
                         </div>
                     </button>
-                </Upload>
-            </div>
+                </div>
+            </Upload>
+            {previewImage && (
+                <Image
+                    wrapperStyle={{
+                        display: 'none',
+                    }}
+                    preview={{
+                        visible: previewOpen,
+                        onVisibleChange: (visible) => setPreviewOpen(visible),
+                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                    }}
+                    src={previewImage}
+                />
+            )}
         </div>
     </div>
   )

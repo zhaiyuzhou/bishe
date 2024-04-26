@@ -9,8 +9,8 @@ public interface VideoService {
     /**
      * 增加video
      *
-     * @param videoDO videoDO对象
-     * @return 返回1成功，0失败
+     * @param videoDO VideoDO对象
+     * @return 返回服务信息
      **/
     String add(VideoDO videoDO);
 

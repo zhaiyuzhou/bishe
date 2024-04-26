@@ -8,11 +8,9 @@ import com.bishe.model.Img;
 import com.bishe.model.Music;
 import com.bishe.model.Video;
 import com.bishe.result.Result;
-import com.bishe.service.ImgService;
-import com.bishe.service.MusicService;
-import com.bishe.service.VideoService;
+import jakarta.annotation.Resource;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,17 +27,10 @@ public class FileController {
 
     private static final String PATH = "E:/IntelliJ IDEA Community Edition 2023.2.4/project/bishe/src/main";
 
-    @Autowired
-    private ImgService imgService;
-
-    @Autowired
-    private MusicService musicService;
-
-    @Autowired
-    private VideoService videoService;
-
     //声明需要格式化的格式(日期加时间)
-    private DateTimeFormatter dfDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+    private final DateTimeFormatter dfDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @PostMapping("/updateImg")
     @ResponseBody
@@ -49,16 +40,27 @@ public class FileController {
 
             Img img = new Img();
 
+            //文件原名字
+            String OriginalFilename = file.getOriginalFilename();
+            if (OriginalFilename != null && redisTemplate.opsForValue().get(OriginalFilename) != null) {
+                result.error("文件重名");
+                return result;
+            }
+
             // 文件名字
             String fileName = "img-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/imgs/" + fileName);
 
-            img.setImgPath("./static/video/" + fileName);
+            img.setImgPath("../imgs/" + fileName);
             img.setImgName(fileName);
+            System.out.println(img.getImgPath());
 
+            // 存入缓存
             ImgDO imgDO = new ImgDO(img);
-            imgService.add(imgDO);
+            if (OriginalFilename != null) {
+                redisTemplate.opsForValue().set(OriginalFilename, imgDO);
+            }
 
             // 将文件保存到指定的位置
             file.transferTo(dest);
@@ -81,17 +83,25 @@ public class FileController {
 
             Video video = new Video();
 
+            //文件原名字
+            String OriginalFilename = file.getOriginalFilename();
+            if (OriginalFilename != null && redisTemplate.opsForValue().get(OriginalFilename) != null) {
+                result.error("文件重名");
+                return result;
+            }
+
             // 文件名字
             String fileName = "video-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/video/" + fileName);
 
-            video.setVideoPath("./static/video/" + fileName);
+            video.setVideoPath("../video/" + fileName);
             video.setVideoName(fileName);
 
             VideoDO videoDO = new VideoDO(video);
-            String message = videoService.add(videoDO);
-            System.out.println(message);
+            if (OriginalFilename != null) {
+                redisTemplate.opsForValue().set(OriginalFilename, videoDO);
+            }
 
             // 将文件保存到指定的位置
             file.transferTo(dest);
@@ -114,15 +124,25 @@ public class FileController {
 
             Music music = new Music();
 
+            //文件原名字
+            String OriginalFilename = file.getOriginalFilename();
+            if (OriginalFilename != null && redisTemplate.opsForValue().get(OriginalFilename) != null) {
+                result.error("文件重名");
+                return result;
+            }
+
             // 文件名字
             String fileName = "music-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/music/" + fileName);
 
-            music.setMusicPath("./static/video/" + fileName);
+            music.setMusicPath("../music/" + fileName);
             music.setMusicName(fileName);
 
-            musicService.add(new MusicDO(music));
+            MusicDO musicDO = new MusicDO(music);
+            if (OriginalFilename != null) {
+                redisTemplate.opsForValue().set(OriginalFilename, musicDO);
+            }
 
             // 将文件保存到指定的位置
             file.transferTo(dest);

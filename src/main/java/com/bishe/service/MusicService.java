@@ -10,8 +10,8 @@ public interface MusicService {
     /**
      * 增加music
      *
-     * @param musicDO musicDO对象
-     * @return 返回1成功，0失败
+     * @param musicDO MusicDO对象
+     * @return 返回服务信息
      **/
     String add(MusicDO musicDO);
 

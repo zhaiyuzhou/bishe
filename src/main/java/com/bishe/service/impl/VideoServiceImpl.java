@@ -3,8 +3,8 @@ package com.bishe.service.impl;
 import com.bishe.dao.VideoDAO;
 import com.bishe.dataobject.VideoDO;
 import com.bishe.service.VideoService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class VideoServiceImpl implements VideoService {
 
-    @Autowired
+    @Resource
     private VideoDAO videoDAO;
 
     @Override

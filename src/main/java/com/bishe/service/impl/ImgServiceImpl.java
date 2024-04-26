@@ -3,8 +3,8 @@ package com.bishe.service.impl;
 import com.bishe.dao.ImgDAO;
 import com.bishe.dataobject.ImgDO;
 import com.bishe.service.ImgService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class ImgServiceImpl implements ImgService {
 
-    @Autowired
+    @Resource
     private ImgDAO imgDAO;
 
     @Override
@@ -22,11 +22,11 @@ public class ImgServiceImpl implements ImgService {
             return "传入的对象为空";
         }
 
-        if (StringUtils.isBlank(imgDO.getImgPath())) {
+        if (StringUtils.isEmpty(imgDO.getImgPath())) {
             return "图片路径为空";
         }
 
-        if (StringUtils.isBlank(imgDO.getImgName())) {
+        if (StringUtils.isEmpty(imgDO.getImgName())) {
             return "图片名字为空";
         }
 

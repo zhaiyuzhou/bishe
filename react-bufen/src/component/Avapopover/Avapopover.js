@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Button, Avatar } from 'antd';
-import { UserOutlined, LeftOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Avatar, Button} from 'antd';
+import {LeftOutlined, UserOutlined} from '@ant-design/icons';
 import './avapopo.css'
 
 const Avapopover = (props) => {
@@ -20,9 +20,9 @@ const Avapopover = (props) => {
 
   return (
     <div className='ava-popo' style={{display:display}} onMouseEnter={bianDa} onMouseLeave={bianXi}>
-      <Avatar icon={<UserOutlined />} size={(ome ? 'large' : 'default')} />
+        <Avatar icon={<UserOutlined/>} size={(ome ? 'large' : 'default')} src={props.avatar}/>
       <div className='content' style={{ display: (ome ? 'inline-block' : 'none') }}>
-        <Button type="text" icon={<LeftOutlined />}>个人中心</Button>
+          <a href='/pencen'><Button type="text" icon={<LeftOutlined/>}>个人中心</Button></a>
       </div>
     </div>
   );

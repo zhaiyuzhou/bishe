@@ -4,8 +4,8 @@ import com.bishe.dao.MusicDAO;
 import com.bishe.dataobject.MusicDO;
 import com.bishe.dataobject.VideoDO;
 import com.bishe.service.MusicService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class MusicServiceImpl implements MusicService {
 
-    @Autowired
+    @Resource
     private MusicDAO musicDAO;
 
     @Override
@@ -23,11 +23,11 @@ public class MusicServiceImpl implements MusicService {
             return "传入的对象为空";
         }
 
-        if (StringUtils.isBlank(musicDO.getMusicPath())) {
+        if (StringUtils.isEmpty(musicDO.getMusicPath())) {
             return "音乐路径为空";
         }
 
-        if (StringUtils.isBlank(musicDO.getMusicName())) {
+        if (StringUtils.isEmpty(musicDO.getMusicName())) {
             return "音乐名字为空";
         }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Button, Checkbox, Form, Input, notification, Select,} from 'antd';
 import './sign.css'
-import md5 from 'js-md5';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -43,7 +42,6 @@ const SignBox = () => {
 
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
-        values.password = md5(values.password);
         const data = JSON.stringify(values);
         console.log(data);
         fetch(
@@ -68,7 +66,7 @@ const SignBox = () => {
                     message: msg,
                 });
                 if ("success" == msg) {
-                    window.location.assign('/');
+                    window.location.href = "/";
                 }
             });
     };
@@ -112,11 +110,11 @@ const SignBox = () => {
                     rules={[
                         {
                             type: 'email',
-                            message: 'The input is not valid E-mail!',
+                            message: '这不是email',
                         },
                         {
                             required: true,
-                            message: 'Please input your E-mail!',
+                            message: '请输入你的email!',
                         },
                     ]}
                 >
@@ -218,8 +216,8 @@ const SignBox = () => {
                     ]}
                 >
                     <Select placeholder="select your gender">
-                        <Option value="male">男</Option>
-                        <Option value="female">女</Option>
+                        <Option value="男">男</Option>
+                        <Option value="女">女</Option>
                     </Select>
                 </Form.Item>
 
@@ -243,6 +241,7 @@ const SignBox = () => {
                     <Button type="primary" htmlType="submit">
                         注册
                     </Button>
+                    <a className='toHome' href='/'>返回</a>
                 </Form.Item>
             </Form>
         </div>

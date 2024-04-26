@@ -15,11 +15,11 @@ public class DynamicDO {
 
     private String tag;
 
-    private String authorId;
+    private Long authorId;
 
-    private long likeNum;
+    private long likeNum = 0;
 
-    private long transPondNum;
+    private long transPondNum = 0;
 
     private LocalDateTime postedDate;
 

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bishe.dao.DynamicDAO">
+    <resultMap id="dynamicResultMap" type="com.bishe.dataobject.DynamicDO">
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="tag" property="tag"/>
+        <result column="author_id" property="authorId"/>
+        <result column="like_num" property="likeNum"/>
+        <result column="transPond_num" property="transPondNum"/>
+        <result column="posted_date" property="postedDate"/>
+        <result column="gmt_created" property="gmtCreated"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.bishe.dataobject.DynamicDO">
+        INSERT INTO `dynamic` (id, content, tag, author_id, like_num, transPond_num, posted_date, gmt_created,
+                               gmt_modified)
+        VALUES (#{id}, #{content}, #{tag}, #{authorId}, #{likeNum}, #{transPondNum}, #{postedDate}, now(), now())
+    </insert>
+
+    <update id="update" parameterType="com.bishe.dataobject.DynamicDO">
+        UPDATE `dynamic`
+        <set>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="tag != null and tag != ''">
+                tag = #{tag},
+            </if>
+            <if test="authorId != null">
+                author_id = #{authorId},
+            </if>
+            <if test="likeNum != null">
+                like_num = #{likeNum},
+            </if>
+            <if test="transPondNum != null">
+                transPond_num = #{transPondNum},
+            </if>
+            <if test="postedDate != null">
+                posted_date = #{postedDate},
+            </if>
+            <if test="gmtCreated != null">
+                gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+            </if>
+            gmt_modified = now()
+        </set>
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM `dynamic`
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </delete>
+
+    <select id="findById" parameterType="java.lang.Long" resultMap="dynamicResultMap"
+            resultType="com.bishe.dataobject.DynamicDO">
+        SELECT id, content, tag, author_id, like_num, transPond_num, posted_date, gmt_created, gmt_modified
+        FROM `dynamic`
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAll" resultMap="dynamicResultMap">
+        SELECT id,
+               content,
+               tag,
+               author_id,
+               like_num,
+               transPond_num,
+               posted_date,
+               gmt_created,
+               gmt_modified
+        FROM `dynamic`
+    </select>
+
+    <select id="findByPage" resultMap="dynamicResultMap">
+        SELECT id,
+               content,
+               tag,
+               author_id,
+               like_num,
+               transPond_num,
+               posted_date,
+               gmt_created,
+               gmt_modified
+        FROM `dynamic` limit #{start},#{limit}
+    </select>
+
+    <select id="findByAuthorId" resultMap="dynamicResultMap">
+        SELECT id, content, tag, author_id, like_num, transPond_num, posted_date, gmt_created, gmt_modified
+        FROM `dynamic`
+        <where>
+            <if test="authorId != null">
+                author_id = #{authorId}
+            </if>
+        </where>
+        limit #{start},#{limit}
+    </select>
+
+    <select id="findByTag" resultMap="dynamicResultMap">
+        SELECT id, content, tag, author_id, like_num, transPond_num, posted_date, gmt_created, gmt_modified
+        FROM `dynamic`
+        <where>
+            <if test="tag != null">
+                tag = #{tag}
+            </if>
+        </where>
+        limit #{start},#{limit}
+    </select>
+
+</mapper>

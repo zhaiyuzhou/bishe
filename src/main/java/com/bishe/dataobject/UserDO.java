@@ -30,6 +30,13 @@ public class UserDO {
 
     private LocalDateTime gmtModified;
 
+    public UserDO() {
+    }
+
+    public UserDO(User user) {
+        BeanUtils.copyProperties(user, this);
+    }
+
     public User toModel() {
         User user = new User();
         BeanUtils.copyProperties(this, user);
