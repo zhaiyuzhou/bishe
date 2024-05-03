@@ -15,18 +15,18 @@ public interface ImgService {
     String add(ImgDO imgDO);
 
     /**
-     * 根据dynamicId搜索服务
+     * 根据fatherId搜索服务
      *
-     * @param dynamicId 用户名
-     * @return 返回信息
+     * @param fatherId Long
+     * @return 返回ImgDO列表
      **/
-    List<ImgDO> searchByDynamicId(Long dynamicId);
+    List<ImgDO> searchByFatherId(Long fatherId);
 
     /**
      * 根据imgName搜索服务(imgName内包含日期)
      *
-     * @param imgName 用户名
-     * @return 返回信息
+     * @param imgName
+     * @return 返回ImgDO
      **/
     ImgDO searchByImgName(String imgName);
 

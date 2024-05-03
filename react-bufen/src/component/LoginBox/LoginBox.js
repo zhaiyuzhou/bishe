@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import LoginForm from './LoginForm';
 import './login.css'
 
-const LoginBox = () =>{
+const LoginBox = ({}) => {
+    const ref = useRef(null);
 
-return (
+    useEffect(() => {
+
+    }, []);
+
+    return (
     <div className='loginBox'>
         <LoginForm></LoginForm>
     </div>

@@ -15,7 +15,7 @@ public class VideoDO {
 
     private String videoName;
 
-    private Long dynamicId;
+    private Long fatherId;
 
     private LocalDateTime gmtCreated;
 

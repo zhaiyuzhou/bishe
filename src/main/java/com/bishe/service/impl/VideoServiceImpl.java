@@ -30,9 +30,9 @@ public class VideoServiceImpl implements VideoService {
             return "视频名字为空";
         }
 
-//        if(videoDO.getDynamicId() != null){
-//            return "dynamicId为空";
-//        }
+        if (videoDO.getFatherId() != null) {
+            return "dynamicId为空";
+        }
 
         videoDAO.add(videoDO);
 
@@ -41,7 +41,7 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public List<VideoDO> searchByDynamicId(Long dynamicId) {
+    public List<VideoDO> searchByFatherId(Long fatherId) {
         return List.of();
     }
 

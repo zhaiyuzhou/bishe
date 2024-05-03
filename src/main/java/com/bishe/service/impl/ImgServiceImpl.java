@@ -30,9 +30,9 @@ public class ImgServiceImpl implements ImgService {
             return "图片名字为空";
         }
 
-//        if(imgDO.getDynamicId() != null){
-//            return "dynamicId为空";
-//        }
+        if (imgDO.getFatherId() != null) {
+            return "FatherId为空";
+        }
 
         imgDAO.add(imgDO);
 
@@ -40,13 +40,13 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public List<ImgDO> searchByDynamicId(Long dynamicId) {
+    public List<ImgDO> searchByFatherId(Long fatherId) {
 
-        if (dynamicId != null && dynamicId > 0) {
+        if (fatherId != null && fatherId > 0) {
             return null;
         }
 
-        List<ImgDO> imgDOS = imgDAO.selectAllByDynamicId(dynamicId);
+        List<ImgDO> imgDOS = imgDAO.selectAllByFatherId(fatherId);
 
         return imgDOS;
     }

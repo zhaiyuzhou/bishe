@@ -41,7 +41,7 @@ public class MusicServiceImpl implements MusicService {
     }
 
     @Override
-    public List<MusicDO> searchByDynamicId(Long dynamicId) {
+    public List<MusicDO> searchByFatherId(Long dynamicId) {
         return List.of();
     }
 

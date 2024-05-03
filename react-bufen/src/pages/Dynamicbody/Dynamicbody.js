@@ -7,7 +7,6 @@ const Dynamicbody = (props) => {
     const [dynamicList, setDynamicList] = useState([]);
 
     useLayoutEffect(() => {
-        if (dynamicList.length < 1) {
             axios.post('/getDynamic', {
                 tag: props.tag,
                 authorId: props.authorId,
@@ -19,20 +18,17 @@ const Dynamicbody = (props) => {
                 .catch(function (error) {
                     console.log(error);
                 });
-        }
-    })
+    }, [props.tag, props.authorId])
 
     return (
         <div>
             {
-                dynamicList.filter((dynamic) => {
-                    if (dynamic !== null)
-                        return dynamic;
-                }).map((dynamic, index) => {
+                dynamicList != null ?
+                    (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
                     return (
-                        <Dynamic {...dynamic} {...dynamic.author} />
+                        <Dynamic key={index} {...dynamic} {...dynamic.author} />
                     )
-                })
+                    })) : (<></>)
             }
         </div>
     );

@@ -2,31 +2,36 @@
     user-select: none;
 }
 
-.Pubdyn-div{
+.Pubcom-div {
     margin-left: 10px;
-    width: 700px;
+    width: 600px;
     background-color: white;
     border-radius: 6px;
     padding: 20px;
 }
 
-.Pubdyn-upload {
+.Pubcom-but {
+    transition: transform 1s;
+    transform: translateY(-32px);
+}
+
+.Pubcom-upload {
     display: flex;
 
 }
 
-.Pubdyn-upload-img{
+.Pubcom-upload-img {
     display: inline-block;
 }
 
-.Pubdyn-upload-video {
+.Pubcom-upload-video {
     display: inline-block;
 }
 
-.Pubdyn-upload-music {
+.Pubcom-upload-music {
     display: inline-block;
 }
 
-.Pubdyn-input {
+.Pubcom-input {
     float: right;
 }

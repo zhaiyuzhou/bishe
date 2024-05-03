@@ -17,10 +17,10 @@ public interface VideoService {
     /**
      * 根据dynamicId搜索服务
      *
-     * @param dynamicId 动态id
+     * @param fatherId 动态id
      * @return 返回信息
      **/
-    List<VideoDO> searchByDynamicId(Long dynamicId);
+    List<VideoDO> searchByFatherId(Long fatherId);
 
     /**
      * 根据videoName搜索服务(videoName内包含日期)

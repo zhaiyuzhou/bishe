@@ -59,11 +59,11 @@ public class DynamicController {
         //获取当前时间
         String now = LocalDate.now().format(dateTimeFormatter);
         //通过redis的自增获取序号
-        RAtomicLong atomicLong = redissonClient.getAtomicLong(now);
+        RAtomicLong atomicLong = redissonClient.getAtomicLong("dynamic");
         atomicLong.expire(1, TimeUnit.DAYS);
         long number = atomicLong.incrementAndGet();
-        //拼装订单号
-        String orderId = now + "" + number;
+        //拼装
+        String orderId = now + number;
         return Long.parseLong(orderId);
     }
 
@@ -83,7 +83,8 @@ public class DynamicController {
         Dynamic dynamic = new Dynamic();
         HashMap map = JSON.parseObject(body, HashMap.class);
 
-        dynamic.setId(dynamicId());
+        Long id = dynamicId();
+        dynamic.setId(id);
         dynamic.setContent(map.get("content").toString());
         dynamic.setTag(map.get("tag").toString());
         dynamic.setPostedDate(LocalDateTime.now());
@@ -95,7 +96,7 @@ public class DynamicController {
         names.forEach(imgName -> {
             ImgDO imgDO = (ImgDO) redisTemplate.opsForValue().get(imgName);
             if (imgDO != null) {
-                imgDO.setDynamicId(dynamic.getId());
+                imgDO.setFatherId(id);
             }
             imgService.add(imgDO);
             if (imgDO != null) {
@@ -108,7 +109,7 @@ public class DynamicController {
         names.forEach(videoName -> {
             VideoDO videoDO = (VideoDO) redisTemplate.opsForValue().get(videoName);
             if (videoDO != null) {
-                videoDO.setDynamicId(dynamic.getId());
+                videoDO.setFatherId(id);
             }
             videoService.add(videoDO);
             if (videoDO != null) {
@@ -121,7 +122,7 @@ public class DynamicController {
         names.forEach(musicName -> {
             MusicDO musicDO = (MusicDO) redisTemplate.opsForValue().get(musicName);
             if (musicDO != null) {
-                musicDO.setDynamicId(dynamic.getId());
+                musicDO.setFatherId(id);
             }
             musicService.add(musicDO);
             if (musicDO != null) {
@@ -150,90 +151,28 @@ public class DynamicController {
         String tag = String.valueOf(JSON.parseObject(body, HashMap.class).get("tag"));
         String authorId = String.valueOf(JSON.parseObject(body, HashMap.class).get("authorId"));
 
+
         if (!StringUtils.isBlank(tag) && !tag.equals("null")) {
             List<DynamicDO> dynamicDOS = dynamicService.findByTag(tag);
-            if (dynamicDOS == null || dynamicDOS.isEmpty()) {
-                System.out.println(1);
-                result.error("请求的动态为空");
-                return result;
-            }
-
-            List<Dynamic> dynamics = new ArrayList<>();
-
-            dynamicDOS.forEach(dynamicDO -> {
-                Dynamic dynamic = dynamicDO.toModel();
-                dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).toModel());
-                List<ImgDO> imgDOS = imgService.searchByDynamicId(dynamicDO.getId());
-                List<VideoDO> videoDOS = videoService.searchByDynamicId(dynamicDO.getId());
-                List<MusicDO> musicDOS = musicService.searchByDynamicId(dynamicDO.getId());
-                if (imgDOS != null) {
-                    imgDOS.forEach(imgDO -> {
-                        dynamic.addImg(imgDO.getImgPath());
-                    });
-                }
-                if (videoDOS != null) {
-                    videoDOS.forEach(videoDO -> {
-                        dynamic.addVideo(videoDO.getVideoPath());
-                    });
-                }
-                if (musicDOS != null) {
-                    musicDOS.forEach(musicDO -> {
-                        dynamic.addMusic(musicDO.getMusicPath());
-                    });
-                }
-                dynamics.add(dynamic);
-            });
-
-            if (!dynamics.isEmpty()) {
-                result.success(dynamics);
-                return result;
-            }
+            if (toDynamic(result, dynamicDOS)) return result;
         }
+
         if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
             List<DynamicDO> dynamicDOS = dynamicService.findByAuthor(Long.valueOf(authorId));
-            if (dynamicDOS == null || dynamicDOS.isEmpty()) {
-                System.out.println(2);
-                result.error("请求的动态为空");
-                return result;
-            }
-
-            List<Dynamic> dynamics = new ArrayList<>();
-
-            dynamicDOS.forEach(dynamicDO -> {
-                Dynamic dynamic = dynamicDO.toModel();
-                dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).toModel());
-                List<ImgDO> imgDOS = imgService.searchByDynamicId(dynamicDO.getId());
-                List<VideoDO> videoDOS = videoService.searchByDynamicId(dynamicDO.getId());
-                List<MusicDO> musicDOS = musicService.searchByDynamicId(dynamicDO.getId());
-                if (imgDOS != null) {
-                    imgDOS.forEach(imgDO -> {
-                        dynamic.addImg(imgDO.getImgPath());
-                    });
-                }
-                if (videoDOS != null) {
-                    videoDOS.forEach(videoDO -> {
-                        dynamic.addVideo(videoDO.getVideoPath());
-                    });
-                }
-                if (musicDOS != null) {
-                    musicDOS.forEach(musicDO -> {
-                        dynamic.addMusic(musicDO.getMusicPath());
-                    });
-                }
-                dynamics.add(dynamic);
-            });
-
-            if (!dynamics.isEmpty()) {
-                result.success(dynamics);
-                return result;
-            }
+            if (toDynamic(result, dynamicDOS)) return result;
         }
 
+
         List<DynamicDO> dynamicDOS = dynamicService.findLimit();
+        if (toDynamic(result, dynamicDOS)) return result;
+        result.error("tag和authorId均为空");
+        return result;
+    }
+
+    private boolean toDynamic(Result<List<Dynamic>> result, List<DynamicDO> dynamicDOS) {
         if (dynamicDOS == null || dynamicDOS.isEmpty()) {
-            System.out.println(3);
             result.error("请求的动态为空");
-            return result;
+            return true;
         }
 
         List<Dynamic> dynamics = new ArrayList<>();
@@ -241,9 +180,9 @@ public class DynamicController {
         dynamicDOS.forEach(dynamicDO -> {
             Dynamic dynamic = dynamicDO.toModel();
             dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).toModel());
-            List<ImgDO> imgDOS = imgService.searchByDynamicId(dynamicDO.getId());
-            List<VideoDO> videoDOS = videoService.searchByDynamicId(dynamicDO.getId());
-            List<MusicDO> musicDOS = musicService.searchByDynamicId(dynamicDO.getId());
+            List<ImgDO> imgDOS = imgService.searchByFatherId(dynamicDO.getId());
+            List<VideoDO> videoDOS = videoService.searchByFatherId(dynamicDO.getId());
+            List<MusicDO> musicDOS = musicService.searchByFatherId(dynamicDO.getId());
             if (imgDOS != null) {
                 imgDOS.forEach(imgDO -> {
                     dynamic.addImg(imgDO.getImgPath());
@@ -264,10 +203,9 @@ public class DynamicController {
 
         if (!dynamics.isEmpty()) {
             result.success(dynamics);
-            return result;
+            return true;
         }
-        result.error("tag和authorId均为空");
-        return result;
+        return false;
     }
 
 }

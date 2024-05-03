@@ -96,7 +96,9 @@
                posted_date,
                gmt_created,
                gmt_modified
-        FROM `dynamic` limit #{start},#{limit}
+        FROM `dynamic`
+        ORDER BY like_num DESC
+            limit #{start}, #{limit}
     </select>
 
     <select id="findByAuthorId" resultMap="dynamicResultMap">
@@ -107,6 +109,8 @@
                 author_id = #{authorId}
             </if>
         </where>
+        ORDER BY
+        like_num DESC
         limit #{start},#{limit}
     </select>
 
@@ -118,6 +122,8 @@
                 tag = #{tag}
             </if>
         </where>
+        ORDER BY
+        like_num DESC
         limit #{start},#{limit}
     </select>
 

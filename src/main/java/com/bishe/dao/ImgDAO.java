@@ -10,10 +10,10 @@ public interface ImgDAO {
 
     int add(ImgDO imgDO);
 
-    List<ImgDO> selectAllByDynamicId(Long dynamicId);
+    List<ImgDO> selectAllByFatherId(Long fatherId);
 
     ImgDO selectByImgName(String imgName);
 
-    int DeleteByDynamicId(Long dynamicId);
+    int DeleteByFatherId(Long fatherId);
 
 }

@@ -62,7 +62,6 @@ public class DynamicServiceImpl implements DynamicService {
         if (StringUtils.isEmpty(tag)) {
             return null;
         }
-        System.out.println(tag.charAt(0));
 
         return dynamicDAO.findByTag(tag, 0, 10);
     }

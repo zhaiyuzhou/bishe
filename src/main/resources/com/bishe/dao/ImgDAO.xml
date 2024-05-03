@@ -7,29 +7,29 @@
         <id column="id" property="id"/>
         <result column="img_name" property="imgName"/>
         <result column="img_path" property="imgPath"/>
-        <result column="dynamic_id" property="dynamicId"/>
+        <result column="father_id" property="fatherId"/>
         <result column="gmt_created" property="gmtCreated"/>
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
     <insert id="add" parameterType="com.bishe.dataobject.ImgDO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `img` (img_name, img_path, dynamic_id, gmt_created, gmt_modified)
-        VALUES (#{imgName}, #{imgPath}, #{dynamicId}, now(), now())
+        INSERT INTO `img` (img_name, img_path, father_id, gmt_created, gmt_modified)
+        VALUES (#{imgName}, #{imgPath}, #{fatherId}, now(), now())
     </insert>
 
-    <select id="selectAllByDynamicId" parameterType="java.lang.Long">
-        SELECT id, img_name, img_path, dynamic_id, gmt_created, gmt_modified
+    <select id="selectAllByFatherId" parameterType="java.lang.Long">
+        SELECT id, img_name, img_path, father_id, gmt_created, gmt_modified
         FROM `img`
         <where>
-            <if test="dynamicId != null">
-                dynamic_id = #{dynamicId}
+            <if test="fatherId != null">
+                father_id = #{fatherId}
             </if>
         </where>
     </select>
 
     <select id="selectByImgName" parameterType="java.lang.String" resultType="com.bishe.dataobject.ImgDO"
             resultMap="imgResultMap">
-        SELECT id, img_name, img_path, dynamic_id, gmt_created, gmt_modified
+        SELECT id, img_name, img_path, father_id, gmt_created, gmt_modified
         FROM `img`
         <where>
             <if test="imgName != null and imgName != ''">
@@ -38,11 +38,11 @@
         </where>
     </select>
 
-    <delete id="DeleteByDynamicId" parameterType="java.lang.Long">
-        <if test="dynamicId != null">
+    <delete id="DeleteByFatherId" parameterType="java.lang.Long">
+        <if test="fatherId != null">
             DELETE FROM `img`
             <where>
-                dynamic_id = #{dynamicId}
+                father_id = #{fatherId}
             </where>
         </if>
     </delete>

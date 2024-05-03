@@ -7,38 +7,30 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Dynamic implements Serializable {
+public class Comment {
 
     private Long id;
 
     private String content;
+
+    private User author;
+
+    private String fatherName;
+
+    private Long dynamicId;
+
+    private Long likeNum = 0L;
 
     private List<String> imgPaths = new ArrayList<>();
 
     private List<String> videoPaths = new ArrayList<>();
 
     private List<String> musicPaths = new ArrayList<>();
-
-    private String tag;
-
-    private User author;
-
-    private Long likeNum = 0L;
-
-    private Long transPondNum = 0L;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime postedDate;
-
-    private List<Comment> comments = new ArrayList<>();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

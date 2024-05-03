@@ -1,7 +1,24 @@
+* {
+  padding: 0;
+  margin: 0;
+}
 ul li {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background-color: #c8edb1fa;
+  margin: 0;
+  padding: 0;
+}
+
+.index {
+  width: 1300px;
+  position: relative;
+  left: calc(50% - 650px);
+  border-radius: 10px;
 }
 
 .header-style{
@@ -9,10 +26,10 @@ ul li {
     position: sticky;
     top: 0;
   z-index: 1;
-    width: '100%';
+  width: 100%;
     display: flex;
     align-items: center;
-    background-color: #f6ffed;
+  background-color: rgb(231, 231, 231);
     .demo-logo{
         background-image: url('../../imgs/LOGO.png');
         background-size: contain;
@@ -41,9 +58,7 @@ ul li {
 .model{
     z-index: 99;
     position: absolute;
-    display: inline-block;
-    height: 99%;
-    width: 99%;
+  left: 0px;
     .mask{
         position: absolute;
         display: inline-block;

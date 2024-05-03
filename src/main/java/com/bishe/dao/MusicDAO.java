@@ -10,10 +10,10 @@ public interface MusicDAO {
 
     int add(MusicDO musicDO);
 
-    List<MusicDO> selectAllByDynamicId(Long dynamicId);
+    List<MusicDO> selectAllByFatherId(Long fatherId);
 
     MusicDO selectByMusicName(String musicName);
 
-    int DeleteByDynamicId(Long dynamicId);
+    int DeleteByFatherId(Long fatherId);
 
 }

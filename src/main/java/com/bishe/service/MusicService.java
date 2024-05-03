@@ -18,10 +18,10 @@ public interface MusicService {
     /**
      * 根据dynamicId搜索服务
      *
-     * @param dynamicId 动态id
+     * @param fatherId 动态id
      * @return 返回信息
      **/
-    List<MusicDO> searchByDynamicId(Long dynamicId);
+    List<MusicDO> searchByFatherId(Long fatherId);
 
     /**
      * 根据musicName搜索服务(musicName内包含日期)

@@ -14,7 +14,7 @@ public interface DynamicDAO {
 
     int deleteById(Long id);
 
-    DynamicDO findById(int id);
+    DynamicDO findById(Long id);
 
     List<DynamicDO> findAll();
 

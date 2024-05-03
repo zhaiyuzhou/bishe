@@ -19,7 +19,7 @@ public class Video implements Serializable {
 
     private String videoName;
 
-    private long dynamicId;
+    private Long fatherId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

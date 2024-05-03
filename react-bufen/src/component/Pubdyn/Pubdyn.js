@@ -182,7 +182,7 @@ const Pubdyn = () => {
         onChange={(e) => setValue(e.target.value)}
         placeholder="想有什么于大家分享"
         autoSize={{
-          minRows: 3,
+            minRows: 4,
           maxRows: 5,
         }}
       />

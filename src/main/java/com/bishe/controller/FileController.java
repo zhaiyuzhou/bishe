@@ -52,7 +52,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/imgs/" + fileName);
 
-            img.setImgPath("../imgs/" + fileName);
+            img.setImgPath("./imgs/" + fileName);
             img.setImgName(fileName);
             System.out.println(img.getImgPath());
 
@@ -95,7 +95,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/video/" + fileName);
 
-            video.setVideoPath("../video/" + fileName);
+            video.setVideoPath("./video/" + fileName);
             video.setVideoName(fileName);
 
             VideoDO videoDO = new VideoDO(video);
@@ -136,7 +136,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./resources/static/music/" + fileName);
 
-            music.setMusicPath("../music/" + fileName);
+            music.setMusicPath("./music/" + fileName);
             music.setMusicName(fileName);
 
             MusicDO musicDO = new MusicDO(music);

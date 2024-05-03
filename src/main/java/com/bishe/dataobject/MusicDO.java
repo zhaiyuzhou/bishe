@@ -15,7 +15,7 @@ public class MusicDO {
 
     private String musicName;
 
-    private Long dynamicId;
+    private Long fatherId;
 
     private LocalDateTime gmtCreated;
 

@@ -1,9 +1,10 @@
 .dynamic-div{
     width: 700px;
     min-width: 500px;
-    background-color: rgb(231, 231, 231);
     margin-top: 10px;
-    margin-left: 20px;
+    margin-left: 10px;
+    border-radius: 6px;
+    background-color: white;
 }
 
 .dynamic-head{
@@ -25,13 +26,14 @@
 .dynamic-nickname{
     position: absolute;
     left: 80px;
+    top: 15px;
     font-weight: 600;
 }
 
 .dynamic-describe{
     position: absolute;
     left: 80px;
-    top: 30px;
+    top: 45px;
     font-weight: 50;
 }
 
@@ -44,6 +46,7 @@
 
 .dynamic-tag{
     position: relative;
+    top: -10px;
 }
 
 .dynamic-content{
@@ -51,6 +54,7 @@
     display: inline-block;
     word-wrap:break-word;
     width: 400px;
+    margin-bottom: 5px;
 }
 
 .dynamic-bottom{
@@ -58,5 +62,10 @@
 }
 
 .dynamic-button{
-    margin-left: 100px;
+    margin-left: 150px;
+}
+
+.dynamic-comment {
+    background-color: white;
+    padding: 5px;
 }

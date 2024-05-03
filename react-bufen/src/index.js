@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {ConfigProvider} from 'antd';
 import {BrowserRouter} from 'react-router-dom'
-import Pencen from './component/Pencen/Pencen';
+import App from './component/App/App';
 
 // 主界面
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -12,19 +12,18 @@ root.render(
           <ConfigProvider
               theme={{
                   token: {
-                      // Seed Token，影响范围大
-                      colorPrimary: '#00b96b',
-                      borderRadius: 2,
-
-                      // 派生变量，影响范围小
-                      colorBgContainer: '#f6ffed',
+                      colorPrimary: "#52c41a",
+                      colorInfo: "#52c41a",
+                      colorSuccess: "#52c41a"
                   },
               }}
           >
         {/* <SignBox></SignBox> */}
-              {/* <App></App> */}
-              <Pencen></Pencen>
+              <App></App>
+              {/* <Comment></Comment> */}
+              {/* <Pencen></Pencen> */}
         {/* <Dynamic></Dynamic> */}
+              {/* <Music></Music> */}
         {/* <Pubdyn></Pubdyn> */}
           </ConfigProvider>
       </BrowserRouter>

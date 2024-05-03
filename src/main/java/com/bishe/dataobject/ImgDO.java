@@ -15,7 +15,7 @@ public class ImgDO {
 
     private String imgPath;
 
-    private Long dynamicId;
+    private Long fatherId;
 
     private LocalDateTime gmtCreated;
 

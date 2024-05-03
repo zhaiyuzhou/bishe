@@ -12,4 +12,39 @@
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
+    <insert id="add" parameterType="com.bishe.dataobject.VideoDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `music` (music_name, music_path, father_id, gmt_created, gmt_modified)
+        VALUES (#{musicName}, #{musicPath}, #{fatherId}, now(), now())
+    </insert>
+
+    <select id="selectAllByFatherId" parameterType="java.lang.Long">
+        SELECT id, music_name, music_path, father_id, gmt_created, gmt_modified
+        FROM `music`
+        <where>
+            <if test="fatherId != null">
+                father_id = #{fatherId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByMusicName" parameterType="java.lang.String" resultType="com.bishe.dataobject.VideoDO"
+            resultMap="musicResultMap">
+        SELECT id, music_name, music_path, father_id, gmt_created, gmt_modified
+        FROM `music`
+        <where>
+            <if test="musicName != null and musicName != ''">
+                music_name = #{musicName}
+            </if>
+        </where>
+    </select>
+
+    <delete id="DeleteByFatherId" parameterType="java.lang.Long">
+        <if test="fatherId != null">
+            DELETE FROM `music`
+            <where>
+                father_id = #{fatherId}
+            </where>
+        </if>
+    </delete>
+
 </mapper>

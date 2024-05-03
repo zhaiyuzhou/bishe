@@ -10,10 +10,10 @@ public interface VideoDAO {
 
     int add(VideoDO videoDO);
 
-    List<VideoDO> selectAllByDynamicId(Long dynamicId);
+    List<VideoDO> selectAllByFatherId(Long fatherId);
 
     VideoDO selectByVideoName(String videoName);
 
-    int DeleteByDynamicId(Long dynamicId);
+    int DeleteByFatherId(Long fatherId);
 
 }
