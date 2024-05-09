@@ -17,6 +17,7 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -74,11 +75,12 @@ public class DynamicController {
     @PostMapping("/dynamicText")
     @ResponseBody
     public Result<Dynamic> dynamicText(@RequestBody String body,
+                                       @CookieValue(value = "username", required = false) String username,
                                        HttpServletRequest request) {
         Result<Dynamic> result = new Result();
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;
@@ -166,12 +168,8 @@ public class DynamicController {
         HashMap map = JSON.parseObject(body, HashMap.class);
 
         String tag = null;
-        String authorId = null;
         if (map.get("tag") != null) {
             tag = String.valueOf(map.get("tag"));
-        }
-        if (map.get("authorId") != null) {
-            authorId = String.valueOf(map.get("authorId"));
         }
 
         if (!StringUtils.isBlank(tag) && !tag.equals("null")) {
@@ -182,8 +180,24 @@ public class DynamicController {
             }
         }
 
+        String authorId = null;
+        if (map.get("authorId") != null) {
+            authorId = String.valueOf(map.get("authorId"));
+        }
+
         if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
             List<Dynamic> dynamics = dynamicService.findByAuthor(Long.valueOf(authorId), this.times);
+            if (!dynamics.isEmpty()) {
+                result.success(dynamics);
+                return result;
+            }
+        }
+        String searchDate = null;
+        if (map.get("searchDate") != null) {
+            searchDate = String.valueOf(map.get("searchDate"));
+        }
+        if (!StringUtils.isBlank(searchDate) && !searchDate.equals("null")) {
+            List<Dynamic> dynamics = dynamicService.search(searchDate, this.times);
             if (!dynamics.isEmpty()) {
                 result.success(dynamics);
                 return result;

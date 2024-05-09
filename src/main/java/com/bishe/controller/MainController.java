@@ -48,11 +48,11 @@ public class MainController {
     }
 
     @GetMapping("/cook")
-    public void cook(@CookieValue(value = "JSESSIONID", required = false) String jSessionId,
+    public void cook(@CookieValue(value = "username", required = false) String username,
                      HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             Cookie cookie = new Cookie("isLogin", "false");
             response.addCookie(cookie);

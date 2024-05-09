@@ -101,7 +101,25 @@
             limit #{start}, #{limit}
     </select>
 
-    <select id="findByAuthorId" resultMap="dynamicResultMap">
+    <select id="search" resultMap="dynamicResultMap" parameterType="java.lang.String">
+        SELECT id,
+        content,
+        tag,
+        author_id,
+        like_num,
+        transPond_num,
+        posted_date,
+        gmt_created,
+        gmt_modified
+        FROM `dynamic`
+        <where>
+            <if test="keyword != null and keyword != ''">
+                content LIKE CONCAT('%',CONCAT(#{keyword},'%'))
+            </if>
+        </where>
+    </select>
+
+    <select id="findByAuthorId" resultMap="dynamicResultMap" parameterType="java.lang.Long">
         SELECT id, content, tag, author_id, like_num, transPond_num, posted_date, gmt_created, gmt_modified
         FROM `dynamic`
         <where>

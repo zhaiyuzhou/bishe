@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
     AntDesignOutlined,
     CrownOutlined,
+    EditOutlined,
     KeyOutlined,
     LoadingOutlined,
     MailOutlined,
@@ -53,7 +54,7 @@ const Pencen = (props) => {
 
     useEffect(() => {
         if (user.avatar === "") {
-            axios.get("/user")
+            axios.get("/api/user")
                 .then(function (response) {
                     console.log(response);
                     setUser(response.data.data);
@@ -91,12 +92,17 @@ const Pencen = (props) => {
             icon: React.createElement(MailOutlined),
             label: "修改邮箱",
         },
+        {
+            key: '/个人中心/changeNickname',
+            icon: React.createElement(EditOutlined),
+            label: "修改昵称",
+        },
     ]
 
     // 修改密码
     const onPwFinish = (values) => {
         console.log('Success:', values);
-        axios.post('/passwordChange', values)
+        axios.post('/api/passwordChange', values)
             .then(function (response) {
                 console.log(response);
             })
@@ -256,7 +262,7 @@ const Pencen = (props) => {
                 )}
             </Upload>
             <Button type="primary" onClick={() => {
-                axios.post('/avatarChange', {
+                axios.post('/api/avatarChange', {
                     avatar: avatar,
                 })
                     .then(function (response) {
@@ -274,7 +280,7 @@ const Pencen = (props) => {
     // 修改邮箱
     const onEmFinish = (values) => {
         console.log('Success:', values);
-        axios.post("/emailChange", values)
+        axios.post("/api/emailChange", values)
             .then(function (response) {
                 console.log(response);
             })
@@ -287,7 +293,7 @@ const Pencen = (props) => {
 
     const pushCode = (values) => {
         console.log('Success:', values);
-        axios.post("/authCode", values)
+        axios.post("/api/authCode", values)
             .then(function (response) {
                 setAuthCode(response.data.data);
             })
@@ -296,7 +302,7 @@ const Pencen = (props) => {
             })
     }
 
-    const emChage = (
+    const emChange = (
         <div>
             <Form
                 name="oldem"
@@ -414,6 +420,56 @@ const Pencen = (props) => {
         </div>
     )
 
+    const onNnFinish = (value) => {
+        axios.post("/api/nickNameChange", {
+            nickName: value,
+        })
+    }
+    const nicknameChange = (
+        <Form
+            name="nnChage"
+            labelCol={{
+                span: 8,
+            }}
+            wrapperCol={{
+                span: 16,
+            }}
+            style={{
+                maxWidth: 600,
+            }}
+            initialValues={{
+                remember: true,
+            }}
+            onFinish={onNnFinish}
+            autoComplete="off"
+        >
+
+            <Form.Item
+                label="新昵称"
+                name="newnickname"
+                rules={[
+                    {
+                        required: true,
+                        message: '请输入你的新昵称',
+                    },
+                ]}
+            >
+                <Input/>
+            </Form.Item>
+
+            <Form.Item
+                wrapperCol={{
+                    offset: 8,
+                    span: 16,
+                }}
+            >
+                <Button type="primary" htmlType="submit">
+                    提交
+                </Button>
+            </Form.Item>
+        </Form>
+    )
+
     const {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
@@ -469,7 +525,7 @@ const Pencen = (props) => {
                                 <Route path='/information' element={<Information {...user} />}/>
                                 <Route path='/avatar' element={avChange}/>
                                 <Route path='/changPassword' element={pwChage}/>
-                                <Route path='/changEmail' element={emChage}/>
+                                <Route path='/changEmail' element={emChange}/>
                                 <Route path='/pDynamic' element={<div style={{
                                     padding: 10,
                                     margin: 0,
@@ -479,6 +535,7 @@ const Pencen = (props) => {
                                     borderRadius: borderRadiusLG,
                                     position: "relative",
                                 }}><Dynamicbody authorId={user.id}/></div>}/>
+                                <Route path='/changeNickname' element={nicknameChange}/>
                             </Routes>
                         </Content>
                     </Layout>

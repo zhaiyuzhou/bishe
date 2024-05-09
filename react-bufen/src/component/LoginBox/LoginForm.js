@@ -12,7 +12,7 @@ const LoginForm = () => {
     const data = qs.stringify(values);
     console.log(data);
     fetch(
-      '/login',
+        '/api/login',
       {
         method: 'POST',
         body: data,

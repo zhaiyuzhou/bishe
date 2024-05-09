@@ -13,16 +13,16 @@ const App = () => {
     const navigate = useNavigate()
     const location = useLocation();
     useEffect(() => {
-        axios.get("/cook");
+        axios.get("/api/cook");
         if (location.pathname === "/")
-            navigate("/home", {replace: false})
+            navigate("/主页", {replace: false})
         setIsLogin(cookie.load('isLogin') === 'true');
     }, [navigate, location])
 
     return (
         <div>
             <Routes>
-                <Route path="/home/*" element={<Home isLogin={isLogin}/>}/>
+                <Route path="/主页/*" element={<Home isLogin={isLogin}/>}/>
                 <Route path="/注册" element={<SignBox isLogin={isLogin}/>}/>
                 <Route path="/个人中心/*" element={<Pencen isLogin={isLogin}/>}/>
             </Routes>

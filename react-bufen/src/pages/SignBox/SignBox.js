@@ -1,7 +1,8 @@
-import React from 'react';
+import {React, useState} from 'react';
 import {Button, Checkbox, Form, Input, notification, Select,} from 'antd';
 import './sign.css'
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -46,7 +47,7 @@ const SignBox = () => {
         const data = JSON.stringify(values);
         console.log(data);
         fetch(
-            '/sign',
+            '/api/sign',
             {
                 method: 'POST',
                 body: data,
@@ -72,6 +73,20 @@ const SignBox = () => {
             });
     };
 
+
+    const [authCode, setAuthCode] = useState('');
+    const [email, setEmail] = useState('');
+
+    const pushCode = () => {
+        console.log('Success:', email);
+        axios.post("/api/authCode", email)
+            .then(function (response) {
+                setAuthCode(response.data.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+    }
 
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -99,8 +114,8 @@ const SignBox = () => {
                     prefix: '86',
                 }}
                 style={{
-                    maxWidth: 300,
-                    height: 500,
+                    Width: 300,
+                    height: 640,
                     float: 'right',
                     backgroundColor: 'white',
                     padding: '10px',
@@ -109,17 +124,51 @@ const SignBox = () => {
                 scrollToFirstError
             >
                 <Form.Item
-                    name="email"
                     label="邮箱"
+                    name="Email"
                     rules={[
                         {
-                            type: 'email',
-                            message: '这不是email',
+                            required: true,
+                            message: '请输入你的邮箱!',
                         },
                         {
-                            required: true,
-                            message: '请输入你的email!',
+                            type: 'email',
+                            message: '请输入正确的邮箱',
                         },
+                    ]}
+                >
+                    <Input onChange={(e) => {
+                        setEmail(e.target.value);
+                    }}/>
+                </Form.Item>
+                <Form.Item
+                    wrapperCol={{
+                        offset: 8,
+                        span: 16,
+                    }}
+                >
+                    <Button type="primary" htmlType="submit" onClick={pushCode}>
+                        发送验证码
+                    </Button>
+                </Form.Item>
+                <Form.Item
+                    name="confirmCode"
+                    label="验证码"
+                    dependencies={['验证码']}
+                    hasFeedback
+                    rules={[
+                        {
+                            required: true,
+                            message: '请确认你的验证码!',
+                        },
+                        () => ({
+                            validator(_, value) {
+                                if (!value || authCode === value) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('验证码不正确'));
+                            },
+                        }),
                     ]}
                 >
                     <Input />

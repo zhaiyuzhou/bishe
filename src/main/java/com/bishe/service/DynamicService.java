@@ -25,7 +25,7 @@ public interface DynamicService {
     /**
      * 无参数查找dynamic
      *
-     * @return 返回dynamicDO列表
+     * @return 返回dynamic列表
      **/
     List<Dynamic> findLimit(int times);
 
@@ -33,17 +33,25 @@ public interface DynamicService {
      * 更具tag查找dynamic
      *
      * @param tag tag
-     * @return 返回dynamicDO列表
+     * @return 返回dynamic列表
      **/
     List<Dynamic> findByTag(String tag, int times);
 
     /**
      * 更具authorId查找dynamic
      *
-     * @param authorId authorId
-     * @return 返回dynamicDO列表
+     * @param authorId Long
+     * @return 返回dynamic列表
      **/
     List<Dynamic> findByAuthor(Long authorId, int times);
+
+    /**
+     * 更具关键字查找dynamic
+     *
+     * @param searchDate String
+     * @return 返回dynamic列表
+     **/
+    List<Dynamic> search(String searchDate, int times);
 
     /**
      * 包装Dynamic
@@ -68,4 +76,6 @@ public interface DynamicService {
      * @return 返回信息
      **/
     String addLikeNum(Long dynamicId);
+
+
 }

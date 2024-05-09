@@ -20,6 +20,7 @@ import org.redisson.api.RAtomicLong;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -68,11 +69,12 @@ public class CommentController {
     @PostMapping("/commentText")
     @ResponseBody
     public Result<Comment> dynamicText(@RequestBody String body,
+                                       @CookieValue(value = "username", required = false) String username,
                                        HttpServletRequest request) {
         Result<Comment> result = new Result();
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;

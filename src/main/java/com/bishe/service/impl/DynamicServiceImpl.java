@@ -106,6 +106,16 @@ public class DynamicServiceImpl implements DynamicService {
     }
 
     @Override
+    public List<Dynamic> search(String searchDate, int times) {
+
+        if (StringUtils.isBlank(searchDate)) {
+            return List.of();
+        }
+
+        return listToDynamic(dynamicDAO.search(searchDate, times, times + 10));
+    }
+
+    @Override
     public List<Dynamic> listToDynamic(List<DynamicDO> dynamicDOS) {
         if (dynamicDOS == null || dynamicDOS.isEmpty()) {
             return List.of();

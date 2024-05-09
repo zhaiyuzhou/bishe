@@ -60,6 +60,7 @@ public class UserController {
         }
 
         result.success(user);
+        result.setMessage("注册成功");
 
         return result;
     }
@@ -95,9 +96,11 @@ public class UserController {
             message = "remember为空";
             result.setMessage(message);
         } else {
-            session.setAttribute("user", user);
+            session.setAttribute(userName, user);
             Cookie cookie = new Cookie("isLogin", "true");
+            Cookie cookie1 = new Cookie("username", userName);
             response.addCookie(cookie);
+            response.addCookie(cookie1);
         }
 
         result.success(user);
@@ -107,10 +110,11 @@ public class UserController {
 
     @GetMapping("/user")
     @ResponseBody
-    public Result<User> user(HttpServletRequest request) {
+    public Result<User> user(HttpServletRequest request,
+                             @CookieValue(value = "username", required = false) String username) {
         Result<User> result = new Result<>();
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;
@@ -123,11 +127,12 @@ public class UserController {
     @PostMapping("/avatarChange")
     @ResponseBody
     public Result<User> avatar(@RequestBody String body,
+                               @CookieValue(value = "username", required = false) String username,
                                HttpServletRequest request) {
         Result<User> result = new Result<>();
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;
@@ -165,11 +170,12 @@ public class UserController {
     @PostMapping("/passwordChange")
     @ResponseBody
     public Result<User> passwordChange(@RequestBody String body,
+                                       @CookieValue(value = "username", required = false) String username,
                                        HttpServletRequest request) {
         Result<User> result = new Result<>();
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;
@@ -200,15 +206,17 @@ public class UserController {
 
     @PostMapping("/authCode")
     @ResponseBody
-    public Result<String> authCode(@RequestBody String body) {
+    public Result<String> authCode(@RequestBody String body,
+                                   @CookieValue(value = "username", required = false) String username,
+                                   HttpServletRequest request
+    ) {
         Result<String> result = new Result();
-        User user = new User();
-//        HttpSession session = request.getSession();
-//        User user = (User) session.getAttribute("user");
-//        if(user == null){
-//            result.error("用户未登录");
-//            return result;
-//        }
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
 
         String oldEmail = JSON.parseObject(body, HashMap.class).get("oldEmail").toString();
         if (!oldEmail.equals(user.getEmail())) {
@@ -245,12 +253,13 @@ public class UserController {
     @PostMapping("/emailChange")
     @ResponseBody
     public Result<User> emailChange(@RequestBody String body,
+                                    @CookieValue(value = "username", required = false) String username,
                                     HttpServletRequest request) {
 
         Result<User> result = new Result<>();
 
         HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
+        User user = (User) session.getAttribute(username);
         if (user == null) {
             result.error("用户未登录");
             return result;
@@ -275,6 +284,51 @@ public class UserController {
             return result;
         }
 
+        result.error(message);
+        return result;
+    }
+
+    @GetMapping("/loginout")
+    @ResponseBody
+    public Result<Boolean> loginOut(@CookieValue(value = "username", required = false) String username,
+                                    HttpServletRequest request, HttpServletResponse response) {
+        Result<Boolean> result = new Result<>();
+        HttpSession session = request.getSession();
+        session.removeAttribute(username);
+        session.invalidate();
+        Cookie cookie = new Cookie("username", "");
+        Cookie cookie2 = new Cookie("isLogin", "false");
+        response.addCookie(cookie);
+        response.addCookie(cookie2);
+        return result;
+    }
+
+    @PostMapping("/nickNameChange")
+    @ResponseBody
+    public Result<String> nickNameChange(@RequestBody String body,
+                                         @CookieValue(value = "username", required = false) String username,
+                                         HttpServletRequest request) {
+        Result<String> result = new Result<>();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
+
+        String nickName = JSON.parseObject(body, HashMap.class).get("nickName").toString();
+        if (StringUtils.isBlank(nickName)) {
+            result.error("昵称为空");
+            return result;
+        }
+        user.setNickName(nickName);
+        UserDO userDO = new UserDO(user);
+        session.setAttribute(username, user);
+        String message = userService.update(userDO);
+        if ("success".equals(message)) {
+            result.success(nickName);
+            return result;
+        }
         result.error(message);
         return result;
     }

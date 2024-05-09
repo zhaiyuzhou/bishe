@@ -7,10 +7,11 @@ const Dynamicbody = (props) => {
     const [dynamicList, setDynamicList] = useState([]);
 
     useLayoutEffect(() => {
-        axios.post('/getDynamic', {
+        axios.post('/api/getDynamic', {
             tag: props.tag,
             authorId: props.authorId,
             times: props.times,
+            searchDate: props.searchDate,
         })
             .then(function (response) {
                 console.log(response.data);

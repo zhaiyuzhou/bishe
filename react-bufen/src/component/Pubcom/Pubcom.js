@@ -15,7 +15,7 @@ const Pubcom = (props) => {
     const [musicName, setMusicName] = useState([]);
 
     const propsContent = () => {
-        axios.post('/commentText', {
+        axios.post('/api/commentText', {
             content: value,
             dynamicId: props.dynamicId,
             father: props.commentAuthor,
@@ -56,7 +56,7 @@ const Pubcom = (props) => {
 
     //上传照片
     const propsImg = {
-        action: '/updateImg',
+        action: '/api/updateImg',
         listType: 'picture',
         onChange({file}) {
             if (imgName.indexOf(file.name) === -1) {
@@ -67,7 +67,7 @@ const Pubcom = (props) => {
 
     //上传视频
     const propsVideo = {
-        action: '/updateVideo',
+        action: '/api/updateVideo',
         listType: 'picture',
         onChange({file}) {
             console.log(file);
@@ -79,7 +79,7 @@ const Pubcom = (props) => {
 
     // 上传音乐
     const propsMusic = {
-        action: '/updateMusic',
+        action: '/api/updateMusic',
         listType: 'picture',
         onChange({file}) {
             if (musicName.indexOf(file.name) === -1) {

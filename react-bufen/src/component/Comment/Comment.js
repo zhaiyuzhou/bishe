@@ -11,14 +11,14 @@ const Comment = (props) => {
 
     const addLikeNum = () => {
         setLike({num: 1, icon: <LikeFilled/>});
-        axios.post("/addLikeNum", {
+        axios.post("/api/addLikeNum", {
             commentId: props.id,
         });
     }
 
     const delLikeNum = () => {
         setLike({num: 0, icon: <LikeOutlined/>});
-        axios.post("/delLikeNum", {
+        axios.post("/api/delLikeNum", {
             commentId: props.id,
         });
     }

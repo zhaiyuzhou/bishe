@@ -33,14 +33,14 @@ const Dynamic = (props) => {
 
     const addLikeNum = () => {
         setLike({num: 1});
-        axios.post("/addLikeNum", {
+        axios.post("/api/addLikeNum", {
             dynamicId: props.id,
         });
     }
 
     const delLikeNum = () => {
         setLike({num: 0});
-        axios.post("/delLikeNum", {
+        axios.post("/api/delLikeNum", {
             dynamicId: props.id,
         });
     }
@@ -56,14 +56,14 @@ const Dynamic = (props) => {
     const [gz, setGz] = useState(false);
     const guanzhu = () => {
         setGz(true);
-        axios.post("/addLikeNum", {
+        axios.post("/api/addLikeNum", {
             userId: props.author.id,
         });
     }
 
     const quguan = () => {
         setGz(false);
-        axios.post("/delLikeNum", {
+        axios.post("/api/delLikeNum", {
             userId: props.author.id,
         });
     }
@@ -152,7 +152,8 @@ const Dynamic = (props) => {
                 {
                     commentPage.map((comment, index) => {
                         return (
-                            <Comment {...comment} getCommentAuthor={getCommentAuthor} isLogin={props.isLogin}/>
+                            <Comment key={"comment" + index} {...comment} getCommentAuthor={getCommentAuthor}
+                                     isLogin={props.isLogin}/>
                         )
                     })
                 }

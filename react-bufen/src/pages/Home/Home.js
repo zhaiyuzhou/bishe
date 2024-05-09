@@ -1,6 +1,6 @@
 import './Home.css'
 import React, {useEffect, useState} from 'react';
-import {Breadcrumb, Button, Input, Layout, Menu, notification, theme} from 'antd';
+import {Breadcrumb, Button, Image, Input, Layout, Menu, notification, theme} from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import cookie from 'react-cookies'
 import {HomeOutlined, RedoOutlined, UnorderedListOutlined} from '@ant-design/icons';
@@ -26,8 +26,8 @@ const Home = () => {
 
     useEffect(() => {
 
-        if (location.pathname === "/home")
-            navigate("/home/首页", {replace: false})
+        if (location.pathname === "/主页")
+            navigate("/主页/首页", {replace: false})
 
         if (window.performance.navigation.type === 1) {
             console.log(times);
@@ -67,10 +67,15 @@ const Home = () => {
             loginBut.removeEventListener("click", showModal);
             window.removeEventListener('scroll', updatePosition);
         };
-    }, [navigate, location]);
+    }, [navigate, location, times]);
 
     // 搜索内容
-    const onSearch = (value, _e, info) => console.log(info?.source, value);
+    const [searchDate, setSearchDate] = useState();
+    const onSearch = (value) => {
+        setSearchDate(value);
+        setTimes(0);
+        navigate("/主页/搜索", {replace: true});
+    };
 
     // 标签
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
@@ -78,7 +83,7 @@ const Home = () => {
 
     const items2 = [
         {
-            key: '/home/首页',
+            key: '/主页/首页',
             icon: React.createElement(HomeOutlined),
             label: '主页',
         },
@@ -88,7 +93,7 @@ const Home = () => {
             label: '分类',
             children: tags.map((tag, index) => {
                 return {
-                    key: '/home/' + tag,
+                    key: '/主页/' + tag,
                     label: tag
                 }
             })
@@ -113,7 +118,7 @@ const Home = () => {
             return newLoadings;
         });
         setTimes(times + 1);
-        axios.post("/refreshPyn", {
+        axios.post("/api/refreshPyn", {
             times: times
         }).then((res) => {
             if (res.status === 200) {
@@ -143,7 +148,13 @@ const Home = () => {
                 <Layout>
                     <Header className='header-style'>
                         <div className="demo-logo"/>
-                        <Link className='shouye-back' to={"/home/首页"}>首页</Link>
+                        <Image src='../../../title.png' style={{
+                            width: "200px",
+                            position: "relative",
+                            top: "-5px",
+                            left: "10px",
+                        }} preview={false}/>
+                        <Link className='shouye-back' to={"/主页/首页"}>首页</Link>
                         <Search
                             className='search'
                             placeholder="input search text"
@@ -176,6 +187,7 @@ const Home = () => {
                                 items={items2}
                                 onClick={(e) => {
                                     navigate(e.key, {replace: true})
+                                    setTimes(0);
                                 }}
                             />
                         </Sider>
@@ -215,6 +227,9 @@ const Home = () => {
                                                                          isLogin={isLogin} times={times}/>}/>
                                         )
                                     })}
+                                    <Route path='/搜索'
+                                           element={<Dynamicbody newDynamic={newDynamic} isLogin={isLogin} times={times}
+                                                                 searchDate={searchDate}/>}/>
                                 </Routes>
                             </Content>
                         </Layout>
