@@ -22,6 +22,7 @@ public class UserInterceptor implements HandlerInterceptor {
             System.out.println(request.getRequestURI());
             if (request.getRequestURI().equals("/index/index.html") || request.getRequestURI().equals("/")) {
                 Cookie cookie = new Cookie("isLogin", "false");
+                cookie.setPath("/");
                 response.addCookie(cookie);
                 return true;
             }

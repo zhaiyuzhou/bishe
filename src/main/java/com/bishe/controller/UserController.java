@@ -81,6 +81,7 @@ public class UserController {
             result.success(user);
             return result;
         }
+        System.out.println(userName + " " + password);
 
         String message = userService.login(userName, password);
 
@@ -99,6 +100,8 @@ public class UserController {
             session.setAttribute(userName, user);
             Cookie cookie = new Cookie("isLogin", "true");
             Cookie cookie1 = new Cookie("username", userName);
+            cookie.setPath("/");
+            cookie1.setPath("/");
             response.addCookie(cookie);
             response.addCookie(cookie1);
         }
@@ -206,23 +209,11 @@ public class UserController {
 
     @PostMapping("/authCode")
     @ResponseBody
-    public Result<String> authCode(@RequestBody String body,
-                                   @CookieValue(value = "username", required = false) String username,
-                                   HttpServletRequest request
+    public Result<String> authCode(@RequestBody String body
     ) {
         Result<String> result = new Result();
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute(username);
-        if (user == null) {
-            result.error("用户未登录");
-            return result;
-        }
 
-        String oldEmail = JSON.parseObject(body, HashMap.class).get("oldEmail").toString();
-        if (!oldEmail.equals(user.getEmail())) {
-            result.error("旧邮箱输入错误");
-            return result;
-        }
+        String oldEmail = JSON.parseObject(body, HashMap.class).get("Email").toString();
 
         Random random = new Random();
         String authCode = String.valueOf(random.nextInt(10000) + 1);
@@ -298,6 +289,8 @@ public class UserController {
         session.invalidate();
         Cookie cookie = new Cookie("username", "");
         Cookie cookie2 = new Cookie("isLogin", "false");
+        cookie.setPath("/");
+        cookie2.setPath("/");
         response.addCookie(cookie);
         response.addCookie(cookie2);
         return result;

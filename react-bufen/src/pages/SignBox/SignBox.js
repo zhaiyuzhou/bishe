@@ -79,7 +79,9 @@ const SignBox = () => {
 
     const pushCode = () => {
         console.log('Success:', email);
-        axios.post("/api/authCode", email)
+        axios.post("/api/authCode", {
+            Email: email,
+        })
             .then(function (response) {
                 setAuthCode(response.data.data);
             })
@@ -123,56 +125,6 @@ const SignBox = () => {
                 }}
                 scrollToFirstError
             >
-                <Form.Item
-                    label="邮箱"
-                    name="Email"
-                    rules={[
-                        {
-                            required: true,
-                            message: '请输入你的邮箱!',
-                        },
-                        {
-                            type: 'email',
-                            message: '请输入正确的邮箱',
-                        },
-                    ]}
-                >
-                    <Input onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}/>
-                </Form.Item>
-                <Form.Item
-                    wrapperCol={{
-                        offset: 8,
-                        span: 16,
-                    }}
-                >
-                    <Button type="primary" htmlType="submit" onClick={pushCode}>
-                        发送验证码
-                    </Button>
-                </Form.Item>
-                <Form.Item
-                    name="confirmCode"
-                    label="验证码"
-                    dependencies={['验证码']}
-                    hasFeedback
-                    rules={[
-                        {
-                            required: true,
-                            message: '请确认你的验证码!',
-                        },
-                        () => ({
-                            validator(_, value) {
-                                if (!value || authCode === value) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error('验证码不正确'));
-                            },
-                        }),
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
 
                 <Form.Item
                     name="username"
@@ -273,6 +225,56 @@ const SignBox = () => {
                         <Option value="女">女</Option>
                     </Select>
                 </Form.Item>
+                <Form.Item
+                    label="邮箱"
+                    name="Email"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请输入你的邮箱!',
+                        },
+                        {
+                            type: 'email',
+                            message: '请输入正确的邮箱',
+                        },
+                    ]}
+                >
+                    <Input onChange={(e) => {
+                        setEmail(e.target.value);
+                    }}/>
+                </Form.Item>
+                <Form.Item
+                    wrapperCol={{
+                        offset: 8,
+                        span: 16,
+                    }}
+                >
+                    <Button type="primary" htmlType="submit" onClick={pushCode}>
+                        发送验证码
+                    </Button>
+                </Form.Item>
+                <Form.Item
+                    name="confirmCode"
+                    label="验证码"
+                    dependencies={['验证码']}
+                    hasFeedback
+                    rules={[
+                        {
+                            required: true,
+                            message: '请确认你的验证码!',
+                        },
+                        () => ({
+                            validator(_, value) {
+                                if (!value || authCode === value) {
+                                    return Promise.resolve();
+                                }
+                                return Promise.reject(new Error('验证码不正确'));
+                            },
+                        }),
+                    ]}
+                >
+                    <Input/>
+                </Form.Item>
 
                 <Form.Item
                     name="agreement"
@@ -294,7 +296,7 @@ const SignBox = () => {
                     <Button type="primary" htmlType="submit">
                         注册
                     </Button>
-                    <Link className='toHome' to={"/home"}>返回</Link>
+                    <Link className='toHome' to={"/主页"}>返回</Link>
                 </Form.Item>
             </Form>
         </div>

@@ -324,7 +324,7 @@ const Pencen = (props) => {
             >
                 <Form.Item
                     label="原邮箱"
-                    name="oldEmail"
+                    name="Email"
                     rules={[
                         {
                             required: true,
@@ -483,7 +483,7 @@ const Pencen = (props) => {
             <Layout>
                 <Header className='header-style'>
                     <div className="demo-logo"/>
-                    <Link className='shouye-back' to={"/home/首页"}>首页</Link>
+                    <Link className='shouye-back' to={"/主页/首页"}>首页</Link>
                     <Avapopover style={{display: 'inline-block'}} {...user} />
                 </Header>
                 <Content

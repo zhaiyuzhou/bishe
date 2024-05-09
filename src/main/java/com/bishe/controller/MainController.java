@@ -55,6 +55,7 @@ public class MainController {
         User user = (User) session.getAttribute(username);
         if (user == null) {
             Cookie cookie = new Cookie("isLogin", "false");
+            cookie.setPath("/");
             response.addCookie(cookie);
         }
 
