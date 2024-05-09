@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Checkbox, Form, Input, notification, Select,} from 'antd';
 import './sign.css'
+import {Link} from 'react-router-dom';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -65,7 +66,7 @@ const SignBox = () => {
                 api.open({
                     message: msg,
                 });
-                if ("success" == msg) {
+                if ("success" === msg) {
                     window.location.href = "/";
                 }
             });
@@ -87,7 +88,7 @@ const SignBox = () => {
     return (
         <div className='sign-box'>
             <div className='pure-color'>
-                <div className="demo-logo" />
+                <div className="sign-demo-logo"/>
             </div>
             <Form
                 {...formItemLayout}
@@ -101,6 +102,9 @@ const SignBox = () => {
                     maxWidth: 300,
                     height: 500,
                     float: 'right',
+                    backgroundColor: 'white',
+                    padding: '10px',
+                    borderRadius: '6px',
                 }}
                 scrollToFirstError
             >
@@ -241,7 +245,7 @@ const SignBox = () => {
                     <Button type="primary" htmlType="submit">
                         注册
                     </Button>
-                    <a className='toHome' href='/'>返回</a>
+                    <Link className='toHome' to={"/home"}>返回</Link>
                 </Form.Item>
             </Form>
         </div>

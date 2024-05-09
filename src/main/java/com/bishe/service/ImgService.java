@@ -25,7 +25,7 @@ public interface ImgService {
     /**
      * 根据imgName搜索服务(imgName内包含日期)
      *
-     * @param imgName
+     * @param imgName 图片名字
      * @return 返回ImgDO
      **/
     ImgDO searchByImgName(String imgName);

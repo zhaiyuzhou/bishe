@@ -13,9 +13,9 @@
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
-    <insert id="add" parameterType="com.bishe.dataobject.CommentDO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `comment` (content, author_id, father_name, like_num, dynamic_id, gmt_created, gmt_modified)
-            VALUE (#{content}, #{authorId}, #{fatherName}, #{likeNum}, #{dynamicId}, now(), now());
+    <insert id="add" parameterType="com.bishe.dataobject.CommentDO">
+        INSERT INTO `comment` (id, content, author_id, father_name, like_num, dynamic_id, gmt_created, gmt_modified)
+            VALUE (#{id}, #{content}, #{authorId}, #{fatherName}, #{likeNum}, #{dynamicId}, now(), now());
     </insert>
 
     <update id="update" parameterType="com.bishe.dataobject.CommentDO">
@@ -67,13 +67,27 @@
         FROM `comment`
         <where>
             <if test="dynamicId != null">
-                author_id = #{dynamicId}
+                dynamic_id = #{dynamicId}
             </if>
         </where>
         ORDER BY
         like_num DESC
         limit #{start},#{limit}
     </select>
+
+    <update id="addLikeNum" parameterType="java.lang.Long">
+        UPDATE `comment`
+        <set>
+            <if test="commentId != null">
+                like_num = like_num + 1
+            </if>
+        </set>
+        <where>
+            <if test="commentId != null">
+                id = #{commentId}
+            </if>
+        </where>
+    </update>
 
 
 </mapper>

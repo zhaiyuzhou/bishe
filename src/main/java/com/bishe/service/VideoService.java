@@ -15,7 +15,7 @@ public interface VideoService {
     String add(VideoDO videoDO);
 
     /**
-     * 根据dynamicId搜索服务
+     * 根据fatherId搜索服务
      *
      * @param fatherId 动态id
      * @return 返回信息

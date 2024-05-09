@@ -24,5 +24,5 @@ public interface CommentDAO {
 
     List<CommentDO> findByDynamicId(Long dynamicId, int start, int limit);
 
-
+    int addLikeNum(Long commentId);
 }

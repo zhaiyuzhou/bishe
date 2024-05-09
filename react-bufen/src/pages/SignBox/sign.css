@@ -8,6 +8,7 @@
     position: absolute;
     top: calc(50% - 250px);
     left: calc(50% - 450px);
+    border-radius: 6px;
 }
 
 .pure-color {
@@ -15,9 +16,10 @@
     height: 500px;
     float: left;
     background-color: #00b96b;
+    border-radius: 6px;
 }
 
-.demo-logo {
+.sign-demo-logo {
     background-image: url("../../imgs/whwhlin.png");
     background-size: contain;
     background-repeat: no-repeat;

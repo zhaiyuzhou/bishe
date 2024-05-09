@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +51,11 @@ public class DynamicController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private CommentService commentService;
+
+    private int times;
 
     private Long dynamicId() {
         //格式化格式为年月日
@@ -143,69 +147,56 @@ public class DynamicController {
         return result;
     }
 
+    @PostMapping("/refreshPyn")
+    @ResponseBody
+    public Result<Boolean> refreshPyn(@RequestBody String body) {
+        Result<Boolean> result = new Result<>();
+        String times = JSON.parseObject(body, HashMap.class).get("times").toString();
+        this.times = Integer.parseInt(times) * 10;
+        System.out.println(this.times);
+        result.setSuccess(true);
+        return result;
+    }
+
     @PostMapping("/getDynamic")
     @ResponseBody
     public Result<List<Dynamic>> getDynamic(@RequestBody String body) {
         Result<List<Dynamic>> result = new Result<>();
 
-        String tag = String.valueOf(JSON.parseObject(body, HashMap.class).get("tag"));
-        String authorId = String.valueOf(JSON.parseObject(body, HashMap.class).get("authorId"));
+        HashMap map = JSON.parseObject(body, HashMap.class);
 
+        String tag = null;
+        String authorId = null;
+        if (map.get("tag") != null) {
+            tag = String.valueOf(map.get("tag"));
+        }
+        if (map.get("authorId") != null) {
+            authorId = String.valueOf(map.get("authorId"));
+        }
 
         if (!StringUtils.isBlank(tag) && !tag.equals("null")) {
-            List<DynamicDO> dynamicDOS = dynamicService.findByTag(tag);
-            if (toDynamic(result, dynamicDOS)) return result;
+            List<Dynamic> dynamics = dynamicService.findByTag(tag, this.times);
+            if (!dynamics.isEmpty()) {
+                result.success(dynamics);
+                return result;
+            }
         }
 
         if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
-            List<DynamicDO> dynamicDOS = dynamicService.findByAuthor(Long.valueOf(authorId));
-            if (toDynamic(result, dynamicDOS)) return result;
+            List<Dynamic> dynamics = dynamicService.findByAuthor(Long.valueOf(authorId), this.times);
+            if (!dynamics.isEmpty()) {
+                result.success(dynamics);
+                return result;
+            }
         }
 
-
-        List<DynamicDO> dynamicDOS = dynamicService.findLimit();
-        if (toDynamic(result, dynamicDOS)) return result;
-        result.error("tag和authorId均为空");
-        return result;
-    }
-
-    private boolean toDynamic(Result<List<Dynamic>> result, List<DynamicDO> dynamicDOS) {
-        if (dynamicDOS == null || dynamicDOS.isEmpty()) {
-            result.error("请求的动态为空");
-            return true;
-        }
-
-        List<Dynamic> dynamics = new ArrayList<>();
-
-        dynamicDOS.forEach(dynamicDO -> {
-            Dynamic dynamic = dynamicDO.toModel();
-            dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).toModel());
-            List<ImgDO> imgDOS = imgService.searchByFatherId(dynamicDO.getId());
-            List<VideoDO> videoDOS = videoService.searchByFatherId(dynamicDO.getId());
-            List<MusicDO> musicDOS = musicService.searchByFatherId(dynamicDO.getId());
-            if (imgDOS != null) {
-                imgDOS.forEach(imgDO -> {
-                    dynamic.addImg(imgDO.getImgPath());
-                });
-            }
-            if (videoDOS != null) {
-                videoDOS.forEach(videoDO -> {
-                    dynamic.addVideo(videoDO.getVideoPath());
-                });
-            }
-            if (musicDOS != null) {
-                musicDOS.forEach(musicDO -> {
-                    dynamic.addMusic(musicDO.getMusicPath());
-                });
-            }
-            dynamics.add(dynamic);
-        });
-
+        List<Dynamic> dynamics = dynamicService.findLimit(this.times);
         if (!dynamics.isEmpty()) {
             result.success(dynamics);
-            return true;
+            return result;
         }
-        return false;
+        result.error("检索失败");
+        return result;
     }
 
 }

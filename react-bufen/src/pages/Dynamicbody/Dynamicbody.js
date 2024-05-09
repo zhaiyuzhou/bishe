@@ -7,27 +7,32 @@ const Dynamicbody = (props) => {
     const [dynamicList, setDynamicList] = useState([]);
 
     useLayoutEffect(() => {
-            axios.post('/getDynamic', {
-                tag: props.tag,
-                authorId: props.authorId,
+        axios.post('/getDynamic', {
+            tag: props.tag,
+            authorId: props.authorId,
+            times: props.times,
+        })
+            .then(function (response) {
+                console.log(response.data);
+                setDynamicList(response.data.data);
             })
-                .then(function (response) {
-                    console.log(response.data);
-                    setDynamicList(response.data.data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-    }, [props.tag, props.authorId])
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+        if (typeof props.newDynamic != "undefined")
+            setDynamicList([props.newDynamic, ...dynamicList]);
+    }, [props])
 
     return (
         <div>
             {
                 dynamicList != null ?
                     (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
-                    return (
-                        <Dynamic key={index} {...dynamic} {...dynamic.author} />
-                    )
+                        return (
+                            <Dynamic key={index} {...dynamic} isLogin={props.isLogin}/>
+                        )
                     })) : (<></>)
             }
         </div>

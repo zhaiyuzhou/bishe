@@ -1,5 +1,6 @@
 import React from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {Link} from "react-router-dom";
 import {Button, Checkbox, Form, Input} from 'antd';
 import './login.css'
 import qs from 'qs'
@@ -80,7 +81,8 @@ const LoginForm = () => {
         <Button type="primary" htmlType="submit" className="login-form-button">
           登陆
         </Button>
-          Or <a href='/signal'>注册!</a>
+        Or
+        <Link to={"/注册"}>注册!</Link>
       </Form.Item>
     </Form>
   );

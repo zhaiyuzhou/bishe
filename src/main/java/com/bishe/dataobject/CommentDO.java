@@ -1,8 +1,6 @@
 package com.bishe.dataobject;
 
 import com.bishe.model.Comment;
-import com.bishe.service.UserService;
-import jakarta.annotation.Resource;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -10,9 +8,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class CommentDO {
-
-    @Resource
-    private UserService userService;
 
     private Long id;
 
@@ -42,7 +37,6 @@ public class CommentDO {
     public Comment toModel() {
         Comment comment = new Comment();
         BeanUtils.copyProperties(this, comment);
-        comment.setAuthor(userService.findById(this.getId()).toModel());
         return comment;
     }
 

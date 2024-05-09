@@ -1,6 +1,7 @@
 package com.bishe.service;
 
 import com.bishe.dataobject.DynamicDO;
+import com.bishe.model.Dynamic;
 
 import java.util.List;
 
@@ -15,25 +16,56 @@ public interface DynamicService {
     String add(DynamicDO dynamicDO);
 
     /**
+     * id查找dynamic
+     *
+     * @return 返回dynamicDO列表
+     **/
+    DynamicDO findById(Long dynamicId);
+
+    /**
      * 无参数查找dynamic
      *
-     * @return 返回dynamic列表
+     * @return 返回dynamicDO列表
      **/
-    List<DynamicDO> findLimit();
+    List<Dynamic> findLimit(int times);
 
     /**
      * 更具tag查找dynamic
      *
      * @param tag tag
-     * @return 返回dynamic列表
+     * @return 返回dynamicDO列表
      **/
-    List<DynamicDO> findByTag(String tag);
+    List<Dynamic> findByTag(String tag, int times);
 
     /**
      * 更具authorId查找dynamic
      *
      * @param authorId authorId
+     * @return 返回dynamicDO列表
+     **/
+    List<Dynamic> findByAuthor(Long authorId, int times);
+
+    /**
+     * 包装Dynamic
+     *
+     * @param dynamicDOList dynamicDOList
      * @return 返回dynamic列表
      **/
-    List<DynamicDO> findByAuthor(Long authorId);
+    List<Dynamic> listToDynamic(List<DynamicDO> dynamicDOList);
+
+    /**
+     * 更新Dynamic
+     *
+     * @param dynamicDO dynamicDO
+     * @return 返回dynamic列表
+     **/
+    int update(DynamicDO dynamicDO);
+
+    /**
+     * 增加喜欢数
+     *
+     * @param dynamicId dynamicId
+     * @return 返回信息
+     **/
+    String addLikeNum(Long dynamicId);
 }

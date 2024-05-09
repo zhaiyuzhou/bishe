@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     AntDesignOutlined,
     CrownOutlined,
@@ -10,12 +10,14 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import {Avatar, Button, Flex, Form, Input, Layout, Menu, message, theme, Upload} from 'antd';
-import Avapopover from '../Avapopover/Avapopover';
-import {Route, Routes, useNavigate} from 'react-router'
+import Avapopover from '../../component/Avapopover/Avapopover';
+import {useNavigate} from 'react-router';
+import {Link, Route, Routes} from 'react-router-dom';
 import './Pencen.css'
-import Information from '../Information/Information';
+import Information from '../../component/Information/Information';
 import axios from 'axios';
-import Dynamicbody from '../../pages/Dynamicbody/Dynamicbody';
+import Dynamicbody from '../Dynamicbody/Dynamicbody';
+
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -37,13 +39,19 @@ const beforeUpload = (file) => {
     return isJpgOrPng && isLt2M;
 };
 
-const Pencen = () => {
+const Pencen = (props) => {
+    const navigate = useNavigate();
+
+    console.log(props.isLogin);
+    if (!props.isLogin) {
+        navigate("/home/首页", {replace: true});
+    }
 
     const [user, setUser] = useState({
         avatar: ""
     });
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (user.avatar === "") {
             axios.get("/user")
                 .then(function (response) {
@@ -59,27 +67,27 @@ const Pencen = () => {
     // 导航
     const item1 = [
         {
-            key: '/information',
+            key: '/个人中心/information',
             icon: React.createElement(UserOutlined),
             label: "个人信息",
         },
         {
-            key: '/pDynamic',
+            key: '/个人中心/pDynamic',
             icon: React.createElement(SlackCircleFilled),
             label: "个人动态",
         },
         {
-            key: '/avatar',
+            key: '/个人中心/avatar',
             icon: React.createElement(CrownOutlined),
             label: "上传头像",
         },
         {
-            key: '/changPassword',
+            key: '/个人中心/changPassword',
             icon: React.createElement(KeyOutlined),
             label: "修改密码",
         },
         {
-            key: '/changEmail',
+            key: '/个人中心/changEmail',
             icon: React.createElement(MailOutlined),
             label: "修改邮箱",
         },
@@ -410,18 +418,16 @@ const Pencen = () => {
         token: {colorBgContainer, borderRadiusLG},
     } = theme.useToken();
 
-    const navigate = useNavigate()
-
     const clickItem = (e) => {
-        navigate(e.key, {replace: true})
+        navigate(e.key, {replace: false})
     }
 
     return (
-        <div>
+        <div className='pencen-page'>
             <Layout>
                 <Header className='header-style'>
                     <div className="demo-logo"/>
-                    <a className='toHome' href='/'>Home</a>
+                    <Link className='shouye-back' to={"/home/首页"}>首页</Link>
                     <Avapopover style={{display: 'inline-block'}} {...user} />
                 </Header>
                 <Content
@@ -459,15 +465,21 @@ const Pencen = () => {
                                 minHeight: 750,
                             }}
                         >
-
                             <Routes>
                                 <Route path='/information' element={<Information {...user} />}/>
                                 <Route path='/avatar' element={avChange}/>
                                 <Route path='/changPassword' element={pwChage}/>
                                 <Route path='/changEmail' element={emChage}/>
-                                <Route path='/pDynamic' element={<Dynamicbody authorId={user.id}/>}/>
+                                <Route path='/pDynamic' element={<div style={{
+                                    padding: 10,
+                                    margin: 0,
+                                    minHeight: 900,
+                                    minWidth: 800,
+                                    background: "rgb(231, 231, 231)",
+                                    borderRadius: borderRadiusLG,
+                                    position: "relative",
+                                }}><Dynamicbody authorId={user.id}/></div>}/>
                             </Routes>
-
                         </Content>
                     </Layout>
                 </Content>

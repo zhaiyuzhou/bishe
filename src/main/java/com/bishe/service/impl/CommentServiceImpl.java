@@ -2,11 +2,16 @@ package com.bishe.service.impl;
 
 import com.bishe.dao.CommentDAO;
 import com.bishe.dataobject.CommentDO;
-import com.bishe.service.CommentService;
+import com.bishe.dataobject.ImgDO;
+import com.bishe.dataobject.MusicDO;
+import com.bishe.dataobject.VideoDO;
+import com.bishe.model.Comment;
+import com.bishe.service.*;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -14,6 +19,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Resource
     private CommentDAO commentDAO;
+
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private ImgService imgService;
+
+    @Resource
+    private MusicService musicService;
+
+    @Resource
+    private VideoService videoService;
 
     @Override
     public String add(CommentDO commentDO) {
@@ -52,13 +69,86 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDO> findByDynamicId(Long dynamicId) {
+    public CommentDO findById(Long commentId) {
+        if (commentId != null) {
+            return commentDAO.findById(commentId);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Comment> findByDynamicId(Long dynamicId) {
 
         if (dynamicId == null) {
             return null;
         }
 
-        return commentDAO.findByDynamicId(dynamicId, 0, 10);
+        return listToComment(commentDAO.findByDynamicId(dynamicId, 0, 10));
     }
+
+    @Override
+    public List<Comment> listToComment(List<CommentDO> commentDOS) {
+
+        if (commentDOS == null || commentDOS.isEmpty()) {
+            return List.of();
+        }
+
+        List<Comment> comments = new ArrayList<>();
+        commentDOS.forEach(commentDO -> {
+
+            Comment comment = commentDO.toModel();
+            comment.setAuthor(userService.findById(commentDO.getAuthorId()).toModel());
+
+            List<ImgDO> imgDOS = imgService.searchByFatherId(commentDO.getId());
+            if (imgDOS != null && !imgDOS.isEmpty()) {
+                imgDOS.forEach(imgDO -> {
+                    comment.addImg(imgDO.getImgPath());
+                });
+            }
+
+            List<VideoDO> videoDOS = videoService.searchByFatherId(commentDO.getId());
+            if (videoDOS != null && !videoDOS.isEmpty()) {
+                videoDOS.forEach(videoDO -> {
+                    comment.addVideo(videoDO.getVideoPath());
+                });
+            }
+            List<MusicDO> musicDOS = musicService.searchByFatherId(commentDO.getId());
+            if (musicDOS != null && !musicDOS.isEmpty()) {
+                musicDOS.forEach(musicDO -> {
+                    comment.addMusic(musicDO.getMusicPath());
+                });
+            }
+
+            comments.add(comment);
+
+        });
+
+        if (!comments.isEmpty()) {
+            return comments;
+        }
+
+        return List.of();
+    }
+
+    @Override
+    public String addLikeNum(Long commentId) {
+
+        if (commentId != null) {
+            if (commentDAO.addLikeNum((commentId)) != 0)
+                return "success";
+        }
+        return "失败";
+    }
+
+    @Override
+    public int update(CommentDO commentDO) {
+
+        if (commentDO != null) {
+            return commentDAO.update(commentDO);
+        }
+
+        return 0;
+    }
+
 
 }

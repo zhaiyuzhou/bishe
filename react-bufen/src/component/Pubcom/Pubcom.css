@@ -11,7 +11,7 @@
 }
 
 .Pubcom-but {
-    transition: transform 1s;
+    transition: transform 0.5s;
     transform: translateY(-32px);
 }
 

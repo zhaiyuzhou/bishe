@@ -10,7 +10,7 @@ const { TextArea } = Input;
 const Pubdyn = () => {
 
     // 上传文字
-  const [value, setValue] = useState('');
+    const [value, setValue] = useState('');
     const [imgName, setImgName] = useState([]);
     const [videoName, setVideoName] = useState([]);
     const [musicName, setMusicName] = useState([]);
@@ -103,7 +103,7 @@ const Pubdyn = () => {
         setTag(value);
     }
 
-  // 改变视图
+    // 改变视图
     const [isimgload, setIsimgload] = useState(false);
     const [isvideoload, setIsvideoload] = useState(false);
     const [ismusicload, setIsmusicload] = useState(false);
@@ -120,11 +120,11 @@ const Pubdyn = () => {
         setIsmusicload(!ismusicload);
     }
 
-  // 上传的图片
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
+    // 上传的图片
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
 
-    const [props, setProps] = useState();
+    const [uploadProps, setUploadProps] = useState();
 
     //上传照片
     const propsImg = {
@@ -135,7 +135,7 @@ const Pubdyn = () => {
                 setImgName([...imgName, file.name]);
             }
         },
-  };
+    };
 
     //上传视频
     const propsVideo = {
@@ -161,122 +161,122 @@ const Pubdyn = () => {
     };
 
     const chageToImg = () => {
-        setProps(propsImg);
+        setUploadProps(propsImg);
     }
 
     const chageToVideo = () => {
-        setProps(propsVideo);
+        setUploadProps(propsVideo);
     }
 
     const chageToMusic = () => {
-        setProps(propsMusic);
+        setUploadProps(propsMusic);
     }
 
     // 检查登录
     const isLogin = (cookie.load('isLogin') === 'true');
 
-  return (
-    <div className='Pubdyn-div'>
-      <TextArea
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder="想有什么于大家分享"
-        autoSize={{
-            minRows: 4,
-          maxRows: 5,
-        }}
-      />
-        <Select
-            defaultValue="新闻"
-            style={{
-                width: 120,
-            }}
-            onChange={chageTag}
-            options={tagItem}
-        />
-        <Button type="text" icon={<PictureOutlined/>} onClick={showImgload} disabled={!isLogin}/>
-        <Button type="text" icon={<PlaySquareOutlined/>} onClick={showvideoload} disabled={!isLogin}/>
-        <Button type="text" icon={<CustomerServiceTwoTone twoToneColor="black"/>} onClick={showmusicload}
-                disabled={!isLogin}/>
-        <Button className='Pubdyn-input' type="primary" onClick={propsContent} disabled={!isLogin}>发布</Button>
-        <div className='Pubdyn-upload'>
-            <Upload
-                {...props}
-            >
-                <div className='Pubdyn-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
-                    <button
-                        style={{
-                            border: 0,
-                            background: 'none',
-                        }}
-                        type="button"
-                        onClick={chageToImg}
-                    >
-                        <CloudUploadOutlined/>
-                        <div
+    return (
+        <div className='Pubdyn-div'>
+            <TextArea
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="想有什么于大家分享"
+                autoSize={{
+                    minRows: 4,
+                    maxRows: 5,
+                }}
+            />
+            <Select
+                defaultValue="新闻"
+                style={{
+                    width: 120,
+                }}
+                onChange={chageTag}
+                options={tagItem}
+            />
+            <Button type="text" icon={<PictureOutlined/>} onClick={showImgload} disabled={!isLogin}/>
+            <Button type="text" icon={<PlaySquareOutlined/>} onClick={showvideoload} disabled={!isLogin}/>
+            <Button type="text" icon={<CustomerServiceTwoTone twoToneColor="black"/>} onClick={showmusicload}
+                    disabled={!isLogin}/>
+            <Button className='Pubdyn-input' type="primary" onClick={propsContent} disabled={!isLogin}>发布</Button>
+            <div className='Pubdyn-upload'>
+                <Upload
+                    {...uploadProps}
+                >
+                    <div className='Pubdyn-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
+                        <button
                             style={{
-                                marginTop: 8,
+                                border: 0,
+                                background: 'none',
                             }}
+                            type="button"
+                            onClick={chageToImg}
                         >
-                            图片
-                        </div>
-                    </button>
-                </div>
-                <div className='Pubdyn-upload-video' style={{display: (isvideoload ? 'inline-block' : 'none')}}>
-                    <button
-                        style={{
-                            border: 0,
-                            background: 'none',
-                        }}
-                        onClick={chageToVideo}
-                        type="button"
-                    >
-                        <CloudUploadOutlined/>
-                        <div
+                            <CloudUploadOutlined/>
+                            <div
+                                style={{
+                                    marginTop: 8,
+                                }}
+                            >
+                                图片
+                            </div>
+                        </button>
+                    </div>
+                    <div className='Pubdyn-upload-video' style={{display: (isvideoload ? 'inline-block' : 'none')}}>
+                        <button
                             style={{
-                                marginTop: 8,
+                                border: 0,
+                                background: 'none',
                             }}
+                            onClick={chageToVideo}
+                            type="button"
                         >
-                            视频
-                        </div>
-                    </button>
-                </div>
-                <div className='Pubdyn-upload-music' style={{display: (ismusicload ? 'inline-block' : 'none')}}>
-                    <button
-                        style={{
-                            border: 0,
-                            background: 'none',
-                        }}
-                        onClick={chageToMusic}
-                        type="button"
-                    >
-                        <CloudUploadOutlined/>
-                        <div
+                            <CloudUploadOutlined/>
+                            <div
+                                style={{
+                                    marginTop: 8,
+                                }}
+                            >
+                                视频
+                            </div>
+                        </button>
+                    </div>
+                    <div className='Pubdyn-upload-music' style={{display: (ismusicload ? 'inline-block' : 'none')}}>
+                        <button
                             style={{
-                                marginTop: 8,
+                                border: 0,
+                                background: 'none',
                             }}
+                            onClick={chageToMusic}
+                            type="button"
                         >
-                            音乐
-                        </div>
-                    </button>
-                </div>
-            </Upload>
-            {previewImage && (
-                <Image
-                    wrapperStyle={{
-                        display: 'none',
-                    }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                    }}
-                    src={previewImage}
-                />
-            )}
+                            <CloudUploadOutlined/>
+                            <div
+                                style={{
+                                    marginTop: 8,
+                                }}
+                            >
+                                音乐
+                            </div>
+                        </button>
+                    </div>
+                </Upload>
+                {previewImage && (
+                    <Image
+                        wrapperStyle={{
+                            display: 'none',
+                        }}
+                        preview={{
+                            visible: previewOpen,
+                            onVisibleChange: (visible) => setPreviewOpen(visible),
+                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                        }}
+                        src={previewImage}
+                    />
+                )}
+            </div>
         </div>
-    </div>
-  )
+    )
 };
 
 export default Pubdyn;

@@ -7,26 +7,20 @@ import App from './component/App/App';
 // 主界面
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-      <BrowserRouter>
-          <ConfigProvider
-              theme={{
-                  token: {
-                      colorPrimary: "#52c41a",
-                      colorInfo: "#52c41a",
-                      colorSuccess: "#52c41a"
-                  },
-              }}
-          >
-        {/* <SignBox></SignBox> */}
-              <App></App>
-              {/* <Comment></Comment> */}
-              {/* <Pencen></Pencen> */}
-        {/* <Dynamic></Dynamic> */}
-              {/* <Music></Music> */}
-        {/* <Pubdyn></Pubdyn> */}
-          </ConfigProvider>
-      </BrowserRouter>
-  </React.StrictMode>
+    <React.StrictMode>
+        <BrowserRouter basename="/">
+            <ConfigProvider
+                theme={{
+                    token: {
+                        colorPrimary: "#52c41a",
+                        colorInfo: "#52c41a",
+                        colorSuccess: "#52c41a"
+                    },
+                }}
+            >
+                <App></App>
+            </ConfigProvider>
+        </BrowserRouter>
+    </React.StrictMode>
 
 );

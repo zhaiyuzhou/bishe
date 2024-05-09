@@ -127,4 +127,18 @@
         limit #{start},#{limit}
     </select>
 
+    <update id="addLikeNum" parameterType="java.lang.Long">
+        update `dynamic`
+        <set>
+            <if test="dynamicId != null">
+                like_num = like_num + 1
+            </if>
+        </set>
+        <where>
+            <if test="dynamicId != null">
+                id = #{dynamicId}
+            </if>
+        </where>
+    </update>
+
 </mapper>

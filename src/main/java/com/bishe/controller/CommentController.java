@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -87,7 +86,10 @@ public class CommentController {
         comment.setId(id);
         comment.setContent(map.get("content").toString());
         comment.setAuthor(user);
-        comment.setDynamicId((Long) map.get("dynamicId"));
+        comment.setDynamicId(Long.valueOf(map.get("dynamicId").toString()));
+        if (map.get("father") == null || StringUtils.isBlank(map.get("father").toString())) {
+            comment.setFatherName("none");
+        }
 
         List<String> names;
         names = (List<String>) map.get("imgName");
@@ -146,40 +148,21 @@ public class CommentController {
     public Result<List<Comment>> getComment(@RequestBody String body) {
         Result<List<Comment>> result = new Result<>();
 
-        String dynamicId = JSON.parseObject(body, HashMap.class).get("dynamicId").toString();
+        String dynamicId = String.valueOf(JSON.parseObject(body, HashMap.class).get("dynamicId"));
+        String commentId = String.valueOf(JSON.parseObject(body, HashMap.class).get("commentId"));
 
-        if (StringUtils.isBlank(dynamicId)) {
-            List<Comment> comments = new ArrayList<>();
-            commentService.findByDynamicId(Long.valueOf(dynamicId)).forEach(commentDO -> {
+        if (!StringUtils.isBlank(dynamicId)) {
 
-                Comment comment = commentDO.toModel();
-                List<ImgDO> imgDOS = imgService.searchByFatherId(commentDO.getId());
-                if (imgDOS != null && !imgDOS.isEmpty()) {
-                    imgDOS.forEach(imgDO -> {
-                        comment.addImg(imgDO.getImgPath());
-                    });
-                }
+            List<Comment> comments = commentService.findByDynamicId(Long.parseLong(dynamicId));
 
-                List<VideoDO> videoDOS = videoService.searchByFatherId(commentDO.getId());
-                if (videoDOS != null && !videoDOS.isEmpty()) {
-                    videoDOS.forEach(videoDO -> {
-                        comment.addVideo(videoDO.getVideoPath());
-                    });
-                }
-                List<MusicDO> musicDOS = musicService.searchByFatherId(commentDO.getId());
-                if (musicDOS != null && !musicDOS.isEmpty()) {
-                    musicDOS.forEach(musicDO -> {
-                        comment.addMusic(musicDO.getMusicPath());
-                    });
-                }
-
-                comments.add(comment);
-            });
-
-            result.success(comments);
-
-            return result;
+            System.out.println(comments);
+            if (!comments.isEmpty()) {
+                result.success(comments);
+                System.out.println(result);
+                return result;
+            }
         }
+
 
         result.error("检索失败");
         return result;

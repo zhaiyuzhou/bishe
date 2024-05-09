@@ -1,8 +1,6 @@
 package com.bishe.dataobject;
 
 import com.bishe.model.Dynamic;
-import com.bishe.service.UserService;
-import jakarta.annotation.Resource;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
@@ -10,9 +8,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class DynamicDO {
-
-    @Resource
-    private UserService userService;
 
     private Long id;
 
@@ -44,7 +39,6 @@ public class DynamicDO {
     public Dynamic toModel() {
         Dynamic dynamic = new Dynamic();
         BeanUtils.copyProperties(this, dynamic);
-        dynamic.setAuthor(userService.findById(this.getAuthorId()).toModel());
         return dynamic;
     }
 

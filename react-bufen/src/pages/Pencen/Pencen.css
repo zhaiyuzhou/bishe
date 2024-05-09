@@ -1,9 +1,16 @@
+.pencen-page {
+    width: 1300px;
+    position: relative;
+    left: calc(50% - 650px);
+    border-radius: 10px;
+}
+
 .header-style {
     flex: 2;
     position: sticky;
     top: 0;
     z-index: 1;
-    width: '100%';
+    width: 100%;
     display: flex;
     align-items: center;
     background-color: #f6ffed;

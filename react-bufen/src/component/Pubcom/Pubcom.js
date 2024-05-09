@@ -18,12 +18,14 @@ const Pubcom = (props) => {
         axios.post('/commentText', {
             content: value,
             dynamicId: props.dynamicId,
+            father: props.commentAuthor,
             imgName: imgName,
             videoName: videoName,
             musicName: musicName,
         })
             .then(function (response) {
                 console.log(response);
+                props.pubComment(response.data.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -50,8 +52,7 @@ const Pubcom = (props) => {
     // 上传的图片
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-
-    const [props, setProps] = useState();
+    const [uploadProps, setUploadProps] = useState();
 
     //上传照片
     const propsImg = {
@@ -88,27 +89,26 @@ const Pubcom = (props) => {
     };
 
     const chageToImg = () => {
-        setProps(propsImg);
+        setUploadProps(propsImg);
     }
 
     const chageToVideo = () => {
-        setProps(propsVideo);
+        setUploadProps(propsVideo);
     }
 
     const chageToMusic = () => {
-        setProps(propsMusic);
+        setUploadProps(propsMusic);
     }
 
     // 检查登录
-    // const isLogin = (cookie.load('isLogin') === 'true');
-    const isLogin = true;
+    const isLogin = props.isLogin;
     const pubcomBut = useRef(null);
     const pubcomText = useRef(null);
 
     useEffect(() => {
 
         const shouqi = (e) => {
-            if (e.target !== pubcomText.current.resizableTextArea.textArea) {
+            if (!pubcomText.current.contains(e.target)) {
                 pubcomBut.current.style.transform = "translateY(-32px)";
             } else {
                 pubcomBut.current.style.transform = "translateY(0px)";
@@ -116,19 +116,21 @@ const Pubcom = (props) => {
         }
 
         window.addEventListener("click", shouqi);
+        setValue(props.commentAuthor.length <= 0 ? value : "回复" + props.commentAuthor + " " + value);
 
         return () => {
             window.removeEventListener("click", shouqi);
         }
-    })
+    }, [props.commentAuthor, props.isLogin])
 
     return (
-        <div className='Pubcom-div'>
+        <div className='Pubcom-div' ref={pubcomText}>
             <TextArea
-                ref={pubcomText}
                 className='Pubcom-text'
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => {
+                    setValue(e.target.value)
+                }}
                 placeholder="想要评价什么"
                 autoSize={{
                     minRows: 2,
@@ -147,7 +149,7 @@ const Pubcom = (props) => {
             </div>
             <div className='Pubcom-upload'>
                 <Upload
-                    {...props}
+                    {...uploadProps}
                 >
                     <div className='Pubcom-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
                         <button

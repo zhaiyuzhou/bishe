@@ -69,7 +69,7 @@ public class UserController {
     public Result<User> login(@RequestParam("username") String userName,
                               @RequestParam("password") String password,
                               @RequestParam("remember") Boolean remember,
-                              @CookieValue("JSESSIONID") String jSessionId,
+                              @CookieValue(value = "JSESSIONID", required = false) String jSessionId,
                               HttpServletRequest request, HttpServletResponse response
     ) {
         Result<User> result = new Result<>();

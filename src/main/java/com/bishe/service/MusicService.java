@@ -16,7 +16,7 @@ public interface MusicService {
     String add(MusicDO musicDO);
 
     /**
-     * 根据dynamicId搜索服务
+     * 根据fatherId搜索服务
      *
      * @param fatherId 动态id
      * @return 返回信息

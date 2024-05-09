@@ -17,6 +17,7 @@ public class UserInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
+        System.out.println(user == null);
         if (user == null) {
             System.out.println(request.getRequestURI());
             if (request.getRequestURI().equals("/index/index.html") || request.getRequestURI().equals("/")) {

@@ -24,4 +24,6 @@ public interface DynamicDAO {
 
     List<DynamicDO> findByTag(String tag, int start, int limit);
 
+    int addLikeNum(Long dynamicId);
+
 }

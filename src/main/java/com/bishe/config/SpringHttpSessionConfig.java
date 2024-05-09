@@ -18,7 +18,7 @@ public class SpringHttpSessionConfig {
         serializer.setCookiePath("/");
         serializer.setUseHttpOnlyCookie(false);
         // 最大生命周期的单位是秒
-        serializer.setCookieMaxAge(24 * 60 * 60);
+        serializer.setCookieMaxAge(48 * 60 * 60);
         return serializer;
     }
 
