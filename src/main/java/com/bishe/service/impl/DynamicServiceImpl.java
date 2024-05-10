@@ -178,4 +178,13 @@ public class DynamicServiceImpl implements DynamicService {
         }
         return "失败";
     }
+
+    @Override
+    public String delDynamic(Long dynamicId) {
+
+        if (dynamicDAO.deleteById(dynamicId) != 0) {
+            return "success";
+        }
+        return "失败";
+    }
 }

@@ -213,4 +213,24 @@ public class DynamicController {
         return result;
     }
 
+    @PostMapping("/delDynamic")
+    @ResponseBody
+    public Result<Dynamic> delDynamic(@RequestBody String body) {
+        Result<Dynamic> result = new Result<>();
+        HashMap map = JSON.parseObject(body, HashMap.class);
+        String dynamicId = String.valueOf(map.get("dynamicId"));
+
+        if (StringUtils.isBlank(dynamicId) || "mull".equals(dynamicId)) {
+            result.error("传入ID为空");
+        }
+
+        String message = dynamicService.delDynamic(Long.valueOf(dynamicId));
+        if ("success".equals(message)) {
+            result.success();
+            return result;
+        }
+        result.error(message);
+        return result;
+    }
+
 }

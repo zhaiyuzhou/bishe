@@ -64,6 +64,9 @@ const SignBox = () => {
                 return myJson.message;
             })
             .then(function (msg) {
+                if (typeof msg === "undefined" || msg === null) {
+                    msg = "注册失败";
+                }
                 api.open({
                     message: msg,
                 });

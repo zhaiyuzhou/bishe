@@ -78,4 +78,5 @@ public interface DynamicService {
     String addLikeNum(Long dynamicId);
 
 
+    String delDynamic(Long dynamicId);
 }

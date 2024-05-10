@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const { TextArea } = Input;
 
-const Pubdyn = () => {
+const Pubdyn = (props) => {
 
     // 上传文字
     const [value, setValue] = useState('');
@@ -26,6 +26,7 @@ const Pubdyn = () => {
         })
             .then(function (response) {
                 console.log(response);
+                props.pubDynamic(response.data.data);
             })
             .catch(function (error) {
                 console.log(error);

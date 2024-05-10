@@ -45,7 +45,7 @@ const Pencen = (props) => {
 
     console.log(props.isLogin);
     if (!props.isLogin) {
-        navigate("/home/首页", {replace: true});
+        navigate("/主页/首页", {replace: true});
     }
 
     const [user, setUser] = useState({
@@ -245,7 +245,7 @@ const Pencen = (props) => {
                 listType="picture-circle"
                 className="avatar-uploader"
                 showUploadList={false}
-                action="/updateImg"
+                action="/api/updateImg"
                 beforeUpload={beforeUpload}
                 onChange={handleChange}
             >
@@ -534,7 +534,7 @@ const Pencen = (props) => {
                                     background: "rgb(231, 231, 231)",
                                     borderRadius: borderRadiusLG,
                                     position: "relative",
-                                }}><Dynamicbody authorId={user.id}/></div>}/>
+                                }}><Dynamicbody authorId={user.id} del={true} isLogin={props.isLogin}/></div>}/>
                                 <Route path='/changeNickname' element={nicknameChange}/>
                             </Routes>
                         </Content>

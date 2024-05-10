@@ -26,11 +26,11 @@ const Home = () => {
 
     useEffect(() => {
 
-        if (location.pathname === "/主页")
-            navigate("/主页/首页", {replace: false})
+        if (decodeURI(location.pathname) === '/主页') {
+            navigate("/主页/首页", {replace: true})
+        }
 
         if (window.performance.navigation.type === 1) {
-            console.log(times);
             setTimes(0);
         }
 
@@ -107,6 +107,7 @@ const Home = () => {
     const [newDynamic, setNewDynamic] = useState();
 
     const pubDynamic = (newDynamic) => {
+        console.log(newDynamic);
         setNewDynamic(newDynamic);
     }
 

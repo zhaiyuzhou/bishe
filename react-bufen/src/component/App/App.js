@@ -17,7 +17,7 @@ const App = () => {
         if (location.pathname === "/")
             navigate("/主页", {replace: false})
         setIsLogin(cookie.load('isLogin') === 'true');
-    }, [navigate, location])
+    }, [navigate, location, isLogin])
 
     return (
         <div>

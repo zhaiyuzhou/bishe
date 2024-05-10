@@ -44,7 +44,7 @@ public class UserController {
         HashMap map = JSON.parseObject(body, HashMap.class);
 
         User user = new User();
-        user.setEmail(map.get("email").toString());
+        user.setEmail(map.get("Email").toString());
         user.setGender(map.get("gender").toString());
         user.setUserName(map.get("username").toString());
         user.setNickName(map.get("nickname").toString());

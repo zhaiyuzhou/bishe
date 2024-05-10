@@ -21,7 +21,7 @@ const Information = (props) => {
         {
             key: '4',
             label: '性别',
-            children: props.gender === "male" ? "男" : "女",
+            children: props.gender,
         },
         {
             key: '5',

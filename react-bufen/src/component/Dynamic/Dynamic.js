@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Avatar, Button, Flex, Image, Pagination, Tag} from 'antd';
 import {
     CheckOutlined,
+    DeleteOutlined,
     ExportOutlined,
     LikeFilled,
     LikeOutlined,
@@ -17,7 +18,6 @@ import Pubcom from "../Pubcom/Pubcom";
 import './Dynamic.css'
 
 const Dynamic = (props) => {
-    console.log(props);
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
     const tagsEn = ['news', 'movie', 'show', 'animated', 'bangumi', 'game', 'music', 'art', 'animal', 'knowledge', 'technology', 'food', 'car', 'movement', 'live', 'other'];
 
@@ -31,6 +31,8 @@ const Dynamic = (props) => {
         setCommentPage(commentList.slice(0, 10));
     }, [props.comments])
 
+
+    // 点赞
     const addLikeNum = () => {
         setLike({num: 1});
         axios.post("/api/addLikeNum", {
@@ -53,6 +55,7 @@ const Dynamic = (props) => {
         }
     }
 
+    // 关注
     const [gz, setGz] = useState(false);
     const guanzhu = () => {
         setGz(true);
@@ -88,6 +91,13 @@ const Dynamic = (props) => {
         setCommentAuthor(commentAuthor);
     }
 
+    // 删除动态
+    const delDynamic = () => {
+        axios.post("/delDynamic", {
+            dynamicId: props.id,
+        })
+        props.delDynamicforList(props);
+    }
 
     return (
         <div className="dynamic-div">
@@ -95,8 +105,12 @@ const Dynamic = (props) => {
                 <Avatar className="dynamic-avatar" icon={<UserOutlined/>} srcSet={props.author.avatar}/>
                 <p className="dynamic-nickname">{props.author.nickName}</p>
                 <p className="dynamic-describe">发布于{props.postedDate}</p>
-                <Button className="dynamic-guanzhu" type='primary' icon={gz ? <CheckOutlined/> : <PlusOutlined/>}
+                <Button className="dynamic-guanzhu" style={{display: (props.del ? "none" : "block")}} type='primary'
+                        icon={gz ? <CheckOutlined/> : <PlusOutlined/>}
                         onClick={gzfun} disabled={!props.isLogin}>{gz ? "取关" : "关注"}</Button>
+                <Button className="dynamic-guanzhu" style={{display: (props.del ? "block" : "none")}} type='primary'
+                        danger icon={<DeleteOutlined/>}
+                        onClick={delDynamic} disabled={!props.isLogin}>删除</Button>
             </div>
             <div className="dynamic-body">
                 <Flex className="dynamic-tag" gap="4px 0" wrap="wrap">
