@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import {Button, Image, Input, Select, Upload} from 'antd';
+import {Button, Input, notification, Select, Upload} from 'antd';
 import './Pubdyn.css';
-import {CloudUploadOutlined, CustomerServiceTwoTone, PictureOutlined, PlaySquareOutlined} from '@ant-design/icons';
+import {CustomerServiceTwoTone, PictureOutlined, PlaySquareOutlined} from '@ant-design/icons';
 import cookie from 'react-cookies'
 import axios from 'axios';
 
@@ -14,7 +14,9 @@ const Pubdyn = (props) => {
     const [imgName, setImgName] = useState([]);
     const [videoName, setVideoName] = useState([]);
     const [musicName, setMusicName] = useState([]);
+    const [fileList, setFileList] = useState([]);
     const [tag, setTag] = useState('news');
+    const [api, contextHolder] = notification.useNotification();
 
     const propsContent = () => {
         axios.post('/api/dynamicText', {
@@ -27,6 +29,11 @@ const Pubdyn = (props) => {
             .then(function (response) {
                 console.log(response);
                 props.pubDynamic(response.data.data);
+                setValue('');
+                setFileList([]);
+                api.open({
+                    message: response.data.message,
+                })
             })
             .catch(function (error) {
                 console.log(error);
@@ -110,20 +117,22 @@ const Pubdyn = (props) => {
     const [ismusicload, setIsmusicload] = useState(false);
 
     const showImgload = () => {
+        const imgButton = document.getElementById("Pubdyn-upload-img-button");
+        imgButton.click();
         setIsimgload(!isimgload);
     }
 
     const showvideoload = () => {
+        const videoButton = document.getElementById("Pubdyn-upload-video-button");
+        videoButton.click();
         setIsvideoload(!isvideoload);
     }
 
     const showmusicload = () => {
+        const musicButton = document.getElementById("Pubdyn-upload-music-button");
+        musicButton.click();
         setIsmusicload(!ismusicload);
     }
-
-    // 上传的图片
-    const [previewOpen, setPreviewOpen] = useState(false);
-    const [previewImage, setPreviewImage] = useState('');
 
     const [uploadProps, setUploadProps] = useState();
 
@@ -131,9 +140,24 @@ const Pubdyn = (props) => {
     const propsImg = {
         action: '/api/updateImg',
         listType: 'picture',
-        onChange({file}) {
+        onChange({file, fileList: newFileList}) {
             if (imgName.indexOf(file.name) === -1) {
                 setImgName([...imgName, file.name]);
+            } else {
+                api.open({
+                    message: "不要上传相同的文件",
+                });
+            }
+            setFileList(newFileList);
+            if (file.status === "done") {
+                api.open({
+                    message: file.response.message,
+                });
+            }
+            if (file.status === "removed") {
+                axios.post("/api/remove", {
+                    fileName: file.name,
+                })
             }
         },
     };
@@ -142,10 +166,21 @@ const Pubdyn = (props) => {
     const propsVideo = {
         action: '/api/updateVideo',
         listType: 'picture',
-        onChange({file}) {
+        onChange({file, fileList: newFileList}) {
             console.log(file);
             if (videoName.indexOf(file.name) === -1) {
                 setVideoName([...videoName, file.name]);
+            }
+            setFileList(newFileList);
+            if (file.status === "done") {
+                api.open({
+                    message: file.response.message,
+                });
+            }
+            if (file.status === "removed") {
+                axios.post("/api/remove", {
+                    fileName: file.name,
+                })
             }
         },
     };
@@ -154,9 +189,20 @@ const Pubdyn = (props) => {
     const propsMusic = {
         action: '/api/updateMusic',
         listType: 'picture',
-        onChange({file}) {
+        onChange({file, fileList: newFileList}) {
             if (musicName.indexOf(file.name) === -1) {
                 setMusicName([...musicName, file.name]);
+            }
+            setFileList(newFileList);
+            if (file.status === "done") {
+                api.open({
+                    message: file.response.message,
+                });
+            }
+            if (file.status === "removed") {
+                axios.post("/api/remove", {
+                    fileName: file.name,
+                })
             }
         },
     };
@@ -178,6 +224,7 @@ const Pubdyn = (props) => {
 
     return (
         <div className='Pubdyn-div'>
+            {contextHolder}
             <TextArea
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -202,79 +249,29 @@ const Pubdyn = (props) => {
             <Button className='Pubdyn-input' type="primary" onClick={propsContent} disabled={!isLogin}>发布</Button>
             <div className='Pubdyn-upload'>
                 <Upload
+                    fileList={fileList}
                     {...uploadProps}
                 >
-                    <div className='Pubdyn-upload-img' style={{display: (isimgload ? 'inline-block' : 'none')}}>
-                        <button
-                            style={{
-                                border: 0,
-                                background: 'none',
-                            }}
-                            type="button"
-                            onClick={chageToImg}
-                        >
-                            <CloudUploadOutlined/>
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                图片
-                            </div>
-                        </button>
-                    </div>
-                    <div className='Pubdyn-upload-video' style={{display: (isvideoload ? 'inline-block' : 'none')}}>
-                        <button
-                            style={{
-                                border: 0,
-                                background: 'none',
-                            }}
-                            onClick={chageToVideo}
-                            type="button"
-                        >
-                            <CloudUploadOutlined/>
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                视频
-                            </div>
-                        </button>
-                    </div>
-                    <div className='Pubdyn-upload-music' style={{display: (ismusicload ? 'inline-block' : 'none')}}>
-                        <button
-                            style={{
-                                border: 0,
-                                background: 'none',
-                            }}
-                            onClick={chageToMusic}
-                            type="button"
-                        >
-                            <CloudUploadOutlined/>
-                            <div
-                                style={{
-                                    marginTop: 8,
-                                }}
-                            >
-                                音乐
-                            </div>
-                        </button>
-                    </div>
+                    <button
+                        className='Pubdyn-upload-img'
+                        id='Pubdyn-upload-img-button'
+                        type="button"
+                        onClick={chageToImg}
+                    ></button>
+                    <button
+                        className='Pubdyn-upload-video'
+                        id='Pubdyn-upload-video-button'
+                        onClick={chageToVideo}
+                        type="button"
+                    ></button>
+                    <button
+                        className='Pubdyn-upload-music'
+                        id='Pubdyn-upload-music-button'
+                        onClick={chageToMusic}
+                        type="button"
+                    ></button>
+
                 </Upload>
-                {previewImage && (
-                    <Image
-                        wrapperStyle={{
-                            display: 'none',
-                        }}
-                        preview={{
-                            visible: previewOpen,
-                            onVisibleChange: (visible) => setPreviewOpen(visible),
-                            afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                        }}
-                        src={previewImage}
-                    />
-                )}
             </div>
         </div>
     )

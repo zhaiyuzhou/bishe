@@ -15,7 +15,7 @@ const Dynamicbody = (props) => {
         axios.post('/api/getDynamic', {
             tag: props.tag,
             authorId: props.authorId,
-            times: props.times,
+            time: props.times,
             searchDate: props.searchDate,
         })
             .then(function (response) {

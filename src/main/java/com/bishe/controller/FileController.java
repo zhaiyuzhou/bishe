@@ -1,6 +1,7 @@
 package com.bishe.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.bishe.dataobject.ImgDO;
 import com.bishe.dataobject.MusicDO;
 import com.bishe.dataobject.VideoDO;
@@ -9,10 +10,12 @@ import com.bishe.model.Music;
 import com.bishe.model.Video;
 import com.bishe.result.Result;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,11 +24,13 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 @Controller
+@Slf4j
 public class FileController {
 
-    private static final String PATH = "E:/IntelliJ IDEA Community Edition 2023.2.4/project/bishe/src/main";
+    private static final String PATH = "E:\\IntelliJ IDEA Community Edition 2023.2.4\\project\\bishe\\react-bufen\\public";
 
     //声明需要格式化的格式(日期加时间)
     private final DateTimeFormatter dfDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
@@ -50,11 +55,10 @@ public class FileController {
             // 文件名字
             String fileName = "img-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
-            File dest = new File(PATH + "./resources/static/imgs/" + fileName);
+            File dest = new File(PATH + "./imgs/" + fileName);
 
-            img.setImgPath("./imgs/" + fileName);
+            img.setImgPath("../imgs/" + fileName);
             img.setImgName(fileName);
-            System.out.println(img.getImgPath());
 
             // 存入缓存
             ImgDO imgDO = new ImgDO(img);
@@ -69,7 +73,7 @@ public class FileController {
 
             return result;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("捕获异常", e);
             result.error();
             return result;
         }
@@ -93,9 +97,9 @@ public class FileController {
             // 文件名字
             String fileName = "video-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
-            File dest = new File(PATH + "./resources/static/video/" + fileName);
+            File dest = new File(PATH + "./video/" + fileName);
 
-            video.setVideoPath("./video/" + fileName);
+            video.setVideoPath("../video/" + fileName);
             video.setVideoName(fileName);
 
             VideoDO videoDO = new VideoDO(video);
@@ -110,7 +114,7 @@ public class FileController {
 
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("捕获异常", e);
             result.error();
             return result;
         }
@@ -134,9 +138,9 @@ public class FileController {
             // 文件名字
             String fileName = "music-" + LocalDateTime.now().format(dfDateTime) + "." + FilenameUtils.getExtension(file.getOriginalFilename());
             // 指定文件保存的位置
-            File dest = new File(PATH + "./resources/static/music/" + fileName);
+            File dest = new File(PATH + "./music/" + fileName);
 
-            music.setMusicPath("./music/" + fileName);
+            music.setMusicPath("../music/" + fileName);
             music.setMusicName(fileName);
 
             MusicDO musicDO = new MusicDO(music);
@@ -151,10 +155,26 @@ public class FileController {
 
             return result;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("捕获异常", e);
             result.error();
             return result;
         }
     }
+
+    @PostMapping("/remove")
+    @ResponseBody
+    public Result<Boolean> removeImg(@RequestBody String body) {
+        Result<Boolean> result = new Result<>();
+
+        String fileName = JSON.parseObject(body, HashMap.class).get("fileName").toString();
+        if (fileName != null) {
+            redisTemplate.delete(fileName);
+            result.success(true);
+            return result;
+        }
+        result.error("失败");
+        return result;
+    }
+
 
 }

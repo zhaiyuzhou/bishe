@@ -15,7 +15,7 @@ import axios from 'axios';
 const {Search} = Input;
 
 const {Header, Content} = Layout;
-const Home = () => {
+const Home = (props) => {
 
     const [times, setTimes] = useState(0);
     const navigate = useNavigate();
@@ -28,10 +28,6 @@ const Home = () => {
 
         if (decodeURI(location.pathname) === '/主页') {
             navigate("/主页/首页", {replace: true})
-        }
-
-        if (window.performance.navigation.type === 1) {
-            setTimes(0);
         }
 
         // 登陆气泡框显示
@@ -67,7 +63,7 @@ const Home = () => {
             loginBut.removeEventListener("click", showModal);
             window.removeEventListener('scroll', updatePosition);
         };
-    }, [navigate, location, times]);
+    }, [navigate, location, times, props.isLogin]);
 
     // 搜索内容
     const [searchDate, setSearchDate] = useState();
@@ -149,7 +145,7 @@ const Home = () => {
                 <Layout>
                     <Header className='header-style'>
                         <div className="demo-logo"/>
-                        <Image src='../../../title.png' style={{
+                        <Image src='../imgs/title.png' style={{
                             width: "200px",
                             position: "relative",
                             top: "-5px",

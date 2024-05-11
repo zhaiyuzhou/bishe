@@ -20,7 +20,7 @@
 }
 
 .sign-demo-logo {
-    background-image: url("../../imgs/whwhlin.png");
+    background-image: url("../../../public/imgs/whwhlin.png");
     background-size: contain;
     background-repeat: no-repeat;
     height: 200px;

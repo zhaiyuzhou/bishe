@@ -16,7 +16,7 @@
   background-color: #f6ffed;
 
   .demo-logo {
-    background-image: url('../../imgs/LOGO.png');
+    background-image: url('../../../public/imgs/LOGO.png');
     background-size: contain;
     background-repeat: no-repeat;
     height: 50px;
@@ -28,7 +28,7 @@
   .ava-popo {
     position: absolute;
     right: 30px;
-    border: 0px;
+    border: 0;
   }
 
   .toHome {

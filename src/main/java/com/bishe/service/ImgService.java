@@ -3,6 +3,7 @@ package com.bishe.service;
 import com.bishe.dataobject.ImgDO;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface ImgService {
 
@@ -12,7 +13,7 @@ public interface ImgService {
      * @param imgDO ImgDO对象
      * @return 返回服务信息
      **/
-    String add(ImgDO imgDO);
+    CompletableFuture<String> add(ImgDO imgDO);
 
     /**
      * 根据fatherId搜索服务
@@ -20,7 +21,7 @@ public interface ImgService {
      * @param fatherId Long
      * @return 返回ImgDO列表
      **/
-    List<ImgDO> searchByFatherId(Long fatherId);
+    CompletableFuture<List<ImgDO>> searchByFatherId(Long fatherId);
 
     /**
      * 根据imgName搜索服务(imgName内包含日期)
@@ -28,6 +29,6 @@ public interface ImgService {
      * @param imgName 图片名字
      * @return 返回ImgDO
      **/
-    ImgDO searchByImgName(String imgName);
+    CompletableFuture<ImgDO> searchByImgName(String imgName);
 
 }

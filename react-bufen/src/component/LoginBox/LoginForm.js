@@ -1,33 +1,30 @@
 import React from 'react';
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Link} from "react-router-dom";
-import {Button, Checkbox, Form, Input} from 'antd';
+import {Button, Checkbox, Form, Input, notification} from 'antd';
 import './login.css'
 import qs from 'qs'
+import axios from 'axios';
 
 const LoginForm = () => {
-  
+
+    const [api, contextHolder] = notification.useNotification();
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
     const data = qs.stringify(values);
-    console.log(data);
-    fetch(
-        '/api/login',
-      {
-        method: 'POST',
-        body: data,
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded'
-        }
-      }
-    )
-      .then(function(response) {
-        return response.json();
+      axios.post('/api/login', data, {
+          headers: {
+              'content-type': 'application/x-www-form-urlencoded'
+          },
+      }).then((response) => {
+          console.log(response);
+          if (response.data.success) {
+              window.location.assign('/');
+          } else {
+              api.open({
+                  message: response.data.message,
+              });
+          }
       })
-      .then(function(myJson) {
-        console.log(myJson);
-          window.location.assign('/');
-      });
   };
 
   return (
@@ -39,6 +36,7 @@ const LoginForm = () => {
       }}
       onFinish={onFinish}
     >
+        {contextHolder}
       <Form.Item
         name="username"
         className='input-up'

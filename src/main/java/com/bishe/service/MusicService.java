@@ -4,6 +4,7 @@ import com.bishe.dataobject.MusicDO;
 import com.bishe.dataobject.VideoDO;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface MusicService {
 
@@ -13,7 +14,7 @@ public interface MusicService {
      * @param musicDO MusicDO对象
      * @return 返回服务信息
      **/
-    String add(MusicDO musicDO);
+    CompletableFuture<String> add(MusicDO musicDO);
 
     /**
      * 根据fatherId搜索服务
@@ -21,7 +22,7 @@ public interface MusicService {
      * @param fatherId 动态id
      * @return 返回信息
      **/
-    List<MusicDO> searchByFatherId(Long fatherId);
+    CompletableFuture<List<MusicDO>> searchByFatherId(Long fatherId);
 
     /**
      * 根据musicName搜索服务(musicName内包含日期)
@@ -29,6 +30,6 @@ public interface MusicService {
      * @param musicName 音乐文件名
      * @return 返回信息
      **/
-    VideoDO searchByImgName(String musicName);
+    CompletableFuture<VideoDO> searchByImgName(String musicName);
 
 }

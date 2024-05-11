@@ -16,15 +16,15 @@
 }
 
 .Pubdyn-upload-img{
-    display: inline-block;
+    display: none;
 }
 
 .Pubdyn-upload-video {
-    display: inline-block;
+    display: none;
 }
 
 .Pubdyn-upload-music {
-    display: inline-block;
+    display: none;
 }
 
 .Pubdyn-input {

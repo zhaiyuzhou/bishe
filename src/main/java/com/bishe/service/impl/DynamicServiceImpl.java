@@ -6,13 +6,24 @@ import com.bishe.dataobject.ImgDO;
 import com.bishe.dataobject.MusicDO;
 import com.bishe.dataobject.VideoDO;
 import com.bishe.model.Dynamic;
+import com.bishe.model.User;
 import com.bishe.service.*;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RAtomicLong;
+import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class DynamicServiceImpl implements DynamicService {
@@ -35,156 +46,262 @@ public class DynamicServiceImpl implements DynamicService {
     @Resource
     private CommentService commentService;
 
+    @Resource
+    private RedissonClient redissonClient;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    private Long dynamicId() {
+        //格式化格式为年月日
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        //获取当前时间
+        String now = LocalDate.now().format(dateTimeFormatter);
+        //通过redis的自增获取序号
+        RAtomicLong atomicLong = redissonClient.getAtomicLong("dynamic");
+        long number = atomicLong.incrementAndGet();
+        //拼装
+        String orderId = now + number;
+        return Long.parseLong(orderId);
+    }
+
     @Override
-    public String add(DynamicDO dynamicDO) {
+    @Async("async")
+    public CompletableFuture<String> add(DynamicDO dynamicDO) {
 
         if (dynamicDO == null) {
-            return "dynamicDO为空";
+            return CompletableFuture.completedFuture("dynamicDO为空");
         }
 
         if (dynamicDO.getId() == null) {
-            return "dynamicId为空";
+            return CompletableFuture.completedFuture("dynamicId为空");
         }
 
         if (dynamicDO.getId() == 0) {
-            return "dynamicId为0";
+            return CompletableFuture.completedFuture("dynamicId为0");
         }
 
         if (StringUtils.isEmpty(dynamicDO.getContent())) {
-            return "content为空";
+            return CompletableFuture.completedFuture("content为空");
         }
 
         if (StringUtils.isEmpty(dynamicDO.getTag())) {
-            return "tag为空";
+            return CompletableFuture.completedFuture("tag为空");
         }
 
         if (dynamicDO.getPostedDate() == null) {
-            return "postedDate为空";
+            return CompletableFuture.completedFuture("postedDate为空");
         }
 
         int a = dynamicDAO.add(dynamicDO);
 
         if (a != 1) {
-            return "插入数据库错误";
+            return CompletableFuture.completedFuture("插入数据库错误");
         }
 
-        return "success";
+        return CompletableFuture.completedFuture("success");
     }
 
     @Override
-    public DynamicDO findById(Long dynamicId) {
+    @Async("async")
+    public CompletableFuture<DynamicDO> findById(Long dynamicId) {
 
         if (dynamicId != null) {
-            return dynamicDAO.findById(dynamicId);
+            return CompletableFuture.completedFuture(dynamicDAO.findById(dynamicId));
         }
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     @Override
-    public List<Dynamic> findLimit(int times) {
-        return listToDynamic(dynamicDAO.findByPage(times, times + 10));
+    @Async("async")
+    public CompletableFuture<List<Dynamic>> findLimit(int times) throws ExecutionException, InterruptedException {
+        return CompletableFuture.completedFuture(listToDynamic(dynamicDAO.findByPage(times * 10, 10)).get());
     }
 
     @Override
-    public List<Dynamic> findByTag(String tag, int times) {
+    @Async("async")
+    public CompletableFuture<List<Dynamic>> findByTag(String tag, int times) throws ExecutionException, InterruptedException {
 
         if (StringUtils.isEmpty(tag)) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
-        return listToDynamic(dynamicDAO.findByTag(tag, times, times + 10));
+        return CompletableFuture.completedFuture(listToDynamic(dynamicDAO.findByTag(tag, times * 10, 10)).get());
     }
 
     @Override
-    public List<Dynamic> findByAuthor(Long authorId, int times) {
+    @Async("async")
+    public CompletableFuture<List<Dynamic>> findByAuthor(Long authorId, int times) throws ExecutionException, InterruptedException {
 
         if (authorId == null) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
-        return listToDynamic(dynamicDAO.findByAuthorId(authorId, times, times + 10));
+        return CompletableFuture.completedFuture(listToDynamic(dynamicDAO.findByAuthorId(authorId, times * 10, 10)).get());
 
     }
 
     @Override
-    public List<Dynamic> search(String searchDate, int times) {
+    @Async("async")
+    public CompletableFuture<List<Dynamic>> search(String searchDate, int times) throws ExecutionException, InterruptedException {
 
         if (StringUtils.isBlank(searchDate)) {
-            return List.of();
+            return CompletableFuture.completedFuture(List.of());
         }
 
-        return listToDynamic(dynamicDAO.search(searchDate, times, times + 10));
+        return CompletableFuture.completedFuture(listToDynamic(dynamicDAO.search(searchDate, times * 10, 10)).get());
     }
 
     @Override
-    public List<Dynamic> listToDynamic(List<DynamicDO> dynamicDOS) {
+    @Async("async")
+    public CompletableFuture<List<Dynamic>> listToDynamic(List<DynamicDO> dynamicDOS) {
         if (dynamicDOS == null || dynamicDOS.isEmpty()) {
-            return List.of();
+            return CompletableFuture.completedFuture(List.of());
         }
 
         List<Dynamic> dynamics = new ArrayList<>();
 
         dynamicDOS.forEach(dynamicDO -> {
             Dynamic dynamic = dynamicDO.toModel();
-            dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).toModel());
-            List<ImgDO> imgDOS = imgService.searchByFatherId(dynamicDO.getId());
-            List<VideoDO> videoDOS = videoService.searchByFatherId(dynamicDO.getId());
-            List<MusicDO> musicDOS = musicService.searchByFatherId(dynamicDO.getId());
+            try {
+                dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).get().toModel());
+                List<ImgDO> imgDOS = imgService.searchByFatherId(dynamicDO.getId()).get();
+                List<VideoDO> videoDOS = videoService.searchByFatherId(dynamicDO.getId()).get();
+                List<MusicDO> musicDOS = musicService.searchByFatherId(dynamicDO.getId()).get();
 
-            if (imgDOS != null) {
-                imgDOS.forEach(imgDO -> {
-                    dynamic.addImg(imgDO.getImgPath());
-                });
-            }
-            if (videoDOS != null) {
-                videoDOS.forEach(videoDO -> {
-                    dynamic.addVideo(videoDO.getVideoPath());
-                });
-            }
-            if (musicDOS != null) {
-                musicDOS.forEach(musicDO -> {
-                    dynamic.addMusic(musicDO.getMusicPath());
-                });
-            }
+                if (imgDOS != null) {
+                    imgDOS.forEach(imgDO -> {
+                        dynamic.addImg(imgDO.getImgPath());
+                    });
+                }
+                if (videoDOS != null) {
+                    videoDOS.forEach(videoDO -> {
+                        dynamic.addVideo(videoDO.getVideoPath());
+                    });
+                }
+                if (musicDOS != null) {
+                    musicDOS.forEach(musicDO -> {
+                        dynamic.addMusic(musicDO.getMusicPath());
+                    });
+                }
 
-            dynamic.setComments(commentService.findByDynamicId(dynamic.getId()));
+                dynamic.setComments(commentService.findByDynamicId(dynamic.getId()).get());
+
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
 
             dynamics.add(dynamic);
         });
 
         if (!dynamics.isEmpty()) {
-            return dynamics;
+            return CompletableFuture.completedFuture(dynamics);
         }
 
-        return List.of();
+        return CompletableFuture.completedFuture(List.of());
     }
 
     @Override
-    public int update(DynamicDO dynamicDO) {
+    @Async("async")
+    public CompletableFuture<Integer> update(DynamicDO dynamicDO) {
 
         if (dynamicDO != null) {
-            return dynamicDAO.update(dynamicDO);
+            return CompletableFuture.completedFuture(dynamicDAO.update(dynamicDO));
         }
 
-        return 0;
+        return CompletableFuture.completedFuture(0);
     }
 
     @Override
-    public String addLikeNum(Long dynamicId) {
+    @Async("async")
+    public CompletableFuture<String> addLikeNum(Long dynamicId) {
 
-        if (dynamicId != null) {
-            if (dynamicDAO.addLikeNum(dynamicId) != 0) {
-                return "success";
-            }
+        if (dynamicId == null) {
+            return CompletableFuture.completedFuture("传入ID为空");
         }
-        return "失败";
+
+        if (dynamicDAO.addLikeNum(dynamicId) != 0) {
+            return CompletableFuture.completedFuture("success");
+        }
+        return CompletableFuture.completedFuture("失败");
     }
 
     @Override
-    public String delDynamic(Long dynamicId) {
+    @Async("async")
+    public CompletableFuture<String> decLikeNum(Long dynamicId) {
+
+        if (dynamicId == null) {
+            return CompletableFuture.completedFuture("传入ID为空");
+        }
+
+        if (dynamicDAO.decLikeNum(dynamicId) != 0) {
+            return CompletableFuture.completedFuture("success");
+        }
+        return CompletableFuture.completedFuture("失败");
+    }
+
+    @Override
+    @Async("async")
+    public CompletableFuture<String> delDynamic(Long dynamicId) {
 
         if (dynamicDAO.deleteById(dynamicId) != 0) {
-            return "success";
+            return CompletableFuture.completedFuture("success");
         }
-        return "失败";
+        return CompletableFuture.completedFuture("失败");
+    }
+
+    @Override
+    @Async("async")
+    public CompletableFuture<Dynamic> postDynamic(HashMap<String, Object> map, User user) {
+
+        Dynamic dynamic = new Dynamic();
+        Long id = dynamicId();
+        dynamic.setId(id);
+        dynamic.setContent(map.get("content").toString());
+        dynamic.setTag(map.get("tag").toString());
+        dynamic.setPostedDate(LocalDateTime.now());
+        dynamic.setAuthor(user);
+
+        List<String> names;
+
+        names = (List<String>) map.get("imgName");
+        names.forEach(imgName -> {
+            ImgDO imgDO = (ImgDO) redisTemplate.opsForValue().get(imgName);
+            if (imgDO != null) {
+                imgDO.setFatherId(id);
+            }
+            imgService.add(imgDO);
+            if (imgDO != null) {
+                dynamic.addImg(imgDO.getImgPath());
+            }
+            redisTemplate.delete(imgName);
+        });
+
+        names = (List<String>) map.get("videoName");
+        names.forEach(videoName -> {
+            VideoDO videoDO = (VideoDO) redisTemplate.opsForValue().get(videoName);
+            if (videoDO != null) {
+                videoDO.setFatherId(id);
+            }
+            videoService.add(videoDO);
+            if (videoDO != null) {
+                dynamic.addVideo(videoDO.getVideoPath());
+            }
+            redisTemplate.delete(videoName);
+        });
+
+        names = (List<String>) map.get("musicName");
+        names.forEach(musicName -> {
+            MusicDO musicDO = (MusicDO) redisTemplate.opsForValue().get(musicName);
+            if (musicDO != null) {
+                musicDO.setFatherId(id);
+            }
+            musicService.add(musicDO);
+            if (musicDO != null) {
+                dynamic.addMusic(musicDO.getMusicPath());
+            }
+            redisTemplate.delete(musicName);
+        });
+
+        return CompletableFuture.completedFuture(dynamic);
     }
 }

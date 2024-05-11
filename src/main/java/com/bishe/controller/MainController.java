@@ -1,9 +1,6 @@
 package com.bishe.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.bishe.dataobject.CommentDO;
-import com.bishe.dataobject.DynamicDO;
-import com.bishe.dataobject.UserDO;
 import com.bishe.model.User;
 import com.bishe.result.Result;
 import com.bishe.service.CommentService;
@@ -19,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class MainController {
@@ -31,21 +29,6 @@ public class MainController {
 
     @Resource
     private CommentService commentService;
-
-    @RequestMapping("/")
-    public String index() {
-        return "index/index";
-    }
-
-    @GetMapping("/signal")
-    public String signHtml() {
-        return "sign/index";
-    }
-
-    @GetMapping("/pencen")
-    public String pencHtml() {
-        return "pencenH/index";
-    }
 
     @GetMapping("/cook")
     public void cook(@CookieValue(value = "username", required = false) String username,
@@ -63,7 +46,7 @@ public class MainController {
 
     @PostMapping("/addLikeNum")
     @ResponseBody
-    public Result<Boolean> addLikeNum(@RequestBody String body) {
+    public Result<Boolean> addLikeNum(@RequestBody String body) throws ExecutionException, InterruptedException {
         Result<Boolean> result = new Result<>();
 
         String dynamicId = String.valueOf(JSON.parseObject(body, HashMap.class).get("dynamicId"));
@@ -71,25 +54,24 @@ public class MainController {
         String userId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
 
         if (!StringUtils.isBlank(dynamicId) && !"null".equals(dynamicId)) {
-            if ("success".equals(dynamicService.addLikeNum(Long.valueOf(dynamicId)))) {
+            if ("success".equals(dynamicService.addLikeNum(Long.valueOf(dynamicId)).get())) {
                 result.success(true);
                 return result;
             }
         }
 
         if (!StringUtils.isBlank(commentId) && !"null".equals(commentId)) {
-            if ("success".equals(commentService.addLikeNum(Long.valueOf(commentId)))) {
+            if ("success".equals(commentService.addLikeNum(Long.valueOf(commentId)).get())) {
                 result.success(true);
                 return result;
             }
         }
 
         if (!StringUtils.isBlank(userId) && !"null".equals(userId)) {
-            UserDO userDO = userService.findById(Long.valueOf(userId));
-            userDO.setLikeNum(userDO.getLikeNum() + 1);
-            userService.update(userDO);
-            result.success(true);
-            return result;
+            if ("success".equals(userService.addLikeNum(Long.valueOf(userId)).get())) {
+                result.success(true);
+                return result;
+            }
         }
 
         result.error("失败");
@@ -98,42 +80,32 @@ public class MainController {
 
     @PostMapping("/delLikeNum")
     @ResponseBody
-    public Result<Boolean> delLikeNum(@RequestBody String body) {
+    public Result<Boolean> delLikeNum(@RequestBody String body) throws ExecutionException, InterruptedException {
         Result<Boolean> result = new Result<>();
         String dynamicId = String.valueOf(JSON.parseObject(body, HashMap.class).get("dynamicId"));
         String commentId = String.valueOf(JSON.parseObject(body, HashMap.class).get("commentId"));
         String userId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
 
         if (!StringUtils.isBlank(dynamicId) && !"null".equals(dynamicId)) {
-            DynamicDO dynamicDO = dynamicService.findById(Long.valueOf(dynamicId));
-            if (dynamicDO.getLikeNum() > 0) {
-                dynamicDO.setLikeNum(dynamicDO.getLikeNum() - 1);
+            if ("success".equals(dynamicService.decLikeNum(Long.valueOf(dynamicId)).get())) {
+                result.success(true);
+                return result;
             }
-            dynamicService.update(dynamicDO);
-            result.success(true);
-            return result;
         }
 
         if (!StringUtils.isBlank(commentId) && !"null".equals(commentId)) {
-            CommentDO commentDO = commentService.findById(Long.valueOf(commentId));
-            if (commentDO.getLikeNum() > 0) {
-                commentDO.setLikeNum(commentDO.getLikeNum() - 1);
+            if ("success".equals(commentService.decLikeNum(Long.valueOf(commentId)).get())) {
+                result.success(true);
+                return result;
             }
-            commentService.update(commentDO);
-            result.success(true);
-            return result;
         }
 
         if (!StringUtils.isBlank(userId) && !"null".equals(userId)) {
-            UserDO userDO = userService.findById(Long.valueOf(userId));
-            if (userDO.getLikeNum() > 0) {
-                userDO.setLikeNum(userDO.getLikeNum() - 1);
+            if ("success".equals(userService.decLikeNum(Long.valueOf(userId)).get())) {
+                result.success(true);
+                return result;
             }
-            userService.update(userDO);
-            result.success(true);
-            return result;
         }
-
 
         result.error("失败");
         return result;

@@ -40,11 +40,13 @@ body {
 }
 
 .header-style .demo-logo {
-    background-image: url("../../imgs/LOGO.png");
+    background-image: url("../../../public/imgs/LOGO.png");
     background-size: contain;
     background-repeat: no-repeat;
     height: 50px;
     width: 50px;
+    position: relative;
+    top: 4px;
     user-select: none;
     float: left;
 }

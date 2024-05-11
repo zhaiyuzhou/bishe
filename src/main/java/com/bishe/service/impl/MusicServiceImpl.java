@@ -6,9 +6,11 @@ import com.bishe.dataobject.VideoDO;
 import com.bishe.service.MusicService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MusicServiceImpl implements MusicService {
@@ -17,18 +19,19 @@ public class MusicServiceImpl implements MusicService {
     private MusicDAO musicDAO;
 
     @Override
-    public String add(MusicDO musicDO) {
+    @Async("async")
+    public CompletableFuture<String> add(MusicDO musicDO) {
 
         if (musicDO == null) {
-            return "传入的对象为空";
+            return CompletableFuture.completedFuture("传入的对象为空");
         }
 
         if (StringUtils.isEmpty(musicDO.getMusicPath())) {
-            return "音乐路径为空";
+            return CompletableFuture.completedFuture("音乐路径为空");
         }
 
         if (StringUtils.isEmpty(musicDO.getMusicName())) {
-            return "音乐名字为空";
+            return CompletableFuture.completedFuture("音乐名字为空");
         }
 
 //        if(musicDO.getDynamicId() != null){
@@ -37,16 +40,23 @@ public class MusicServiceImpl implements MusicService {
 
         musicDAO.add(musicDO);
 
-        return "success";
+        return CompletableFuture.completedFuture("success");
     }
 
     @Override
-    public List<MusicDO> searchByFatherId(Long dynamicId) {
-        return List.of();
+    @Async("async")
+    public CompletableFuture<List<MusicDO>> searchByFatherId(Long fatherId) {
+        if (fatherId != null && fatherId > 0) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        List<MusicDO> musicDOS = musicDAO.selectAllByFatherId(fatherId);
+        return CompletableFuture.completedFuture(musicDOS);
     }
 
     @Override
-    public VideoDO searchByImgName(String musicName) {
-        return null;
+    @Async("async")
+    public CompletableFuture<VideoDO> searchByImgName(String musicName) {
+        return CompletableFuture.completedFuture(null);
     }
 }

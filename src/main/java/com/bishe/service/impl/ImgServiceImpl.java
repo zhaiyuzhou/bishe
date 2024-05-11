@@ -5,9 +5,11 @@ import com.bishe.dataobject.ImgDO;
 import com.bishe.service.ImgService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ImgServiceImpl implements ImgService {
@@ -16,50 +18,53 @@ public class ImgServiceImpl implements ImgService {
     private ImgDAO imgDAO;
 
     @Override
-    public String add(ImgDO imgDO) {
+    @Async("async")
+    public CompletableFuture<String> add(ImgDO imgDO) {
 
         if (imgDO == null) {
-            return "传入的对象为空";
+            return CompletableFuture.completedFuture("传入的对象为空");
         }
 
         if (StringUtils.isEmpty(imgDO.getImgPath())) {
-            return "图片路径为空";
+            return CompletableFuture.completedFuture("图片路径为空");
         }
 
         if (StringUtils.isEmpty(imgDO.getImgName())) {
-            return "图片名字为空";
+            return CompletableFuture.completedFuture("图片名字为空");
         }
 
         if (imgDO.getFatherId() != null) {
-            return "FatherId为空";
+            return CompletableFuture.completedFuture("FatherId为空");
         }
 
         imgDAO.add(imgDO);
 
-        return "success";
+        return CompletableFuture.completedFuture("success");
     }
 
     @Override
-    public List<ImgDO> searchByFatherId(Long fatherId) {
+    @Async("async")
+    public CompletableFuture<List<ImgDO>> searchByFatherId(Long fatherId) {
 
         if (fatherId != null && fatherId > 0) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
         List<ImgDO> imgDOS = imgDAO.selectAllByFatherId(fatherId);
 
-        return imgDOS;
+        return CompletableFuture.completedFuture(imgDOS);
     }
 
     @Override
-    public ImgDO searchByImgName(String imgName) {
+    @Async("async")
+    public CompletableFuture<ImgDO> searchByImgName(String imgName) {
 
         if (StringUtils.isNotBlank(imgName)) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
 
         ImgDO imgDO = imgDAO.selectByImgName(imgName);
 
-        return imgDO;
+        return CompletableFuture.completedFuture(imgDO);
     }
 }

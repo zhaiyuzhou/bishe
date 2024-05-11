@@ -2,6 +2,8 @@ package com.bishe.service;
 
 import com.bishe.dataobject.UserDO;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface UserService {
 
 
@@ -12,14 +14,15 @@ public interface UserService {
      * @param password 密码
      * @return 成功则返回用户ID
      **/
-    String login(String userName, String password);
+    CompletableFuture<String> login(String userName, String password);
 
     /**
      * 注册服务
+     *
      * @param userDO 用户名
      * @return 返回信息
-     * **/
-    String sign(UserDO userDO);
+     **/
+    CompletableFuture<String> sign(UserDO userDO);
 
     /**
      * 更新用户信息
@@ -27,7 +30,7 @@ public interface UserService {
      * @param userDO 用户名
      * @return 返回信息
      **/
-    String update(UserDO userDO);
+    CompletableFuture<String> update(UserDO userDO);
 
     /**
      * 更具id查找用户
@@ -35,7 +38,7 @@ public interface UserService {
      * @param id id
      * @return 返回UserDO
      **/
-    UserDO findById(Long id);
+    CompletableFuture<UserDO> findById(Long id);
 
 
     /**
@@ -44,5 +47,21 @@ public interface UserService {
      * @param userName 用户名
      * @return 返回UserDO
      **/
-    UserDO findByName(String userName);
+    CompletableFuture<UserDO> findByName(String userName);
+
+    /**
+     * 增加用户的关注值
+     *
+     * @param userId 用户ID
+     * @return 返回信息
+     **/
+    CompletableFuture<String> addLikeNum(Long userId);
+
+    /**
+     * 减少用户的关注值
+     *
+     * @param userId 用户ID
+     * @return 返回信息
+     **/
+    CompletableFuture<String> decLikeNum(Long userId);
 }

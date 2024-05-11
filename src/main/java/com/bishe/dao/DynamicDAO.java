@@ -28,4 +28,6 @@ public interface DynamicDAO {
 
     int addLikeNum(Long dynamicId);
 
+    int decLikeNum(Long dynamicId);
+
 }

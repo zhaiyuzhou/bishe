@@ -5,9 +5,11 @@ import com.bishe.dataobject.VideoDO;
 import com.bishe.service.VideoService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -16,37 +18,44 @@ public class VideoServiceImpl implements VideoService {
     private VideoDAO videoDAO;
 
     @Override
-    public String add(VideoDO videoDO) {
+    @Async("async")
+    public CompletableFuture<String> add(VideoDO videoDO) {
 
         if (videoDO == null) {
-            return "传入的对象为空";
+            return CompletableFuture.completedFuture("传入的对象为空");
         }
 
         if (StringUtils.isBlank(videoDO.getVideoPath())) {
-            return "视频路径为空";
+            return CompletableFuture.completedFuture("视频路径为空");
         }
 
         if (StringUtils.isBlank(videoDO.getVideoName())) {
-            return "视频名字为空";
+            return CompletableFuture.completedFuture("视频名字为空");
         }
 
         if (videoDO.getFatherId() != null) {
-            return "dynamicId为空";
+            return CompletableFuture.completedFuture("dynamicId为空");
         }
 
         videoDAO.add(videoDO);
 
-        return "success";
+        return CompletableFuture.completedFuture("success");
 
     }
 
     @Override
-    public List<VideoDO> searchByFatherId(Long fatherId) {
-        return List.of();
+    @Async("async")
+    public CompletableFuture<List<VideoDO>> searchByFatherId(Long fatherId) {
+        if (fatherId != null && fatherId > 0) {
+            return CompletableFuture.completedFuture(null);
+        }
+        List<VideoDO> videoDOS = videoDAO.selectAllByFatherId(fatherId);
+        return CompletableFuture.completedFuture(videoDOS);
     }
 
     @Override
-    public VideoDO searchByImgName(String videoName) {
-        return null;
+    @Async("async")
+    public CompletableFuture<VideoDO> searchByImgName(String videoName) {
+        return CompletableFuture.completedFuture(null);
     }
 }

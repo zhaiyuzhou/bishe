@@ -22,4 +22,8 @@ public interface UserDAO {
 
     int deleteByUserName(String userName);
 
+    int addLikeNum(Long id);
+
+    int decLikeNum(Long id);
+
 }

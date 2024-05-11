@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 public class UserController {
@@ -38,10 +39,11 @@ public class UserController {
 
     @PostMapping("/sign")
     @ResponseBody
-    public Result<User> sign(@RequestBody String body) {
+    public Result<User> sign(@RequestBody String body) throws ExecutionException, InterruptedException {
         Result<User> result = new Result<>();
 
-        HashMap map = JSON.parseObject(body, HashMap.class);
+        @SuppressWarnings("unchecked")
+        HashMap<String, Object> map = JSON.parseObject(body, HashMap.class);
 
         User user = new User();
         user.setEmail(map.get("Email").toString());
@@ -52,7 +54,7 @@ public class UserController {
         user.setPassword(map.get("password").toString());
 
         UserDO userDO = new UserDO(user);
-        String message = userService.sign(userDO);
+        String message = userService.sign(userDO).get();
 
         if (!("success".equals(message))) {
             result.error(message);
@@ -72,7 +74,7 @@ public class UserController {
                               @RequestParam("remember") Boolean remember,
                               @CookieValue(value = "JSESSIONID", required = false) String jSessionId,
                               HttpServletRequest request, HttpServletResponse response
-    ) {
+    ) throws ExecutionException, InterruptedException {
         Result<User> result = new Result<>();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(jSessionId);
@@ -81,16 +83,15 @@ public class UserController {
             result.success(user);
             return result;
         }
-        System.out.println(userName + " " + password);
 
-        String message = userService.login(userName, password);
+        String message = userService.login(userName, password).get();
 
         if (!"success".equals(message)) {
             result.error(message);
             return result;
         }
 
-        UserDO userDO = userService.findByName(userName);
+        UserDO userDO = userService.findByName(userName).get();
         user = userDO.toModel();
 
         if (remember == null) {
@@ -107,7 +108,6 @@ public class UserController {
         }
 
         result.success(user);
-
         return result;
     }
 
@@ -131,7 +131,7 @@ public class UserController {
     @ResponseBody
     public Result<User> avatar(@RequestBody String body,
                                @CookieValue(value = "username", required = false) String username,
-                               HttpServletRequest request) {
+                               HttpServletRequest request) throws ExecutionException, InterruptedException {
         Result<User> result = new Result<>();
 
         HttpSession session = request.getSession();
@@ -159,7 +159,7 @@ public class UserController {
         userDO.setAvatar(user.getAvatar());
 
         // 更新
-        String message = userService.update(userDO);
+        String message = userService.update(userDO).get();
 
         if ("success".equals(message)) {
             result.success(user);
@@ -174,7 +174,7 @@ public class UserController {
     @ResponseBody
     public Result<User> passwordChange(@RequestBody String body,
                                        @CookieValue(value = "username", required = false) String username,
-                                       HttpServletRequest request) {
+                                       HttpServletRequest request) throws ExecutionException, InterruptedException {
         Result<User> result = new Result<>();
 
         HttpSession session = request.getSession();
@@ -196,7 +196,7 @@ public class UserController {
         UserDO userDO = new UserDO(user);
 
         // 更新
-        String message = userService.update(userDO);
+        String message = userService.update(userDO).get();
 
         if ("success".equals(message)) {
             result.success(user);
@@ -211,7 +211,7 @@ public class UserController {
     @ResponseBody
     public Result<String> authCode(@RequestBody String body
     ) {
-        Result<String> result = new Result();
+        Result<String> result = new Result<>();
 
         String oldEmail = JSON.parseObject(body, HashMap.class).get("Email").toString();
 
@@ -245,7 +245,7 @@ public class UserController {
     @ResponseBody
     public Result<User> emailChange(@RequestBody String body,
                                     @CookieValue(value = "username", required = false) String username,
-                                    HttpServletRequest request) {
+                                    HttpServletRequest request) throws ExecutionException, InterruptedException {
 
         Result<User> result = new Result<>();
 
@@ -268,7 +268,7 @@ public class UserController {
         session.setAttribute("user", user);
 
         // 更新
-        String message = userService.update(userDO);
+        String message = userService.update(userDO).get();
 
         if ("success".equals(message)) {
             result.success(user);
@@ -300,7 +300,7 @@ public class UserController {
     @ResponseBody
     public Result<String> nickNameChange(@RequestBody String body,
                                          @CookieValue(value = "username", required = false) String username,
-                                         HttpServletRequest request) {
+                                         HttpServletRequest request) throws ExecutionException, InterruptedException {
         Result<String> result = new Result<>();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(username);
@@ -317,7 +317,7 @@ public class UserController {
         user.setNickName(nickName);
         UserDO userDO = new UserDO(user);
         session.setAttribute(username, user);
-        String message = userService.update(userDO);
+        String message = userService.update(userDO).get();
         if ("success".equals(message)) {
             result.success(nickName);
             return result;

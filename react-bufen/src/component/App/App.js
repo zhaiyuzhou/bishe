@@ -13,7 +13,9 @@ const App = () => {
     const navigate = useNavigate()
     const location = useLocation();
     useEffect(() => {
-        axios.get("/api/cook");
+        axios.get("/api/cook").then(() => {
+            setIsLogin(cookie.load('isLogin') === 'true');
+        });
         if (location.pathname === "/")
             navigate("/主页", {replace: false})
         setIsLogin(cookie.load('isLogin') === 'true');

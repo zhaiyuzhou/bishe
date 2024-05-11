@@ -89,5 +89,19 @@
         </where>
     </update>
 
+    <update id="decLikeNum" parameterType="java.lang.Long">
+        UPDATE `comment`
+        <set>
+            <if test="commentId != null">
+                like_num = like_num - 1
+            </if>
+        </set>
+        <where>
+            <if test="commentId != null">
+                id = #{commentId}
+            </if>
+        </where>
+    </update>
+
 
 </mapper>

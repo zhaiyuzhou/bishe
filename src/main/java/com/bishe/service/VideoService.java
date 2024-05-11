@@ -3,6 +3,7 @@ package com.bishe.service;
 import com.bishe.dataobject.VideoDO;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface VideoService {
 
@@ -12,7 +13,7 @@ public interface VideoService {
      * @param videoDO VideoDO对象
      * @return 返回服务信息
      **/
-    String add(VideoDO videoDO);
+    CompletableFuture<String> add(VideoDO videoDO);
 
     /**
      * 根据fatherId搜索服务
@@ -20,7 +21,7 @@ public interface VideoService {
      * @param fatherId 动态id
      * @return 返回信息
      **/
-    List<VideoDO> searchByFatherId(Long fatherId);
+    CompletableFuture<List<VideoDO>> searchByFatherId(Long fatherId);
 
     /**
      * 根据videoName搜索服务(videoName内包含日期)
@@ -28,6 +29,6 @@ public interface VideoService {
      * @param videoName 视频文件名
      * @return 返回信息
      **/
-    VideoDO searchByImgName(String videoName);
+    CompletableFuture<VideoDO> searchByImgName(String videoName);
 
 }
