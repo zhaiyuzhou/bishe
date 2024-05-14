@@ -33,6 +33,8 @@ public class Dynamic implements Serializable {
 
     private Long transPondNum = 0L;
 
+    private Dynamic transmit;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)

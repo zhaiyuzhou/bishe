@@ -104,5 +104,5 @@ public interface DynamicService {
      * @param user 发布动态的用户
      * @return 返回信息
      **/
-    CompletableFuture<Dynamic> postDynamic(HashMap<String, Object> map, User user);
+    CompletableFuture<Dynamic> postDynamic(HashMap<String, Object> map, User user) throws ExecutionException, InterruptedException;
 }

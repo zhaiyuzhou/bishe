@@ -11,6 +11,7 @@ import Avapopover from '../../component/Avapopover/Avapopover';
 import Pubdyn from '../../component/Pubdyn/Pubdyn';
 import Dynamicbody from '../Dynamicbody/Dynamicbody';
 import axios from 'axios';
+import Suggestuser from '../../component/Suggestuser/Suggestuser';
 
 const {Search} = Input;
 
@@ -134,6 +135,9 @@ const Home = (props) => {
 
     const [api, contextHolder] = notification.useNotification();
 
+    const [transmit, setTransmit] = useState();
+
+
     return (
         <div>
             <div className='model'
@@ -163,7 +167,7 @@ const Home = (props) => {
                         <Button type='primary' className='login-but'
                                 style={{display: (isLogin ? 'none' : 'inline-block')}}
                         >登陆</Button>
-                        <Avapopover style={{display: (isLogin ? 'inline-block' : 'none')}}/>
+                        <Avapopover style={{display: (isLogin ? 'inline-block' : 'none')}} {...props.user} />
                     </Header>
                     <Layout>
                         <Sider
@@ -210,23 +214,26 @@ const Home = (props) => {
                                     position: "relative",
                                 }}
                             >
+                                <Suggestuser isLogin={isLogin}/>
                                 {contextHolder}
-                                <Pubdyn pubDynamic={pubDynamic}/>
+                                <Pubdyn pubDynamic={pubDynamic} transmit={transmit}/>
                                 <Button className='huanyipi' icon={<RedoOutlined/>} loading={loadings[0]}
                                         onClick={() => enterLoading(0)}>换一批</Button>
                                 <Routes>
                                     <Route path='/首页' element={<Dynamicbody newDynamic={newDynamic} isLogin={isLogin}
-                                                                              times={times}/>}/>
+                                                                              times={times}
+                                                                              setTransmit={setTransmit}/>}/>
                                     {tags.map((tag, index) => {
                                         return (
                                             <Route key={'/' + tag} path={'/' + tag}
                                                    element={<Dynamicbody tag={tagsEn[index]} newDynamic={newDynamic}
-                                                                         isLogin={isLogin} times={times}/>}/>
+                                                                         isLogin={isLogin} times={times}
+                                                                         setTransmit={setTransmit}/>}/>
                                         )
                                     })}
                                     <Route path='/搜索'
                                            element={<Dynamicbody newDynamic={newDynamic} isLogin={isLogin} times={times}
-                                                                 searchDate={searchDate}/>}/>
+                                                                 searchDate={searchDate} setTransmit={setTransmit}/>}/>
                                 </Routes>
                             </Content>
                         </Layout>

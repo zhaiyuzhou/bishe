@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -221,7 +222,7 @@ public class UserController {
         // 发送验证码
         Mail mail = new Mail();
         mail.setRecipient(oldEmail);
-        mail.setSubject("修改邮箱");
+        mail.setSubject("发送验证码");
         mail.setContent("亲爱的用户：您好！\n" +
                 "\n" + "    您收到这封电子邮件是因为您 (也可能是某人冒充您的名义) 申请了修改邮箱。假如这不是您本人所申请, 请不用理会这封电子邮件, 但是如果您持续收到这类的信件骚扰, 请您尽快联络管理员。\n" +
                 "\n" +
@@ -326,4 +327,36 @@ public class UserController {
         return result;
     }
 
+
+    @PostMapping("/findPassword")
+    @ResponseBody
+    public Result<String> findPassword(@RequestBody String body) throws ExecutionException, InterruptedException {
+        Result<String> result = new Result<>();
+
+        String email = JSON.parseObject(body, HashMap.class).get("Email").toString();
+        String password = userService.findByEmail(email).get().getPassword();
+
+        // 发送验证码
+        Mail mail = new Mail();
+        mail.setRecipient(email);
+        mail.setSubject("修改邮箱");
+        mail.setContent("您的账户密码是" + password);
+
+        String message = mailUtil.sendSimpleMail(mail);
+
+        if (!"success".equals(message)) {
+            result.error(message);
+            return result;
+        }
+        result.success(email);
+        return result;
+    }
+
+    @GetMapping("/getUserList")
+    @ResponseBody
+    public Result<List<User>> getUserList() throws ExecutionException, InterruptedException {
+        Result<List<User>> result = new Result<>();
+        result.success(userService.findLimit(0).get());
+        return result;
+    }
 }

@@ -19,16 +19,13 @@ public class UserInterceptor implements HandlerInterceptor {
         User user = (User) session.getAttribute("user");
         System.out.println(user == null);
         if (user == null) {
-            System.out.println(request.getRequestURI());
             if (request.getRequestURI().equals("/index/index.html") || request.getRequestURI().equals("/")) {
                 Cookie cookie = new Cookie("isLogin", "false");
                 cookie.setPath("/");
                 response.addCookie(cookie);
                 return true;
             }
-            String HomePageUrl = "/";
-            response.sendRedirect(HomePageUrl);
-            return false;
+            return true;
         }
 
         // 只有返回true才会继续向下执行，返回false取消当前请求

@@ -3,7 +3,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.bishe.dao.VideoDAO">
 
-    <resultMap id="videoResultMap" type="com.bishe.dataobject.ImgDO">
+    <resultMap id="videoResultMap" type="com.bishe.dataobject.VideoDO">
         <id column="id" property="id"/>
         <result column="video_name" property="videoName"/>
         <result column="video_path" property="videoPath"/>
@@ -17,7 +17,7 @@
         VALUES (#{videoName}, #{videoPath}, #{fatherId}, now(), now())
     </insert>
 
-    <select id="selectAllByFatherId" parameterType="java.lang.Long">
+    <select id="selectAllByFatherId" parameterType="java.lang.Long" resultMap="videoResultMap">
         SELECT id, video_name, video_path, father_id, gmt_created, gmt_modified
         FROM `video`
         <where>

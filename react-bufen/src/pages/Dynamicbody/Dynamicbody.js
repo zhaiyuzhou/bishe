@@ -36,7 +36,7 @@ const Dynamicbody = (props) => {
                     (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
                         return (
                             <Dynamic key={index} {...dynamic} isLogin={props.isLogin} del={props.del}
-                                     delDynamicforList={delDynamicforList}/>
+                                     delDynamicforList={delDynamicforList} setTransmit={props.setTransmit}/>
                         )
                     })) : (<></>)
             }

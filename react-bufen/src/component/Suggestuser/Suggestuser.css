@@ -1,0 +1,27 @@
+.Suggestuser-div {
+    position: absolute;
+    top: 10px;
+    left: 750px;
+    background-color: white;
+    padding: 10px;
+    padding-top: 0px;
+    border-radius: 6px;
+}
+
+.Suggestuser-user {
+    position: relative;
+    margin-top: 10px;
+    width: 250px;
+}
+
+.Suggestuser-nickName {
+    position: absolute;
+    top: 5px;
+    left: 50px;
+}
+
+.Suggestuser-button {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+}

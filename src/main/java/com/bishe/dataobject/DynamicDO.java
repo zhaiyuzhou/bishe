@@ -21,6 +21,8 @@ public class DynamicDO {
 
     private Long transPondNum = 0L;
 
+    private Long transmitId;
+
     private LocalDateTime postedDate;
 
     private LocalDateTime gmtCreated;
@@ -34,6 +36,9 @@ public class DynamicDO {
     public DynamicDO(Dynamic dynamic) {
         BeanUtils.copyProperties(dynamic, this);
         this.setAuthorId(dynamic.getAuthor().getId());
+        if (dynamic.getTransmit() != null) {
+            this.setTransmitId(dynamic.getTransmit().getId());
+        }
     }
 
     public Dynamic toModel() {

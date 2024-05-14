@@ -12,16 +12,21 @@ import com.bishe.result.Result;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -30,7 +35,7 @@ import java.util.HashMap;
 @Slf4j
 public class FileController {
 
-    private static final String PATH = "E:\\IntelliJ IDEA Community Edition 2023.2.4\\project\\bishe\\react-bufen\\public";
+    private static final String PATH = new File("").getAbsolutePath();
 
     //声明需要格式化的格式(日期加时间)
     private final DateTimeFormatter dfDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
@@ -57,7 +62,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./imgs/" + fileName);
 
-            img.setImgPath("../imgs/" + fileName);
+            img.setImgPath("../api/file/imgs/" + fileName);
             img.setImgName(fileName);
 
             // 存入缓存
@@ -99,7 +104,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./video/" + fileName);
 
-            video.setVideoPath("../video/" + fileName);
+            video.setVideoPath("../api/file/video/" + fileName);
             video.setVideoName(fileName);
 
             VideoDO videoDO = new VideoDO(video);
@@ -109,9 +114,7 @@ public class FileController {
 
             // 将文件保存到指定的位置
             file.transferTo(dest);
-
             result.success(video);
-
             return result;
         } catch (Exception e) {
             log.error("捕获异常", e);
@@ -140,7 +143,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./music/" + fileName);
 
-            music.setMusicPath("../music/" + fileName);
+            music.setMusicPath("../api/file/music/" + fileName);
             music.setMusicName(fileName);
 
             MusicDO musicDO = new MusicDO(music);
@@ -176,5 +179,25 @@ public class FileController {
         return result;
     }
 
-
+    @GetMapping("/file/{pathVariable}/{filename}")
+    @ResponseBody
+    public ResponseEntity<org.springframework.core.io.Resource> getVideo(@PathVariable("pathVariable") String pathVariable,
+                                                                         @PathVariable("filename") String filename) {
+        Path path = Paths.get(pathVariable + "/" + filename);
+        org.springframework.core.io.Resource resource = null;
+        try {
+            resource = new FileSystemResource(path.toFile());
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+            headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(path));
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(resource.contentLength())
+                    .contentType(MediaType.parseMediaType(Files.probeContentType(path)))
+                    .body(resource);
+        } catch (IOException e) {
+            log.error("发现错误", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

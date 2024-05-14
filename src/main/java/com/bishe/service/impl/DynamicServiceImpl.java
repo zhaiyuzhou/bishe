@@ -164,6 +164,11 @@ public class DynamicServiceImpl implements DynamicService {
             Dynamic dynamic = dynamicDO.toModel();
             try {
                 dynamic.setAuthor(userService.findById(dynamicDO.getAuthorId()).get().toModel());
+                if (dynamicDO.getTransmitId() != null) {
+                    List<DynamicDO> dynamicDOS1 = new ArrayList<>();
+                    dynamicDOS1.add(findById(dynamicDO.getTransmitId()).get());
+                    dynamic.setTransmit(listToDynamic(dynamicDOS1).get().getFirst());
+                }
                 List<ImgDO> imgDOS = imgService.searchByFatherId(dynamicDO.getId()).get();
                 List<VideoDO> videoDOS = videoService.searchByFatherId(dynamicDO.getId()).get();
                 List<MusicDO> musicDOS = musicService.searchByFatherId(dynamicDO.getId()).get();
@@ -251,8 +256,7 @@ public class DynamicServiceImpl implements DynamicService {
 
     @Override
     @Async("async")
-    public CompletableFuture<Dynamic> postDynamic(HashMap<String, Object> map, User user) {
-
+    public CompletableFuture<Dynamic> postDynamic(HashMap<String, Object> map, User user) throws ExecutionException, InterruptedException {
         Dynamic dynamic = new Dynamic();
         Long id = dynamicId();
         dynamic.setId(id);
@@ -260,6 +264,11 @@ public class DynamicServiceImpl implements DynamicService {
         dynamic.setTag(map.get("tag").toString());
         dynamic.setPostedDate(LocalDateTime.now());
         dynamic.setAuthor(user);
+        if (map.get("transmitId") != null) {
+            Long transmitId = Long.parseLong(map.get("transmitId").toString());
+            dynamic.setTransmit(findById(transmitId).get().toModel());
+            addLikeNum(transmitId);
+        }
 
         List<String> names;
 

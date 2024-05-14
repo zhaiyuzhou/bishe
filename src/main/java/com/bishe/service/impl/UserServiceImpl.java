@@ -2,12 +2,15 @@ package com.bishe.service.impl;
 
 import com.bishe.dao.UserDAO;
 import com.bishe.dataobject.UserDO;
+import com.bishe.model.User;
 import com.bishe.service.UserService;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -117,6 +120,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public CompletableFuture<UserDO> findByEmail(String email) {
+        if (StringUtils.isBlank(email)) {
+            return CompletableFuture.completedFuture(null);
+        }
+        return CompletableFuture.completedFuture(userDAO.selectByEmail(email));
+    }
+
+    @Override
     @Async("async")
     public CompletableFuture<UserDO> findByName(String userName) {
         if (StringUtils.isEmpty(userName)) {
@@ -152,5 +163,15 @@ public class UserServiceImpl implements UserService {
         }
 
         return CompletableFuture.completedFuture("失败");
+    }
+
+    @Override
+    public CompletableFuture<List<User>> findLimit(int time) {
+        List<UserDO> userDOS = userDAO.selectLimit(time * 10, 10);
+        List<User> users = new ArrayList<>();
+        userDOS.forEach(userDO -> {
+            users.add(userDO.toModel());
+        });
+        return CompletableFuture.completedFuture(users);
     }
 }

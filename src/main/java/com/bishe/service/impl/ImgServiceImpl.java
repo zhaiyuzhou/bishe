@@ -46,10 +46,9 @@ public class ImgServiceImpl implements ImgService {
     @Async("async")
     public CompletableFuture<List<ImgDO>> searchByFatherId(Long fatherId) {
 
-        if (fatherId != null && fatherId > 0) {
+        if (fatherId == null) {
             return CompletableFuture.completedFuture(null);
         }
-
         List<ImgDO> imgDOS = imgDAO.selectAllByFatherId(fatherId);
 
         return CompletableFuture.completedFuture(imgDOS);

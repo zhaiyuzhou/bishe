@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Avatar, Button, Flex, Image, Pagination, Tag} from 'antd';
+import {Avatar, Button, Flex, Image, Pagination, Tag, Modal} from 'antd';
 import {
     CheckOutlined,
     DeleteOutlined,
@@ -18,11 +18,11 @@ import Pubcom from "../Pubcom/Pubcom";
 import './Dynamic.css'
 
 const Dynamic = (props) => {
+    console.log(props.transmit)
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
     const tagsEn = ['news', 'movie', 'show', 'animated', 'bangumi', 'game', 'music', 'art', 'animal', 'knowledge', 'technology', 'food', 'car', 'movement', 'live', 'other'];
 
     const [like, setLike] = useState({num: 0});
-    const [commentHeignt, setCommentHeight] = useState(false);
     const [commentList, setCommentList] = useState([]);
     const [commentPage, setCommentPage] = useState([]);
 
@@ -99,6 +99,22 @@ const Dynamic = (props) => {
         props.delDynamicforList(props);
     }
 
+    // 转发动态
+    const transmit = () => {
+        props.setTransmit(props);
+    }
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className="dynamic-div">
             <div className="dynamic-head">
@@ -117,12 +133,24 @@ const Dynamic = (props) => {
                     <Tag style={{color: "#52c41a", border: "0px"}}>#{tags[tagsEn.indexOf(props.tag)]}</Tag>
                 </Flex>
                 <p className="dynamic-content">{props.content}</p>
+                <div className="dynamic-transmit" style={{display: (props.transmit === null ? "none" : "block")}}>
+                    <Button onClick={showModal}>
+                        {props.transmit === null ? "" : (props.transmit.content.slice(0, 5)) + "..."}
+                    </Button>
+                    <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                           okText="确认" cancelText="关闭" width={800} mask={false} destroyOnClose={true}>
+                        <Dynamic {...props.transmit} isLogin={props.isLogin} del={props.del} fatherId={props.id}/>
+                    </Modal>
+                </div>
                 <Flex wrap="wrap" gap="small">
                     {
                         props.imgPaths.map((img, index) => {
                             return (
                                 <Image key={"img" + index}
-                                       style={{display: (typeof img == "undefined" ? 'none' : 'block')}} src={img}/>
+                                       style={{
+                                           display: (typeof img == "undefined" ? 'none' : 'block'),
+                                           maxWidth: 600
+                                       }} src={img}/>
                             )
                         })
                     }
@@ -132,7 +160,7 @@ const Dynamic = (props) => {
                     {
                         props.videoPaths.map((video, index) => {
                             return (
-                                <Video key={"video" + index}
+                                <Video key={"video" + index} idx={index} videoId={props.id} transmitId={props.fatherId}
                                        style={{display: (typeof video == "undefined" ? 'none' : 'block')}} url={video}/>
                             )
                         })
@@ -152,15 +180,21 @@ const Dynamic = (props) => {
             </div>
             <div className="dynamic-bottom">
                 <Button className="dynamic-button" type="link" shape="circle" icon={<ExportOutlined/>}
+                        onClick={transmit}
                         disabled={!props.isLogin}/>
                 <Button className="dynamic-button" type="link" shape="circle" icon={<MessageOutlined/>} onClick={() => {
-                    setCommentHeight(!commentHeignt)
+                    const commentdiv = document.getElementById("comment" + props.id + props.fatherId);
+                    if (commentdiv.style.height === "auto") {
+                        commentdiv.style.height = "0px";
+                    } else {
+                        commentdiv.style.height = "auto";
+                    }
                 }}/>
                 <Button className="dynamic-button" type="link" shape="circle"
                         icon={like.num === 0 ? <LikeOutlined/> : <LikeFilled/>} onClick={LikeNum}
                         disabled={!props.isLogin}/>
             </div>
-            <div className="dynamic-comment" style={{height: (commentHeignt ? "auto" : "0px")}}>
+            <div className="dynamic-comment" id={"comment" + props.id + props.fatherId}>
                 <Pubcom dynamicId={props.id} pubComment={pubComment} commentAuthor={commentAuthor}
                         isLogin={props.isLogin}/>
                 {

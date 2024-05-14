@@ -53,17 +53,8 @@ const Pencen = (props) => {
     });
 
     useEffect(() => {
-        if (user.avatar === "") {
-            axios.get("/api/user")
-                .then(function (response) {
-                    console.log(response);
-                    setUser(response.data.data);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                })
-        }
-    })
+        setUser(props.user);
+    }, [props.user])
 
     // 导航
     const item1 = [
@@ -267,7 +258,7 @@ const Pencen = (props) => {
                 })
                     .then(function (response) {
                         console.log(response);
-                        window.location.href = "/pencen";
+                        navigate("/个人中心", {replace: true});
                     })
                     .catch(function (error) {
                         console.log(error);

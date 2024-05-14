@@ -34,9 +34,9 @@ public class MusicServiceImpl implements MusicService {
             return CompletableFuture.completedFuture("音乐名字为空");
         }
 
-//        if(musicDO.getDynamicId() != null){
-//            return "dynamicId为空";
-//        }
+        if (musicDO.getFatherId() == null) {
+            return CompletableFuture.completedFuture("父ID为空");
+        }
 
         musicDAO.add(musicDO);
 
@@ -46,7 +46,7 @@ public class MusicServiceImpl implements MusicService {
     @Override
     @Async("async")
     public CompletableFuture<List<MusicDO>> searchByFatherId(Long fatherId) {
-        if (fatherId != null && fatherId > 0) {
+        if (fatherId == null) {
             return CompletableFuture.completedFuture(null);
         }
 

@@ -1,7 +1,9 @@
 package com.bishe.service;
 
 import com.bishe.dataobject.UserDO;
+import com.bishe.model.User;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserService {
@@ -35,11 +37,18 @@ public interface UserService {
     /**
      * 更具id查找用户
      *
-     * @param id id
+     * @param id Long
      * @return 返回UserDO
      **/
     CompletableFuture<UserDO> findById(Long id);
 
+    /**
+     * 更具邮箱查找用户
+     *
+     * @param email String
+     * @return 返回UserDO
+     **/
+    CompletableFuture<UserDO> findByEmail(String email);
 
     /**
      * 更具userName查找用户
@@ -64,4 +73,12 @@ public interface UserService {
      * @return 返回信息
      **/
     CompletableFuture<String> decLikeNum(Long userId);
+
+    /**
+     * 更新用户信息
+     *
+     * @param time
+     * @return 返回用户列表
+     **/
+    CompletableFuture<List<User>> findLimit(int time);
 }

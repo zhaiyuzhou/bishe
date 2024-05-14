@@ -147,4 +147,21 @@
             </where>
         </if>
     </update>
+
+    <select id="selectLimit" resultMap="userResultMap">
+        SELECT id,
+               user_name,
+               pass_word,
+               nick_name,
+               avatar,
+               phone,
+               email,
+               gender,
+               like_num,
+               gmt_created,
+               gmt_modified
+        FROM `user`
+        ORDER BY like_num DESC
+        limit #{start}, #{limit}
+    </select>
 </mapper>

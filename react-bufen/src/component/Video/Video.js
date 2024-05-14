@@ -1,18 +1,19 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import DPlayer from 'dplayer';
 
 const Video = (props) => {
 
+    const [id, setId] = useState("video-player" + props.videoId + props.transmitId + props.idx)
     useEffect(() => {
         const dp = new DPlayer({
-            container: document.getElementById('video-player'),
+            container: document.getElementById(id),
             video: {
                 url: props.url,
             },
         });
     });
     return (
-        <div id="video-player" style={{
+        <div id={id} style={{
             maxWidth: "600px",
             display: (typeof (props.style.display) === "undefined" ? "inline-block" : props.style.display)
         }}></div>

@@ -20,7 +20,6 @@ public class VideoServiceImpl implements VideoService {
     @Override
     @Async("async")
     public CompletableFuture<String> add(VideoDO videoDO) {
-
         if (videoDO == null) {
             return CompletableFuture.completedFuture("传入的对象为空");
         }
@@ -33,12 +32,11 @@ public class VideoServiceImpl implements VideoService {
             return CompletableFuture.completedFuture("视频名字为空");
         }
 
-        if (videoDO.getFatherId() != null) {
+        if (videoDO.getFatherId() == null) {
             return CompletableFuture.completedFuture("dynamicId为空");
         }
 
         videoDAO.add(videoDO);
-
         return CompletableFuture.completedFuture("success");
 
     }
@@ -46,7 +44,7 @@ public class VideoServiceImpl implements VideoService {
     @Override
     @Async("async")
     public CompletableFuture<List<VideoDO>> searchByFatherId(Long fatherId) {
-        if (fatherId != null && fatherId > 0) {
+        if (fatherId == null) {
             return CompletableFuture.completedFuture(null);
         }
         List<VideoDO> videoDOS = videoDAO.selectAllByFatherId(fatherId);

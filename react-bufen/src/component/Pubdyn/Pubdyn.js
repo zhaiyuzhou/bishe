@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
-import {Button, Input, notification, Select, Upload} from 'antd';
+import {Button, Input, notification, Select, Upload, Modal} from 'antd';
 import './Pubdyn.css';
 import {CustomerServiceTwoTone, PictureOutlined, PlaySquareOutlined} from '@ant-design/icons';
 import cookie from 'react-cookies'
 import axios from 'axios';
+import Dynamic from '../Dynamic/Dynamic';
 
 const { TextArea } = Input;
 
@@ -17,7 +18,6 @@ const Pubdyn = (props) => {
     const [fileList, setFileList] = useState([]);
     const [tag, setTag] = useState('news');
     const [api, contextHolder] = notification.useNotification();
-
     const propsContent = () => {
         axios.post('/api/dynamicText', {
             content: value,
@@ -25,6 +25,7 @@ const Pubdyn = (props) => {
             imgName: imgName,
             videoName: videoName,
             musicName: musicName,
+            transmitId: typeof props.transmit === "undefined" ? null : props.transmit.id,
         })
             .then(function (response) {
                 console.log(response);
@@ -143,18 +144,15 @@ const Pubdyn = (props) => {
         onChange({file, fileList: newFileList}) {
             if (imgName.indexOf(file.name) === -1) {
                 setImgName([...imgName, file.name]);
-            } else {
-                api.open({
-                    message: "不要上传相同的文件",
-                });
             }
             setFileList(newFileList);
             if (file.status === "done") {
                 api.open({
-                    message: file.response.message,
+                    message: file.response.message === "success" ? "上传成功" : file.response.message,
                 });
             }
             if (file.status === "removed") {
+                setImgName(imgName.filter((imgName) => imgName !== file.name))
                 axios.post("/api/remove", {
                     fileName: file.name,
                 })
@@ -167,17 +165,18 @@ const Pubdyn = (props) => {
         action: '/api/updateVideo',
         listType: 'picture',
         onChange({file, fileList: newFileList}) {
-            console.log(file);
             if (videoName.indexOf(file.name) === -1) {
                 setVideoName([...videoName, file.name]);
             }
             setFileList(newFileList);
+            console.log(file);
             if (file.status === "done") {
                 api.open({
-                    message: file.response.message,
+                    message: file.response.message === "success" ? "上传成功" : file.response.message,
                 });
             }
             if (file.status === "removed") {
+                setVideoName(videoName.filter((videoName) => videoName !== file.name))
                 axios.post("/api/remove", {
                     fileName: file.name,
                 })
@@ -193,13 +192,15 @@ const Pubdyn = (props) => {
             if (musicName.indexOf(file.name) === -1) {
                 setMusicName([...musicName, file.name]);
             }
+            console.log(newFileList)
             setFileList(newFileList);
             if (file.status === "done") {
                 api.open({
-                    message: file.response.message,
+                    message: file.response.message === "success" ? "上传成功" : file.response.message,
                 });
             }
             if (file.status === "removed") {
+                setMusicName(musicName.filter((musicName) => musicName !== file.name))
                 axios.post("/api/remove", {
                     fileName: file.name,
                 })
@@ -222,6 +223,17 @@ const Pubdyn = (props) => {
     // 检查登录
     const isLogin = (cookie.load('isLogin') === 'true');
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div className='Pubdyn-div'>
             {contextHolder}
@@ -234,6 +246,16 @@ const Pubdyn = (props) => {
                     maxRows: 5,
                 }}
             />
+            <div className="pubdyn-transmit"
+                 style={{display: (typeof props.transmit === "undefined" ? "none" : "block")}}>
+                <Button onClick={showModal}>
+                    {typeof props.transmit === "undefined" ? "" : (props.transmit.content.slice(0, 5)) + "..."}
+                </Button>
+                <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                       okText="确认" cancelText="取消" width={800} mask={false}>
+                    <Dynamic {...props.transmit} />
+                </Modal>
+            </div>
             <Select
                 defaultValue="新闻"
                 style={{
@@ -256,21 +278,27 @@ const Pubdyn = (props) => {
                         className='Pubdyn-upload-img'
                         id='Pubdyn-upload-img-button'
                         type="button"
-                        onClick={chageToImg}
+                        onClick={(e) => {
+                            chageToImg()
+                        }}
                     ></button>
                     <button
                         className='Pubdyn-upload-video'
                         id='Pubdyn-upload-video-button'
-                        onClick={chageToVideo}
+                        onClick={(e) => {
+                            console.log(e);
+                            chageToVideo()
+                        }}
                         type="button"
                     ></button>
                     <button
                         className='Pubdyn-upload-music'
                         id='Pubdyn-upload-music-button'
-                        onClick={chageToMusic}
+                        onClick={(e) => {
+                            chageToMusic()
+                        }}
                         type="button"
                     ></button>
-
                 </Upload>
             </div>
         </div>
