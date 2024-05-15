@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Avatar, Button, Flex, Image, Pagination, Tag, Modal} from 'antd';
+import {Avatar, Button, Flex, Image, Modal, Pagination, Tag} from 'antd';
 import {
     CheckOutlined,
     DeleteOutlined,
@@ -11,6 +11,7 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import Video from "../Video/Video";
+import {useNavigate} from 'react-router';
 import Comment from "../Comment/Comment";
 import Music from "../Music/Music";
 import axios from "axios";
@@ -18,17 +19,24 @@ import Pubcom from "../Pubcom/Pubcom";
 import './Dynamic.css'
 
 const Dynamic = (props) => {
-    console.log(props.transmit)
+
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
     const tagsEn = ['news', 'movie', 'show', 'animated', 'bangumi', 'game', 'music', 'art', 'animal', 'knowledge', 'technology', 'food', 'car', 'movement', 'live', 'other'];
 
     const [like, setLike] = useState({num: 0});
     const [commentList, setCommentList] = useState([]);
     const [commentPage, setCommentPage] = useState([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
         setCommentList(props.comments);
         setCommentPage(commentList.slice(0, 10));
+
+        const avatar = document.querySelector(".dynamic-avatar");
+        avatar.addEventListener("dblclick", () => {
+            props.setOther(props.author);
+            navigate("/个人动态/" + props.author.id, {replace: false});
+        })
     }, [props.comments])
 
 
@@ -59,14 +67,14 @@ const Dynamic = (props) => {
     const [gz, setGz] = useState(false);
     const guanzhu = () => {
         setGz(true);
-        axios.post("/api/addLikeNum", {
+        axios.post("/api/attention", {
             userId: props.author.id,
         });
     }
 
     const quguan = () => {
         setGz(false);
-        axios.post("/api/delLikeNum", {
+        axios.post("/api/calAttention", {
             userId: props.author.id,
         });
     }
@@ -93,7 +101,7 @@ const Dynamic = (props) => {
 
     // 删除动态
     const delDynamic = () => {
-        axios.post("/delDynamic", {
+        axios.post("/api/delDynamic", {
             dynamicId: props.id,
         })
         props.delDynamicforList(props);
@@ -118,7 +126,8 @@ const Dynamic = (props) => {
     return (
         <div className="dynamic-div">
             <div className="dynamic-head">
-                <Avatar className="dynamic-avatar" icon={<UserOutlined/>} srcSet={props.author.avatar}/>
+                <Avatar className="dynamic-avatar" icon={<UserOutlined/>} src={props.author.avatar} onClick={() => {
+                }}/>
                 <p className="dynamic-nickname">{props.author.nickName}</p>
                 <p className="dynamic-describe">发布于{props.postedDate}</p>
                 <Button className="dynamic-guanzhu" style={{display: (props.del ? "none" : "block")}} type='primary'
@@ -149,7 +158,8 @@ const Dynamic = (props) => {
                                 <Image key={"img" + index}
                                        style={{
                                            display: (typeof img == "undefined" ? 'none' : 'block'),
-                                           maxWidth: 600
+                                           maxWidth: 600,
+                                           borderRadius: "6px",
                                        }} src={img}/>
                             )
                         })
@@ -193,6 +203,7 @@ const Dynamic = (props) => {
                 <Button className="dynamic-button" type="link" shape="circle"
                         icon={like.num === 0 ? <LikeOutlined/> : <LikeFilled/>} onClick={LikeNum}
                         disabled={!props.isLogin}/>
+                <p className="dynamic-likeNum">{props.likeNum}</p>        
             </div>
             <div className="dynamic-comment" id={"comment" + props.id + props.fatherId}>
                 <Pubcom dynamicId={props.id} pubComment={pubComment} commentAuthor={commentAuthor}

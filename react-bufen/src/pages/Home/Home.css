@@ -37,6 +37,7 @@ body {
     position: relative;
     left: 50px;
     font-size: 15px;
+    font-weight: 500;
 }
 
 .header-style .demo-logo {
@@ -53,7 +54,7 @@ body {
 
 .header-style .search {
     position: relative;
-    left: calc(50% - 400px);
+    left: calc(50% - 500px);
 }
 
 .header-style .login-but {

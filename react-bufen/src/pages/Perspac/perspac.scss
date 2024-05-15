@@ -1,0 +1,90 @@
+.Perspac {
+  width: 1300px;
+  position: relative;
+  left: calc(50% - 650px);
+  border-radius: 10px;
+}
+
+.Perspac-header {
+  width: 100%;
+  height: 200px;
+  border: solid 0.1px;
+  border-radius: 6px;
+  position: relative;
+  background-image: url(http://localhost:3000/api/file/imgs/118740887_p0_master1200.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  .Perspac-header-avatar {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    left: 20px;
+    top: 75px;
+  }
+
+  .Perspac-header-nickName {
+    position: absolute;
+    top: 77px;
+    left: 110px;
+    font-size: 25px;
+    font-weight: 500;
+    color: white;
+  }
+
+  .Perspac-header-signature {
+    position: absolute;
+    width: 500px;
+    height: 30px;
+    top: 115px;
+    left: 100px;
+    border: 0;
+    font-weight: 300;
+    color: white;
+    background: transparent;
+
+    &:hover {
+      border: solid 0.1px rgba(209, 209, 209, 0.637);
+      background-color: white;
+    }
+  }
+
+  .Perspac-header-signature-txt {
+    position: absolute;
+    width: 500px;
+    top: 115px;
+    left: 110px;
+    font-weight: 300;
+    color: white;
+  }
+
+  .Perspac-header-Menu {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    border-radius: 6px;
+
+  }
+
+  .Perspac-header-send {
+    position: absolute;
+    top: 110px;
+    right: 10px;
+  }
+
+  .Perspac-header-guanzhu {
+    position: absolute;
+    top: 110px;
+    right: 90px;
+  }
+
+  .Perspac-header-guanzhushu {
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    width: 49px;
+    height: 20px;
+    font-weight: 500;
+    text-align: center;
+  }
+}

@@ -1,8 +1,19 @@
-.content{
+.content {
     position: absolute;
     top: 60px;
-    left: -70px;
+    left: -50px;
     width: 120px;
     height: 200px;
     background-color: white;
+    border-radius: 6px;
+    border: solid 0.01px rgba(226, 226, 226, 0.616);
+}
+
+.ava-nickName {
+    color: #52c41a;
+    font-size: 15px;
+    font-weight: 500;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
 }

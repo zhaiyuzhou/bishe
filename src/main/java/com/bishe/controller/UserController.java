@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.bishe.component.MailUtil;
 import com.bishe.dataobject.ImgDO;
 import com.bishe.dataobject.UserDO;
+import com.bishe.model.Attention;
 import com.bishe.model.Mail;
 import com.bishe.model.User;
 import com.bishe.result.Result;
@@ -357,6 +358,72 @@ public class UserController {
     public Result<List<User>> getUserList() throws ExecutionException, InterruptedException {
         Result<List<User>> result = new Result<>();
         result.success(userService.findLimit(0).get());
+        return result;
+    }
+
+    @PostMapping("/attention")
+    @ResponseBody
+    public Result<Boolean> attention(@RequestBody String body,
+                                     @CookieValue(value = "username", required = false) String username,
+                                     HttpServletRequest request) throws ExecutionException, InterruptedException {
+        Result<Boolean> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
+
+        Long userId = user.getId();
+        String otherId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
+
+        if (StringUtils.isEmpty(otherId) || "null".equals(otherId)) {
+            result.error("传入参数为空");
+            return result;
+        }
+
+        Attention attention = new Attention(userId, Long.valueOf(otherId));
+        String message = userService.attention(attention).get();
+
+        if ("success".equals(message) && "success".equals(userService.addLikeNum(Long.valueOf(otherId)).get())) {
+            result.success(true);
+            return result;
+        }
+
+        result.error(message);
+        return result;
+    }
+
+    @PostMapping("/calAttention")
+    @ResponseBody
+    public Result<Boolean> calAttention(@RequestBody String body,
+                                        @CookieValue(value = "username", required = false) String username,
+                                        HttpServletRequest request) throws ExecutionException, InterruptedException {
+        Result<Boolean> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
+
+        Long userId = user.getId();
+        String otherId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
+        if (StringUtils.isEmpty(otherId) || "null".equals(otherId)) {
+            result.error("传入参数为空");
+            return result;
+        }
+
+        Attention attention = new Attention(userId, Long.valueOf(otherId));
+        String message = userService.calAttention(attention).get();
+        if ("success".equals(message) && "success".equals(userService.decLikeNum(Long.valueOf(otherId)).get())) {
+            result.success(true);
+            return result;
+        }
+
+        result.error(message);
         return result;
     }
 }

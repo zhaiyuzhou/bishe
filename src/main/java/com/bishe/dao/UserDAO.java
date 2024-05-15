@@ -30,4 +30,6 @@ public interface UserDAO {
 
     List<UserDO> selectLimit(int start, int limit);
 
+    List<UserDO> searchIdByKeywordForUsername(String keyword);
+
 }

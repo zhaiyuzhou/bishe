@@ -82,11 +82,12 @@ const Forget = () => {
                     span: 16,
                 }}
                 style={{
-                    maxWidth: 249,
+                    Width: 249,
                 }}
                 initialValues={{
                     remember: true,
                 }}
+                layout='inline'
                 onFinish={findPassword}
                 autoComplete="off"
             >

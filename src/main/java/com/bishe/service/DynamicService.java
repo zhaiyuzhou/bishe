@@ -50,6 +50,14 @@ public interface DynamicService {
     CompletableFuture<List<Dynamic>> findByAuthor(Long authorId, int times) throws ExecutionException, InterruptedException;
 
     /**
+     * 更具authorId查找该用户喜欢的动态
+     *
+     * @param authorId Long
+     * @return 返回dynamic列表
+     **/
+    CompletableFuture<List<Dynamic>> findLikeByAuthor(Long authorId, int times) throws ExecutionException, InterruptedException;
+
+    /**
      * 更具关键字查找dynamic
      *
      * @param searchDate String
@@ -76,18 +84,20 @@ public interface DynamicService {
     /**
      * 增加喜欢数
      *
-     * @param dynamicId dynamicId
+     * @param userId Long 用户ID
+     * @param dynamicId Long 动态ID
      * @return 返回信息
      **/
-    CompletableFuture<String> addLikeNum(Long dynamicId);
+    CompletableFuture<String> addLikeNum(Long userId, Long dynamicId);
 
     /**
      * 减少喜欢数
      *
-     * @param dynamicId dynamicId
+     * @param userId Long 用户ID
+     * @param dynamicId Long 动态ID
      * @return 返回信息
      **/
-    CompletableFuture<String> decLikeNum(Long dynamicId);
+    CompletableFuture<String> decLikeNum(Long userId, Long dynamicId);
 
     /**
      * 删除动态

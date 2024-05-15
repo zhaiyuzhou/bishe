@@ -1,6 +1,7 @@
 package com.bishe.service;
 
 import com.bishe.dataobject.UserDO;
+import com.bishe.model.Attention;
 import com.bishe.model.User;
 
 import java.util.List;
@@ -77,8 +78,33 @@ public interface UserService {
     /**
      * 更新用户信息
      *
-     * @param time
+     * @param time int
      * @return 返回用户列表
      **/
     CompletableFuture<List<User>> findLimit(int time);
+
+    /**
+     * 更具关键字查询用户
+     *
+     * @param keyword String
+     * @return 返回用户Id列表
+     **/
+    CompletableFuture<List<User>> findByKeyword(String keyword);
+
+    /**
+     * 关注用户
+     *
+     * @param attention Attention
+     * @return 返回信息
+     **/
+    CompletableFuture<String> attention(Attention attention);
+
+    /**
+     * 取关用户
+     *
+     * @param attention Attention
+     * @return 返回信息
+     **/
+
+    CompletableFuture<String> calAttention(Attention attention);
 }

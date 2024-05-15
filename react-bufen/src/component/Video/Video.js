@@ -15,6 +15,7 @@ const Video = (props) => {
     return (
         <div id={id} style={{
             maxWidth: "600px",
+            borderRadius: "6px",
             display: (typeof (props.style.display) === "undefined" ? "inline-block" : props.style.display)
         }}></div>
     )

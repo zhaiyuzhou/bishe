@@ -11,16 +11,15 @@ import {
     UserOutlined
 } from '@ant-design/icons';
 import {Avatar, Button, Flex, Form, Input, Layout, Menu, message, theme, Upload} from 'antd';
-import Avapopover from '../../component/Avapopover/Avapopover';
 import {useNavigate} from 'react-router';
-import {Link, Route, Routes} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import './Pencen.css'
 import Information from '../../component/Information/Information';
 import axios from 'axios';
 import Dynamicbody from '../Dynamicbody/Dynamicbody';
 
 
-const {Header, Content, Footer, Sider} = Layout;
+const {Content, Footer, Sider} = Layout;
 
 const getBase64 = (img, callback) => {
     const reader = new FileReader();
@@ -471,70 +470,63 @@ const Pencen = (props) => {
 
     return (
         <div className='pencen-page'>
-            <Layout>
-                <Header className='header-style'>
-                    <div className="demo-logo"/>
-                    <Link className='shouye-back' to={"/主页/首页"}>首页</Link>
-                    <Avapopover style={{display: 'inline-block'}} {...user} />
-                </Header>
-                <Content
+            <Content
+                style={{
+                    padding: '0 48px',
+                }}
+            >
+                <Layout
                     style={{
-                        padding: '0 48px',
+                        padding: '24px 0',
+                        background: colorBgContainer,
+                        borderRadius: borderRadiusLG,
                     }}
                 >
-                    <Layout
+                    <Sider
                         style={{
-                            padding: '24px 0',
                             background: colorBgContainer,
-                            borderRadius: borderRadiusLG,
+                        }}
+                        width={200}
+                    >
+                        <Menu
+                            mode="inline"
+                            defaultSelectedKeys={['1']}
+                            defaultOpenKeys={['sub1']}
+                            style={{
+                                height: '100%',
+                            }}
+                            items={item1}
+                            onClick={clickItem}
+                        />
+                    </Sider>
+                    <Content
+                        style={{
+                            padding: '0 24px',
+                            minHeight: 750,
                         }}
                     >
-                        <Sider
-                            style={{
-                                background: colorBgContainer,
-                            }}
-                            width={200}
-                        >
-                            <Menu
-                                mode="inline"
-                                defaultSelectedKeys={['1']}
-                                defaultOpenKeys={['sub1']}
-                                style={{
-                                    height: '100%',
-                                }}
-                                items={item1}
-                                onClick={clickItem}
-                            />
-                        </Sider>
-                        <Content
-                            style={{
-                                padding: '0 24px',
-                                minHeight: 750,
-                            }}
-                        >
-                            <Routes>
-                                <Route path='/information' element={<Information {...user} />}/>
-                                <Route path='/avatar' element={avChange}/>
-                                <Route path='/changPassword' element={pwChage}/>
-                                <Route path='/changEmail' element={emChange}/>
-                                <Route path='/pDynamic' element={<div style={{
-                                    padding: 10,
-                                    margin: 0,
-                                    minHeight: 900,
-                                    minWidth: 800,
-                                    background: "rgb(231, 231, 231)",
-                                    borderRadius: borderRadiusLG,
-                                    position: "relative",
-                                }}><Dynamicbody authorId={user.id} del={true} isLogin={props.isLogin}/></div>}/>
-                                <Route path='/changeNickname' element={nicknameChange}/>
-                            </Routes>
-                        </Content>
-                    </Layout>
-                </Content>
-                <Footer style={{textAlign: 'center'}}>
-                    Ant Design ©{new Date().getFullYear()} Created by Ant UED
-                </Footer>
-            </Layout>
+                        <Routes>
+                            <Route path='/information' element={<Information {...user} />}/>
+                            <Route path='/avatar' element={avChange}/>
+                            <Route path='/changPassword' element={pwChage}/>
+                            <Route path='/changEmail' element={emChange}/>
+                            <Route path='/pDynamic' element={<div style={{
+                                padding: 10,
+                                margin: 0,
+                                minHeight: 900,
+                                minWidth: 800,
+                                background: "rgb(231, 231, 231)",
+                                borderRadius: borderRadiusLG,
+                                position: "relative",
+                            }}><Dynamicbody authorId={user.id} del={true} isLogin={props.isLogin}/></div>}/>
+                            <Route path='/changeNickname' element={nicknameChange}/>
+                        </Routes>
+                    </Content>
+                </Layout>
+            </Content>
+            <Footer style={{textAlign: 'center'}}>
+                {new Date().getFullYear()}
+            </Footer>
         </div>
     )
 }

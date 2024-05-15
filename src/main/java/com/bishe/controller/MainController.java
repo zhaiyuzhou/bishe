@@ -46,15 +46,23 @@ public class MainController {
 
     @PostMapping("/addLikeNum")
     @ResponseBody
-    public Result<Boolean> addLikeNum(@RequestBody String body) throws ExecutionException, InterruptedException {
+    public Result<Boolean> addLikeNum(@RequestBody String body,
+                                      @CookieValue(value = "username") String username,
+                                      HttpServletRequest request) throws ExecutionException, InterruptedException {
         Result<Boolean> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
 
         String dynamicId = String.valueOf(JSON.parseObject(body, HashMap.class).get("dynamicId"));
         String commentId = String.valueOf(JSON.parseObject(body, HashMap.class).get("commentId"));
-        String userId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
 
         if (!StringUtils.isBlank(dynamicId) && !"null".equals(dynamicId)) {
-            if ("success".equals(dynamicService.addLikeNum(Long.valueOf(dynamicId)).get())) {
+            if ("success".equals(dynamicService.addLikeNum(user.getId(), Long.valueOf(dynamicId)).get())) {
                 result.success(true);
                 return result;
             }
@@ -67,27 +75,29 @@ public class MainController {
             }
         }
 
-        if (!StringUtils.isBlank(userId) && !"null".equals(userId)) {
-            if ("success".equals(userService.addLikeNum(Long.valueOf(userId)).get())) {
-                result.success(true);
-                return result;
-            }
-        }
-
         result.error("失败");
         return result;
     }
 
     @PostMapping("/delLikeNum")
     @ResponseBody
-    public Result<Boolean> delLikeNum(@RequestBody String body) throws ExecutionException, InterruptedException {
+    public Result<Boolean> delLikeNum(@RequestBody String body,
+                                      @CookieValue(value = "username") String username,
+                                      HttpServletRequest request) throws ExecutionException, InterruptedException {
         Result<Boolean> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
+
         String dynamicId = String.valueOf(JSON.parseObject(body, HashMap.class).get("dynamicId"));
         String commentId = String.valueOf(JSON.parseObject(body, HashMap.class).get("commentId"));
-        String userId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
 
         if (!StringUtils.isBlank(dynamicId) && !"null".equals(dynamicId)) {
-            if ("success".equals(dynamicService.decLikeNum(Long.valueOf(dynamicId)).get())) {
+            if ("success".equals(dynamicService.decLikeNum(user.getId(), Long.valueOf(dynamicId)).get())) {
                 result.success(true);
                 return result;
             }
@@ -95,13 +105,6 @@ public class MainController {
 
         if (!StringUtils.isBlank(commentId) && !"null".equals(commentId)) {
             if ("success".equals(commentService.decLikeNum(Long.valueOf(commentId)).get())) {
-                result.success(true);
-                return result;
-            }
-        }
-
-        if (!StringUtils.isBlank(userId) && !"null".equals(userId)) {
-            if ("success".equals(userService.decLikeNum(Long.valueOf(userId)).get())) {
                 result.success(true);
                 return result;
             }

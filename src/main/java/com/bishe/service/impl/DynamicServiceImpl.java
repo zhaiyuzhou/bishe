@@ -1,10 +1,8 @@
 package com.bishe.service.impl;
 
 import com.bishe.dao.DynamicDAO;
-import com.bishe.dataobject.DynamicDO;
-import com.bishe.dataobject.ImgDO;
-import com.bishe.dataobject.MusicDO;
-import com.bishe.dataobject.VideoDO;
+import com.bishe.dao.LikeDynamicDAO;
+import com.bishe.dataobject.*;
 import com.bishe.model.Dynamic;
 import com.bishe.model.User;
 import com.bishe.service.*;
@@ -30,6 +28,9 @@ public class DynamicServiceImpl implements DynamicService {
 
     @Resource
     private DynamicDAO dynamicDAO;
+
+    @Resource
+    private LikeDynamicDAO likeDynamicDAO;
 
     @Resource
     private UserService userService;
@@ -141,14 +142,41 @@ public class DynamicServiceImpl implements DynamicService {
     }
 
     @Override
+    public CompletableFuture<List<Dynamic>> findLikeByAuthor(Long authorId, int times) throws ExecutionException, InterruptedException {
+        if (authorId == null) {
+            return CompletableFuture.completedFuture(null);
+        }
+
+        List<Long> dynamicIds = likeDynamicDAO.findLikeDynamicIDsByUserId(authorId);
+        if (dynamicIds == null || dynamicIds.isEmpty()) {
+            return CompletableFuture.completedFuture(null);
+        }
+        List<DynamicDO> dynamicDOS = dynamicDAO.findByIds(dynamicIds);
+
+        return CompletableFuture.completedFuture(listToDynamic(dynamicDOS).get());
+    }
+
+    @Override
     @Async("async")
     public CompletableFuture<List<Dynamic>> search(String searchDate, int times) throws ExecutionException, InterruptedException {
 
         if (StringUtils.isBlank(searchDate)) {
             return CompletableFuture.completedFuture(List.of());
         }
+        List<Dynamic> dynamics = new ArrayList<>();
+        List<User> users = userService.findByKeyword(searchDate).get();
 
-        return CompletableFuture.completedFuture(listToDynamic(dynamicDAO.search(searchDate, times * 10, 10)).get());
+        users.forEach(user -> {
+            try {
+                dynamics.addAll(findByAuthor(user.getId(), 0).get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        dynamics.addAll(listToDynamic(dynamicDAO.search(searchDate, times * 10, 10)).get());
+
+        return CompletableFuture.completedFuture(dynamics);
     }
 
     @Override
@@ -218,13 +246,16 @@ public class DynamicServiceImpl implements DynamicService {
 
     @Override
     @Async("async")
-    public CompletableFuture<String> addLikeNum(Long dynamicId) {
+    public CompletableFuture<String> addLikeNum(Long userId, Long dynamicId) {
 
         if (dynamicId == null) {
             return CompletableFuture.completedFuture("传入ID为空");
         }
 
-        if (dynamicDAO.addLikeNum(dynamicId) != 0) {
+        LikeDynamicDO likeDynamicDO = new LikeDynamicDO();
+        likeDynamicDO.setUserId(userId);
+        likeDynamicDO.setDynamicId(dynamicId);
+        if (dynamicDAO.addLikeNum(dynamicId) != 0 && likeDynamicDAO.add(likeDynamicDO) != 0) {
             return CompletableFuture.completedFuture("success");
         }
         return CompletableFuture.completedFuture("失败");
@@ -232,13 +263,15 @@ public class DynamicServiceImpl implements DynamicService {
 
     @Override
     @Async("async")
-    public CompletableFuture<String> decLikeNum(Long dynamicId) {
+    public CompletableFuture<String> decLikeNum(Long userId, Long dynamicId) {
 
         if (dynamicId == null) {
             return CompletableFuture.completedFuture("传入ID为空");
         }
-
-        if (dynamicDAO.decLikeNum(dynamicId) != 0) {
+        LikeDynamicDO likeDynamicDO = new LikeDynamicDO();
+        likeDynamicDO.setUserId(userId);
+        likeDynamicDO.setDynamicId(dynamicId);
+        if (dynamicDAO.decLikeNum(dynamicId) != 0 && likeDynamicDAO.delete(likeDynamicDO) != 0) {
             return CompletableFuture.completedFuture("success");
         }
         return CompletableFuture.completedFuture("失败");
@@ -267,7 +300,6 @@ public class DynamicServiceImpl implements DynamicService {
         if (map.get("transmitId") != null) {
             Long transmitId = Long.parseLong(map.get("transmitId").toString());
             dynamic.setTransmit(findById(transmitId).get().toModel());
-            addLikeNum(transmitId);
         }
 
         List<String> names;

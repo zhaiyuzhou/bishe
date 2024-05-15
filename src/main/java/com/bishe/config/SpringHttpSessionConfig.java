@@ -7,7 +7,7 @@ import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
 @Configuration
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 300)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 172800)
 public class SpringHttpSessionConfig {
     @Bean
     public CookieSerializer cookieSerializer() {

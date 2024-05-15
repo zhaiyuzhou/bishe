@@ -81,6 +81,7 @@
     left: 580px;
 }
 
-.dynamic-transmit {
-
+.dynamic-likeNum {
+    display: inline-block;
+    color: #52c41a;
 }

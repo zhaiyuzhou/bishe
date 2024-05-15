@@ -177,4 +177,16 @@
         </where>
     </update>
 
+    <select id="findByIds" parameterType="java.util.List" resultMap="dynamicResultMap">
+        SELECT id, content, tag, author_id, like_num, transPond_num,transmit_id, posted_date, gmt_created,
+        gmt_modified
+        FROM `dynamic`
+        <where>
+            id IN
+            <foreach collection="list" item="it" index="index" open="(" separator="," close=")">
+                #{it}
+            </foreach>
+        </where>
+    </select>
+
 </mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bishe.dao.AttentionDAO">
+    <resultMap id="attentionResultMap" type="com.bishe.dataobject.AttentionDO">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="other_id" property="otherId"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.bishe.dataobject.AttentionDO" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `attention` (user_id, other_id)
+            VALUE (#{userId}, #{otherId})
+    </insert>
+
+    <delete id="delete" parameterType="com.bishe.dataobject.AttentionDO">
+        <if test="userId != null and otherId != null">
+            DELETE FROM `attention`
+            <where>
+                user_id = #{userId} and orther_id = #{otherId}
+            </where>
+        </if>
+    </delete>
+
+</mapper>

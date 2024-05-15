@@ -32,11 +32,10 @@ const Information = (props) => {
         {
             key: '6',
             label: '生日',
-            children: props.gmtCreated,
+            children: props.gmtCreated.slice(0, 10),
             span: 2,
         },
     ];
-
 
     return (
         <Descriptions title="个人信息" bordered items={items}/>

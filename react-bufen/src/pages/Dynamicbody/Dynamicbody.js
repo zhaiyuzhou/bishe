@@ -17,6 +17,7 @@ const Dynamicbody = (props) => {
             authorId: props.authorId,
             time: props.times,
             searchDate: props.searchDate,
+            like: props.like,
         })
             .then(function (response) {
                 console.log(response.data);
@@ -27,7 +28,7 @@ const Dynamicbody = (props) => {
             .catch(function (error) {
                 console.log(error);
             });
-    }, [props.isLogin, props.newDynamic, props.times, props.tag, props.authorId])
+    }, [props.isLogin, props.newDynamic, props.times, props.tag, props.authorId, props.searchDate])
 
     return (
         <div>
@@ -36,7 +37,8 @@ const Dynamicbody = (props) => {
                     (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
                         return (
                             <Dynamic key={index} {...dynamic} isLogin={props.isLogin} del={props.del}
-                                     delDynamicforList={delDynamicforList} setTransmit={props.setTransmit}/>
+                                     delDynamicforList={delDynamicforList} setTransmit={props.setTransmit}
+                                     setOther={props.setOther}/>
                         )
                     })) : (<></>)
             }

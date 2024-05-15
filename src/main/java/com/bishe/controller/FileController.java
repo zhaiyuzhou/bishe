@@ -62,7 +62,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./imgs/" + fileName);
 
-            img.setImgPath("../api/file/imgs/" + fileName);
+            img.setImgPath("http://localhost:3000/api/file/imgs/" + fileName);
             img.setImgName(fileName);
 
             // 存入缓存
@@ -104,7 +104,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./video/" + fileName);
 
-            video.setVideoPath("../api/file/video/" + fileName);
+            video.setVideoPath("http://localhost:3000/api/file/video/" + fileName);
             video.setVideoName(fileName);
 
             VideoDO videoDO = new VideoDO(video);
@@ -143,7 +143,7 @@ public class FileController {
             // 指定文件保存的位置
             File dest = new File(PATH + "./music/" + fileName);
 
-            music.setMusicPath("../api/file/music/" + fileName);
+            music.setMusicPath("http://localhost:3000/api/file/music/" + fileName);
             music.setMusicName(fileName);
 
             MusicDO musicDO = new MusicDO(music);

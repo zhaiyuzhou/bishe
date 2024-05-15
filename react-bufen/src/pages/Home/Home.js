@@ -1,21 +1,18 @@
 import './Home.css'
 import React, {useEffect, useState} from 'react';
-import {Breadcrumb, Button, Image, Input, Layout, Menu, notification, theme} from 'antd';
+import {Breadcrumb, Button, Layout, Menu, notification, theme} from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import cookie from 'react-cookies'
 import {HomeOutlined, RedoOutlined, UnorderedListOutlined} from '@ant-design/icons';
 import {useNavigate} from 'react-router';
-import {Link, Route, Routes, useLocation} from 'react-router-dom';
-import LoginBox from '../../component/LoginBox/LoginBox';
-import Avapopover from '../../component/Avapopover/Avapopover';
+import {Route, Routes, useLocation} from 'react-router-dom';
 import Pubdyn from '../../component/Pubdyn/Pubdyn';
 import Dynamicbody from '../Dynamicbody/Dynamicbody';
 import axios from 'axios';
 import Suggestuser from '../../component/Suggestuser/Suggestuser';
 
-const {Search} = Input;
+const {Content} = Layout;
 
-const {Header, Content} = Layout;
 const Home = (props) => {
 
     const [times, setTimes] = useState(0);
@@ -65,14 +62,6 @@ const Home = (props) => {
             window.removeEventListener('scroll', updatePosition);
         };
     }, [navigate, location, times, props.isLogin]);
-
-    // 搜索内容
-    const [searchDate, setSearchDate] = useState();
-    const onSearch = (value) => {
-        setSearchDate(value);
-        setTimes(0);
-        navigate("/主页/搜索", {replace: true});
-    };
 
     // 标签
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
@@ -140,106 +129,87 @@ const Home = (props) => {
 
     return (
         <div>
-            <div className='model'
-                 style={{display: 'none', width: (window.innerWidth - 18), height: (window.innerHeight)}}>
-                <div className='mask'></div>
-                <LoginBox/>
-            </div>
-            <div className='index'>
-                <Layout>
-                    <Header className='header-style'>
-                        <div className="demo-logo"/>
-                        <Image src='../imgs/title.png' style={{
-                            width: "200px",
+            <Layout>
+                <Sider
+                    width={200}
+                    style={{
+                        background: colorBgContainer,
+                    }}
+                >
+                    <Menu
+                        mode="inline"
+                        defaultOpenKeys={['sider2']}
+                        style={{
+                            height: '100%',
+                            width: 200,
+                            borderRight: 0,
+                            position: 'fixed',
+                        }}
+                        items={items2}
+                        onClick={(e) => {
+                            navigate(e.key, {replace: true})
+                            setTimes(0);
+                        }}
+                    />
+                </Sider>
+                <Layout
+                    style={{
+                        padding: '0 24px 24px',
+                    }}
+                >
+                    <Breadcrumb
+                        style={{
+                            margin: '16px 0',
+                        }}
+                    >
+                    </Breadcrumb>
+                    <Content
+                        style={{
+                            padding: 10,
+                            margin: 0,
+                            minHeight: 900,
+                            minWidth: 800,
+                            background: "rgb(231, 231, 231)",
+                            borderRadius: borderRadiusLG,
                             position: "relative",
-                            top: "-5px",
-                            left: "10px",
-                        }} preview={false}/>
-                        <Link className='shouye-back' to={"/主页/首页"}>首页</Link>
-                        <Search
-                            className='search'
-                            placeholder="input search text"
-                            onSearch={onSearch}
-                            style={{
-                                width: 500,
-                            }}
-                        />
-                        <Button type='primary' className='login-but'
-                                style={{display: (isLogin ? 'none' : 'inline-block')}}
-                        >登陆</Button>
-                        <Avapopover style={{display: (isLogin ? 'inline-block' : 'none')}} {...props.user} />
-                    </Header>
-                    <Layout>
-                        <Sider
-                            width={200}
-                            style={{
-                                background: colorBgContainer,
-                            }}
-                        >
-                            <Menu
-                                mode="inline"
-                                defaultOpenKeys={['sider2']}
-                                style={{
-                                    height: '100%',
-                                    width: 200,
-                                    borderRight: 0,
-                                    position: 'fixed',
-                                }}
-                                items={items2}
-                                onClick={(e) => {
-                                    navigate(e.key, {replace: true})
-                                    setTimes(0);
-                                }}
-                            />
-                        </Sider>
-                        <Layout
-                            style={{
-                                padding: '0 24px 24px',
-                            }}
-                        >
-                            <Breadcrumb
-                                style={{
-                                    margin: '16px 0',
-                                }}
-                            >
-                            </Breadcrumb>
-                            <Content
-                                style={{
-                                    padding: 10,
-                                    margin: 0,
-                                    minHeight: 900,
-                                    minWidth: 800,
-                                    background: "rgb(231, 231, 231)",
-                                    borderRadius: borderRadiusLG,
-                                    position: "relative",
-                                }}
-                            >
-                                <Suggestuser isLogin={isLogin}/>
-                                {contextHolder}
-                                <Pubdyn pubDynamic={pubDynamic} transmit={transmit}/>
-                                <Button className='huanyipi' icon={<RedoOutlined/>} loading={loadings[0]}
-                                        onClick={() => enterLoading(0)}>换一批</Button>
-                                <Routes>
-                                    <Route path='/首页' element={<Dynamicbody newDynamic={newDynamic} isLogin={isLogin}
-                                                                              times={times}
-                                                                              setTransmit={setTransmit}/>}/>
-                                    {tags.map((tag, index) => {
-                                        return (
-                                            <Route key={'/' + tag} path={'/' + tag}
-                                                   element={<Dynamicbody tag={tagsEn[index]} newDynamic={newDynamic}
-                                                                         isLogin={isLogin} times={times}
-                                                                         setTransmit={setTransmit}/>}/>
-                                        )
-                                    })}
-                                    <Route path='/搜索'
-                                           element={<Dynamicbody newDynamic={newDynamic} isLogin={isLogin} times={times}
-                                                                 searchDate={searchDate} setTransmit={setTransmit}/>}/>
-                                </Routes>
-                            </Content>
-                        </Layout>
-                    </Layout>
+                        }}
+                    >
+                        <Suggestuser isLogin={isLogin}/>
+                        {contextHolder}
+                        <Pubdyn pubDynamic={pubDynamic} transmit={transmit}/>
+                        <Button className='huanyipi' icon={<RedoOutlined/>} loading={loadings[0]}
+                                onClick={() => enterLoading(0)}>换一批</Button>
+                        <Routes>
+                            <Route path='/首页' element={<Dynamicbody
+                                newDynamic={newDynamic}
+                                isLogin={isLogin}
+                                times={times}
+                                setTransmit={setTransmit}
+                                setOther={props.setOther}/>}/>
+                            {tags.map((tag, index) => {
+                                return (
+                                    <Route key={'/' + tag} path={'/' + tag}
+                                           element={<Dynamicbody
+                                               tag={tagsEn[index]}
+                                               newDynamic={newDynamic}
+                                               isLogin={isLogin}
+                                               times={times}
+                                               setTransmit={setTransmit}
+                                               setOther={props.setOther}/>}/>
+                                )
+                            })}
+                            <Route path='/搜索'
+                                   element={<Dynamicbody
+                                       newDynamic={newDynamic}
+                                       isLogin={isLogin}
+                                       times={times}
+                                       searchDate={props.searchDate}
+                                       setTransmit={setTransmit}
+                                       setOther={props.setOther}/>}/>
+                        </Routes>
+                    </Content>
                 </Layout>
-            </div>
+            </Layout>
         </div>
 
     );

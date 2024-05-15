@@ -24,6 +24,8 @@ public class UserDO {
 
     private String phone;
 
+    private String signature = "请编辑个人签名";
+
     private Long likeNum = 0L;
 
     private LocalDateTime gmtCreated;

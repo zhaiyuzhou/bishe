@@ -34,6 +34,8 @@ public class User implements Serializable {
 
     private Long likeNum = 0L;
 
+    private String signature = "请编辑个人签名";
+
     private List<String> dynamicIds;
 
     private List<String> commentIds;

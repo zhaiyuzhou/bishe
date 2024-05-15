@@ -13,19 +13,23 @@
         <result column="email" property="email"/>
         <result column="gender" property="gender"/>
         <result column="like_num" property="likeNum"/>
+        <result column="signature" property="signature"/>
         <result column="gmt_created" property="gmtCreated"/>
         <result column="gmt_modified" property="gmtModified"/>
     </resultMap>
 
     <insert id="add" parameterType="com.bishe.dataobject.UserDO" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `user` (user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created,
+        INSERT INTO `user` (user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature,
+                            gmt_created,
                             gmt_modified)
-        VALUES (#{userName}, #{password}, #{nickName}, #{avatar}, #{phone}, #{email}, #{gender}, #{likeNum}, now(),
+        VALUES (#{userName}, #{password}, #{nickName}, #{avatar}, #{phone}, #{email}, #{gender}, #{likeNum},
+                #{signature}, now(),
                 now())
     </insert>
 
     <select id="selectById" parameterType="java.lang.Long" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
         FROM `user`
         <where>
             <if test="id != null">
@@ -35,7 +39,8 @@
     </select>
 
     <select id="selectByUserName" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
         FROM
         `user`
         <where>
@@ -46,7 +51,8 @@
     </select>
 
     <select id="selectByEmail" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
         FROM
         `user`
         <where>
@@ -57,7 +63,8 @@
     </select>
 
     <select id="selectByPhone" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, gmt_created, gmt_modified
+        SELECT id, user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
         FROM
         `user`
         <where>
@@ -90,9 +97,6 @@
             </if>
             <if test="gender != null and gender !=''">
                 gender = #{gender},
-            </if>
-            <if test="likeNum != null">
-                like_num = #{likeNum},
             </if>
             <if test="gmtCreated!=null">
                 gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
@@ -158,10 +162,24 @@
                email,
                gender,
                like_num,
+               signature,
                gmt_created,
                gmt_modified
         FROM `user`
         ORDER BY like_num DESC
         limit #{start}, #{limit}
+    </select>
+
+    <select id="searchIdByKeywordForUsername" resultMap="userResultMap">
+        SELECT id,
+        user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
+        FROM `user`
+        <where>
+            <if test="keyword != null and keyword != ''">
+                nick_name LIKE CONCAT('%',CONCAT(#{keyword},'%'))
+            </if>
+        </where>
+        ORDER BY like_num DESC
     </select>
 </mapper>

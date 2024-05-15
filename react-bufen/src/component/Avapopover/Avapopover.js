@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 
 const Avapopover = (props) => {
+    console.log(props);
 
   const [ome, setOme] = useState(false);
 
@@ -29,6 +30,9 @@ const Avapopover = (props) => {
       <div className='ava-popo' style={{display: display}} onMouseEnter={bianDa} onMouseLeave={bianXi}>
           <Avatar icon={<UserOutlined/>} size={(ome ? 'large' : 'default')} src={props.avatar}/>
       <div className='content' style={{ display: (ome ? 'inline-block' : 'none') }}>
+          <div style={{width: "100%", position: "relative", height: "30px"}}>
+              <p className='ava-nickName'>{props.nickName}</p>
+          </div>
           <Link to={"/个人中心"}><Button type="text" icon={<LeftOutlined/>}>个人中心</Button></Link>
           <Button type="text" danger icon={<PoweroffOutlined/>} onClick={loginout}>退出登录</Button>
       </div>

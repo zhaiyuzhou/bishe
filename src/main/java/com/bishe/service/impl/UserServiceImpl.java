@@ -1,7 +1,10 @@
 package com.bishe.service.impl;
 
+import com.bishe.dao.AttentionDAO;
 import com.bishe.dao.UserDAO;
+import com.bishe.dataobject.AttentionDO;
 import com.bishe.dataobject.UserDO;
+import com.bishe.model.Attention;
 import com.bishe.model.User;
 import com.bishe.service.UserService;
 import jakarta.annotation.Resource;
@@ -18,6 +21,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     UserDAO userDAO;
+
+    @Resource
+    AttentionDAO attentionDAO;
 
     @Override
     @Async("async")
@@ -173,5 +179,36 @@ public class UserServiceImpl implements UserService {
             users.add(userDO.toModel());
         });
         return CompletableFuture.completedFuture(users);
+    }
+
+    @Override
+    public CompletableFuture<List<User>> findByKeyword(String keyword) {
+        List<UserDO> userDOS = userDAO.searchIdByKeywordForUsername(keyword);
+        List<User> users = new ArrayList<>();
+        userDOS.forEach(userDO -> {
+            users.add(userDO.toModel());
+        });
+        return CompletableFuture.completedFuture(users);
+    }
+
+    @Override
+    public CompletableFuture<String> attention(Attention attention) {
+        if (attention == null) {
+            return CompletableFuture.completedFuture("传入对象为空");
+        }
+        AttentionDO attentionDO = new AttentionDO(attention);
+        attentionDAO.add(attentionDO);
+
+        return CompletableFuture.completedFuture("success");
+    }
+
+    @Override
+    public CompletableFuture<String> calAttention(Attention attention) {
+        if (attention == null) {
+            return CompletableFuture.completedFuture("传入对象为空");
+        }
+        AttentionDO attentionDO = new AttentionDO(attention);
+        attentionDAO.delete(attentionDO);
+        return CompletableFuture.completedFuture("success");
     }
 }

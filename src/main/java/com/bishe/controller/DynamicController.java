@@ -93,6 +93,20 @@ public class DynamicController {
         if (map.get("authorId") != null) {
             authorId = String.valueOf(map.get("authorId"));
         }
+        String like = null;
+        if (map.get("like") != null) {
+            like = String.valueOf(map.get("like"));
+        }
+
+        if ("true".equals(like)) {
+            if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
+                List<Dynamic> dynamics = dynamicService.findLikeByAuthor(Long.valueOf(authorId), time).get();
+                if (!dynamics.isEmpty()) {
+                    result.success(dynamics);
+                    return result;
+                }
+            }
+        }
 
         if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
             List<Dynamic> dynamics = dynamicService.findByAuthor(Long.valueOf(authorId), time).get();
@@ -105,6 +119,7 @@ public class DynamicController {
         if (map.get("searchDate") != null) {
             searchDate = String.valueOf(map.get("searchDate"));
         }
+
         if (!StringUtils.isBlank(searchDate) && !searchDate.equals("null")) {
             List<Dynamic> dynamics = dynamicService.search(searchDate, time).get();
             if (!dynamics.isEmpty()) {

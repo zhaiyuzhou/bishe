@@ -2,6 +2,7 @@ package com.bishe.dao;
 
 import com.bishe.dataobject.DynamicDO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -29,5 +30,7 @@ public interface DynamicDAO {
     int addLikeNum(Long dynamicId);
 
     int decLikeNum(Long dynamicId);
+
+    List<DynamicDO> findByIds(@Param("list") List<Long> dynamicIds);
 
 }
