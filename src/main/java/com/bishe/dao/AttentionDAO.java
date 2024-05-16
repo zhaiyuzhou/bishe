@@ -9,4 +9,6 @@ public interface AttentionDAO {
     int add(AttentionDO attentionDO);
 
     int delete(AttentionDO attentionDO);
+
+    Long find(AttentionDO attentionDO);
 }

@@ -182,4 +182,18 @@
         </where>
         ORDER BY like_num DESC
     </select>
+
+    <select id="selectByUserIds" parameterType="java.util.List" resultMap="userResultMap">
+        SELECT id,
+        user_name, pass_word, nick_name, avatar, phone, email, gender, like_num, signature, gmt_created,
+        gmt_modified
+        FROM `user`
+        <where>
+            id IN
+            <foreach collection="list" item="it" index="index" open="(" separator="," close=")">
+                #{it}
+            </foreach>
+        </where>
+
+    </select>
 </mapper>

@@ -101,7 +101,7 @@ public class DynamicController {
         if ("true".equals(like)) {
             if (!StringUtils.isBlank(authorId) && !authorId.equals("null")) {
                 List<Dynamic> dynamics = dynamicService.findLikeByAuthor(Long.valueOf(authorId), time).get();
-                if (!dynamics.isEmpty()) {
+                if (dynamics != null && !dynamics.isEmpty()) {
                     result.success(dynamics);
                     return result;
                 }

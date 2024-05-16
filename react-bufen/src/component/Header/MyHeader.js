@@ -60,7 +60,7 @@ const MyHeader = (props) => {
             loginBut.removeEventListener("click", showModal);
             window.removeEventListener('scroll', updatePosition);
         };
-    }, [navigate, times, props.isLogin]);
+    }, [navigate, times, props.isLogin, location]);
 
     return (
         <>
@@ -73,7 +73,7 @@ const MyHeader = (props) => {
                 <Layout>
                     <Header className='header-style'>
                         <div className="demo-logo"/>
-                        <Image src='../imgs/title.png' style={{
+                        <Image src='http://localhost:3000/imgs/title.png' style={{
                             width: "200px",
                             position: "relative",
                             top: "-4px",

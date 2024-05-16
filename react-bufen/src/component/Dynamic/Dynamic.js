@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Avatar, Button, Flex, Image, Modal, Pagination, Tag} from 'antd';
 import {
-    CheckOutlined,
+    CloseOutlined,
     DeleteOutlined,
     ExportOutlined,
     LikeFilled,
@@ -28,16 +28,23 @@ const Dynamic = (props) => {
     const [commentPage, setCommentPage] = useState([]);
     const navigate = useNavigate()
 
+    const [gz, setGz] = useState(false);
+
     useEffect(() => {
         setCommentList(props.comments);
         setCommentPage(commentList.slice(0, 10));
+        setGz(props.ifa);
 
         const avatar = document.querySelector(".dynamic-avatar");
-        avatar.addEventListener("dblclick", () => {
-            props.setOther(props.author);
+
+        const toPerspac = () => {
             navigate("/个人动态/" + props.author.id, {replace: false});
-        })
-    }, [props.comments])
+        };
+        avatar.addEventListener("dblclick", toPerspac);
+        return () => {
+            avatar.removeEventListener("dblclick", toPerspac);
+        };
+    }, [props, commentList, navigate])
 
 
     // 点赞
@@ -64,7 +71,6 @@ const Dynamic = (props) => {
     }
 
     // 关注
-    const [gz, setGz] = useState(false);
     const guanzhu = () => {
         setGz(true);
         axios.post("/api/attention", {
@@ -131,7 +137,7 @@ const Dynamic = (props) => {
                 <p className="dynamic-nickname">{props.author.nickName}</p>
                 <p className="dynamic-describe">发布于{props.postedDate}</p>
                 <Button className="dynamic-guanzhu" style={{display: (props.del ? "none" : "block")}} type='primary'
-                        icon={gz ? <CheckOutlined/> : <PlusOutlined/>}
+                        icon={gz ? <CloseOutlined/> : <PlusOutlined/>}
                         onClick={gzfun} disabled={!props.isLogin}>{gz ? "取关" : "关注"}</Button>
                 <Button className="dynamic-guanzhu" style={{display: (props.del ? "block" : "none")}} type='primary'
                         danger icon={<DeleteOutlined/>}
@@ -203,7 +209,7 @@ const Dynamic = (props) => {
                 <Button className="dynamic-button" type="link" shape="circle"
                         icon={like.num === 0 ? <LikeOutlined/> : <LikeFilled/>} onClick={LikeNum}
                         disabled={!props.isLogin}/>
-                <p className="dynamic-likeNum">{props.likeNum}</p>        
+                <p className="dynamic-likeNum">{props.likeNum}</p>
             </div>
             <div className="dynamic-comment" id={"comment" + props.id + props.fatherId}>
                 <Pubcom dynamicId={props.id} pubComment={pubComment} commentAuthor={commentAuthor}

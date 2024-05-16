@@ -12,6 +12,12 @@ public class AttentionDO {
 
     private Long otherId;
 
+    public AttentionDO(Long id, Long userId, Long otherId) {
+        this.id = id;
+        this.userId = userId;
+        this.otherId = otherId;
+    }
+
     public AttentionDO(Long userId, Long otherId) {
         this.userId = userId;
         this.otherId = otherId;
@@ -29,5 +35,11 @@ public class AttentionDO {
         attention.setUserId(userId);
         attention.setOtherId(otherId);
         return attention;
+    }
+
+    public void reversal() {
+        Long tmp = this.userId;
+        this.userId = otherId;
+        this.otherId = tmp;
     }
 }

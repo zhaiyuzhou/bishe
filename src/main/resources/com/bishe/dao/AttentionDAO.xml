@@ -17,9 +17,19 @@
         <if test="userId != null and otherId != null">
             DELETE FROM `attention`
             <where>
-                user_id = #{userId} and orther_id = #{otherId}
+                user_id = #{userId} and other_id = #{otherId}
             </where>
         </if>
     </delete>
+
+    <select id="find" parameterType="com.bishe.dataobject.AttentionDO" resultType="java.lang.Long">
+        SELECT id
+        FROM `attention`
+        <where>
+            <if test="userId != null and otherId != null">
+                user_id = #{userId} and other_id = #{otherId}
+            </if>
+        </where>
+    </select>
 
 </mapper>

@@ -32,4 +32,6 @@ public interface UserDAO {
 
     List<UserDO> searchIdByKeywordForUsername(String keyword);
 
+    List<UserDO> selectByUserIds(List<Long> ids);
+
 }

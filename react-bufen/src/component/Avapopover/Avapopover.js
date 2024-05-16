@@ -1,12 +1,13 @@
 import React, {useState} from 'react';
 import {Avatar, Button} from 'antd';
-import {LeftOutlined, PoweroffOutlined, UserOutlined} from '@ant-design/icons';
+import {PoweroffOutlined, UserOutlined, CommentOutlined} from '@ant-design/icons';
 import './avapopo.css'
-import {Link} from 'react-router-dom';
+import {useNavigate} from 'react-router';
 import axios from 'axios';
 
 const Avapopover = (props) => {
-    console.log(props);
+
+    const navigate = useNavigate()
 
   const [ome, setOme] = useState(false);
 
@@ -28,13 +29,19 @@ const Avapopover = (props) => {
 
   return (
       <div className='ava-popo' style={{display: display}} onMouseEnter={bianDa} onMouseLeave={bianXi}>
-          <Avatar icon={<UserOutlined/>} size={(ome ? 'large' : 'default')} src={props.avatar}/>
+          <Avatar className='ava-img' icon={<UserOutlined/>} size={(ome ? 64 : 'large')} src={props.avatar}/>
       <div className='content' style={{ display: (ome ? 'inline-block' : 'none') }}>
           <div style={{width: "100%", position: "relative", height: "30px"}}>
               <p className='ava-nickName'>{props.nickName}</p>
           </div>
-          <Link to={"/个人中心"}><Button type="text" icon={<LeftOutlined/>}>个人中心</Button></Link>
-          <Button type="text" danger icon={<PoweroffOutlined/>} onClick={loginout}>退出登录</Button>
+          <Button className='ava-button-1' type="text" icon={<UserOutlined/>} onClick={() => {
+              navigate("/个人中心", {replace: true})
+          }}>个人中心</Button>
+          <Button className='ava-button-2' type="text" icon={<CommentOutlined/>} onClick={() => {
+              navigate("/消息中心", {replace: true})
+          }}>消息中心</Button>
+          <Button className='ava-button-3' type="text" danger icon={<PoweroffOutlined/>}
+                  onClick={loginout}>退出登录</Button>
       </div>
     </div>
   );

@@ -1,17 +1,18 @@
 import axios from "axios";
-import React, {useLayoutEffect, useState} from "react";
+import React, {useEffect, useState, useMemo} from "react";
 import Dynamic from "../../component/Dynamic/Dynamic";
 
 const Dynamicbody = (props) => {
 
     const [dynamicList, setDynamicList] = useState([]);
+    const [ifa, setIfa] = useState([]);
 
     // 删除动态
     const delDynamicforList = (deldynamic) => {
         setDynamicList(dynamicList.filter(dynamic => dynamic.id !== deldynamic.id));
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         axios.post('/api/getDynamic', {
             tag: props.tag,
             authorId: props.authorId,
@@ -23,24 +24,39 @@ const Dynamicbody = (props) => {
                 console.log(response.data);
                 setDynamicList(response.data.data);
                 if (typeof props.newDynamic !== "undefined" && props.newDynamic !== dynamicList.at(0))
-                    setDynamicList([props.newDynamic, ...dynamicList]);
+                    setDynamicList(prevDynamicList => [props.newDynamic, ...prevDynamicList]);
+
+                // 查看各位作者是否已被用户关注
+                axios.post("/api/ifAttentions", {
+                    userIds: ([...response.data.data.map((dynamic, index) => {
+                        return dynamic.author.id;
+                    })]),
+                }).then((res) => {
+                    setIfa(res.data.data);
+                })
             })
             .catch(function (error) {
                 console.log(error);
             });
-    }, [props.isLogin, props.newDynamic, props.times, props.tag, props.authorId, props.searchDate])
+
+
+    }, [props.tag, props.authorId, props.times, props.searchDate, props.like, props.isLogin])
 
     return (
         <div>
             {
-                dynamicList != null ?
-                    (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
-                        return (
-                            <Dynamic key={index} {...dynamic} isLogin={props.isLogin} del={props.del}
-                                     delDynamicforList={delDynamicforList} setTransmit={props.setTransmit}
-                                     setOther={props.setOther}/>
-                        )
-                    })) : (<></>)
+                useMemo(() => {
+                    return (
+                        dynamicList != null ?
+                            (dynamicList.filter((dynamic) => dynamic !== null).map((dynamic, index) => {
+                                return (
+                                    <Dynamic key={index} {...dynamic} isLogin={props.isLogin} del={props.del}
+                                             delDynamicforList={delDynamicforList} setTransmit={props.setTransmit}
+                                             setOther={props.setOther} ifa={ifa === null ? false : ifa[index]}/>
+                                )
+                            })) : (<></>)
+                    )
+                })
             }
         </div>
     );

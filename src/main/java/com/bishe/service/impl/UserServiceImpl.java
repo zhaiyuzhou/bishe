@@ -1,8 +1,10 @@
 package com.bishe.service.impl;
 
 import com.bishe.dao.AttentionDAO;
+import com.bishe.dao.FriendDAO;
 import com.bishe.dao.UserDAO;
 import com.bishe.dataobject.AttentionDO;
+import com.bishe.dataobject.FriendDO;
 import com.bishe.dataobject.UserDO;
 import com.bishe.model.Attention;
 import com.bishe.model.User;
@@ -24,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     AttentionDAO attentionDAO;
+
+    @Resource
+    FriendDAO friendDAO;
 
     @Override
     @Async("async")
@@ -196,8 +201,26 @@ public class UserServiceImpl implements UserService {
         if (attention == null) {
             return CompletableFuture.completedFuture("传入对象为空");
         }
+
+        // 添加关注信息
         AttentionDO attentionDO = new AttentionDO(attention);
         attentionDAO.add(attentionDO);
+
+        // 检测是否互关
+        attentionDO.reversal();
+        Long id = attentionDAO.find(attentionDO);
+        FriendDO friendDO = new FriendDO(attentionDO);
+        if (id != null && id > 0) {
+            // 如果互关则加为好友
+            if (friendDAO.add(friendDO) != 0) {
+                friendDO.reversal();
+                if (friendDAO.add(friendDO) != 0) {
+                    return CompletableFuture.completedFuture("success");
+                }
+            }
+            ;
+            return CompletableFuture.completedFuture("存入好友失败");
+        }
 
         return CompletableFuture.completedFuture("success");
     }
@@ -207,8 +230,52 @@ public class UserServiceImpl implements UserService {
         if (attention == null) {
             return CompletableFuture.completedFuture("传入对象为空");
         }
+
+        // 删除关注
         AttentionDO attentionDO = new AttentionDO(attention);
         attentionDAO.delete(attentionDO);
+
+        // 删除响应的好友关系
+        FriendDO friendDO = new FriendDO(attentionDO);
+        friendDAO.delete(friendDO);
+
         return CompletableFuture.completedFuture("success");
+    }
+
+    @Override
+    public CompletableFuture<Boolean> ifAttention(Attention attention) {
+
+        if (attention == null) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        AttentionDO attentionDO = new AttentionDO(attention);
+        Long id = attentionDAO.find(attentionDO);
+        if (id == null || id == 0) {
+            return CompletableFuture.completedFuture(false);
+        }
+
+        return CompletableFuture.completedFuture(true);
+    }
+
+
+    @Override
+    public CompletableFuture<List<User>> findFriend(Long userId) {
+
+        if (userId == null) {
+            return CompletableFuture.completedFuture(List.of());
+        }
+
+        List<Long> friendIds = friendDAO.findByUserId(userId);
+        if (friendIds.isEmpty()) {
+            return CompletableFuture.completedFuture(List.of());
+        }
+        List<User> friends = new ArrayList<>();
+        userDAO.selectByUserIds(friendIds).forEach(friendDO -> {
+            friends.add(friendDO.toModel());
+        });
+
+
+        return CompletableFuture.completedFuture(friends);
     }
 }

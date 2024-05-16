@@ -13,10 +13,6 @@ const Perspaccon = (props) => {
     const {
         token: {borderRadiusLG},
     } = theme.useToken();
-    const [user, setUser] = useState({
-        id: 0,
-        avatar: ""
-    });
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -24,15 +20,13 @@ const Perspaccon = (props) => {
 
     // 个性签名
     const onSignature = (e) => {
-        console.log(e);
         navigate(e.key, {replace: true});
     };
     useEffect(() => {
-        if (decodeURI(location.pathname) === '/个人动态/' + user.id) {
-            navigate('/个人动态/' + user.id + '/dynamic', {replace: true});
+        if (decodeURI(location.pathname) === '/个人动态/' + props.user.id) {
+            navigate('/个人动态/' + props.user.id + '/dynamic', {replace: true});
         }
 
-        setUser(props.user);
         const signature = document.querySelector(".Perspac-header-signature");
         window.addEventListener("click", (e) => {
             if (signature.contains(e.target)) {
@@ -42,25 +36,23 @@ const Perspaccon = (props) => {
             }
         })
 
-    })
+    }, [location, navigate, props.user])
 
     // 顶部导航
     const onMenu = (e) => {
-        setCurrent(e.key);
         navigate(e.key, {replace: true});
     };
 
-    const [current, setCurrent] = useState('mail');
 
     const items = [
         {
             label: '个人动态',
-            key: '/个人动态/' + user.id + '/dynamic',
+            key: '/个人动态/' + props.user.id + '/dynamic',
             icon: <SlackCircleFilled/>,
         },
         {
             label: '收藏的动态',
-            key: '/个人动态/' + user.id + '/likeDynamic',
+            key: '/个人动态/' + props.user.id + '/likeDynamic',
             icon: <HeartOutlined/>,
         },
     ];
@@ -71,14 +63,14 @@ const Perspaccon = (props) => {
     const guanzhu = () => {
         setGz(true);
         axios.post("/api/attention", {
-            userId: props.author.id,
+            userId: props.user.id,
         });
     }
 
     const quguan = () => {
         setGz(false);
         axios.post("/api/calAttention", {
-            userId: props.author.id,
+            userId: props.user.id,
         });
     }
 
@@ -93,8 +85,8 @@ const Perspaccon = (props) => {
     return (
         <>
             <div className='Perspac-header'>
-                <Avatar className='Perspac-header-avatar' src={user.avatar}/>
-                <p className='Perspac-header-nickName'>{user.nickName}</p>
+                <Avatar className='Perspac-header-avatar' src={props.user.avatar}/>
+                <p className='Perspac-header-nickName'>{props.user.nickName}</p>
                 <ConfigProvider
                     theme={{
                         token: {
@@ -108,19 +100,19 @@ const Perspaccon = (props) => {
                         }
                     }}
                 >
-                    <Input className='Perspac-header-signature' placeholder={user.signature} allowClear
+                    <Input className='Perspac-header-signature' placeholder={props.user.signature} allowClear
                            onChange={onSignature} style={{display: (props.disabled ? "none" : "block")}}/>
                     <p className='Perspac-header-signature-txt'
-                       style={{display: (props.disabled ? "block" : "none")}}>{user.signature === "请编辑个人签名" ? "这个人没有个人签名" : user.signature}</p>
+                       style={{display: (props.disabled ? "block" : "none")}}>{props.user.signature === "请编辑个人签名" ? "这个人没有个人签名" : props.user.signature}</p>
                 </ConfigProvider>
                 <Button className="Perspac-header-guanzhu" style={{display: (props.self ? "none" : "block")}}
                         type='primary'
                         icon={gz ? <CheckOutlined/> : <PlusOutlined/>}
                         onClick={gzfun} disabled={!props.isLogin}>{gz ? "取关" : "关注"}</Button>
                 <Button className='Perspac-header-send' type='primary' disabled={!props.isLogin}>发消息</Button>
-                <Menu className='Perspac-header-Menu' onClick={onMenu} selectedKeys={[current]} mode="horizontal"
+                <Menu className='Perspac-header-Menu' onClick={onMenu} mode="horizontal"
                       items={items}/>
-                <p className='Perspac-header-guanzhushu'>关注数{user.likeNum}</p>
+                <p className='Perspac-header-guanzhushu'>关注数{props.user.likeNum}</p>
             </div>
             <div style={{
                 padding: 10,
@@ -132,9 +124,10 @@ const Perspaccon = (props) => {
                 position: "relative",
             }}>
                 <Routes>
-                    <Route path='/dynamic' element={<Dynamicbody authorId={user.id} isLogin={props.isLogin}/>}/>
-                    <Route path='/likeDynamic'
-                           element={<Dynamicbody authorId={user.id} isLogin={props.isLogin} like={true}/>}/>
+                    <Route path={'/' + props.user.id + '/dynamic'}
+                           element={<Dynamicbody authorId={props.user.id} isLogin={props.isLogin}/>}/>
+                    <Route path={'/' + props.user.id + '/likeDynamic'}
+                           element={<Dynamicbody authorId={props.user.id} isLogin={props.isLogin} like={true}/>}/>
                 </Routes>
             </div>
         </>

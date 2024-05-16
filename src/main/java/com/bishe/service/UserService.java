@@ -107,4 +107,20 @@ public interface UserService {
      **/
 
     CompletableFuture<String> calAttention(Attention attention);
+
+    /**
+     * 检测用户是否被关注
+     *
+     * @param attention Attention
+     * @return 返回信息
+     **/
+    CompletableFuture<Boolean> ifAttention(Attention attention);
+
+    /**
+     * 查找好友
+     *
+     * @param userId Long 用户ID
+     * @return 返回好友列表
+     **/
+    CompletableFuture<List<User>> findFriend(Long userId);
 }

@@ -20,10 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 @Controller
@@ -426,4 +423,114 @@ public class UserController {
         result.error(message);
         return result;
     }
+
+    @PostMapping("/ifAttention")
+    @ResponseBody
+    public Result<Boolean> ifAttention(@RequestBody String body,
+                                       @CookieValue(value = "username", required = false) String username,
+                                       HttpServletRequest request) throws ExecutionException, InterruptedException {
+        Result<Boolean> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.success(false);
+            return result;
+        }
+        Long userId = user.getId();
+
+        String otherId = String.valueOf(JSON.parseObject(body, HashMap.class).get("userId"));
+
+        if (!StringUtils.isEmpty(otherId) && !"null".equals(otherId)) {
+            Attention attention = new Attention(userId, Long.valueOf(otherId));
+            result.success(userService.ifAttention(attention).get());
+            return result;
+        }
+
+        result.error("失败");
+        return result;
+    }
+
+    @PostMapping("/ifAttentions")
+    @ResponseBody
+    public Result<List<Boolean>> ifAttentions(@RequestBody String body,
+                                              @CookieValue(value = "username", required = false) String username,
+                                              HttpServletRequest request) {
+        Result<List<Boolean>> result = new Result<>();
+
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.success(null);
+            return result;
+        }
+        Long userId = user.getId();
+
+        List<Long> otherIds = JSON.parseArray(JSON.parseObject(body, HashMap.class).get("userIds").toString(), Long.class);
+        Map<Long, Boolean> map = new HashMap<>();
+        List<Boolean> ifattentions = new ArrayList<>();
+
+        if (!otherIds.isEmpty()) {
+            otherIds.forEach(id -> {
+                if (map.containsKey(id)) {
+                    ifattentions.add(map.get(id));
+                } else {
+                    Attention attention = new Attention(userId, id);
+                    Boolean ifa = false;
+                    try {
+                        ifa = userService.ifAttention(attention).get();
+                        map.put(id, ifa);
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    ifattentions.add(ifa);
+                }
+            });
+
+            result.success(ifattentions);
+            return result;
+        }
+
+        result.error("失败");
+        return result;
+    }
+
+    @GetMapping("/getFriend")
+    @ResponseBody
+    public Result<List<User>> getFriend(@CookieValue(value = "username", required = false) String username,
+                                        HttpServletRequest request) throws ExecutionException, InterruptedException {
+        Result<List<User>> result = new Result<>();
+
+        // 获取当前登录的用户
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute(username);
+        if (user == null) {
+            result.error("用户未登录");
+            return result;
+        }
+        Long userId = user.getId();
+        List<User> friends = userService.findFriend(userId).get();
+        if (friends != null) {
+            result.success(friends);
+            return result;
+        }
+        result.error("请求失败");
+        return result;
+    }
+
+    @PostMapping("/getUser")
+    @ResponseBody
+    public Result<User> getUser(@RequestBody String body) throws ExecutionException, InterruptedException {
+        Result<User> result = new Result<>();
+
+        String id = JSON.parseObject(body, HashMap.class).get("userId").toString();
+        if (StringUtils.isEmpty(id) || "null".equals(id)) {
+            result.error("id传入失败");
+            return result;
+        }
+        User user = userService.findById(Long.valueOf(id)).get().toModel();
+        result.success(user);
+        return result;
+    }
+
 }

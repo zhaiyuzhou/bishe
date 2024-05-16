@@ -144,12 +144,12 @@ public class DynamicServiceImpl implements DynamicService {
     @Override
     public CompletableFuture<List<Dynamic>> findLikeByAuthor(Long authorId, int times) throws ExecutionException, InterruptedException {
         if (authorId == null) {
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(List.of());
         }
 
         List<Long> dynamicIds = likeDynamicDAO.findLikeDynamicIDsByUserId(authorId);
         if (dynamicIds == null || dynamicIds.isEmpty()) {
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(List.of());
         }
         List<DynamicDO> dynamicDOS = dynamicDAO.findByIds(dynamicIds);
 

@@ -1,7 +1,7 @@
 .content {
     position: absolute;
     top: 60px;
-    left: -50px;
+    left: -32px;
     width: 120px;
     height: 200px;
     background-color: white;
@@ -16,4 +16,24 @@
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
+}
+
+.ava-img {
+    z-index: 3;
+    transition: all 0.5s;
+}
+
+.ava-button-1 {
+    position: absolute;
+    top: 50px;
+}
+
+.ava-button-2 {
+    position: absolute;
+    top: 80px;
+}
+
+.ava-button-3 {
+    position: absolute;
+    top: 110px;
 }

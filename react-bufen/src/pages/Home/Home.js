@@ -1,5 +1,5 @@
 import './Home.css'
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Breadcrumb, Button, Layout, Menu, notification, theme} from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import cookie from 'react-cookies'
@@ -61,7 +61,7 @@ const Home = (props) => {
             loginBut.removeEventListener("click", showModal);
             window.removeEventListener('scroll', updatePosition);
         };
-    }, [navigate, location, times, props.isLogin]);
+    }, [navigate, location, props.isLogin]);
 
     // 标签
     const tags = ['新闻', '电影', '电视剧', '动画', '番剧', '游戏', '音乐', '美术', '动物', '知识', '科技', '美食', '汽车', '运动', '生活', '其他'];
@@ -123,9 +123,7 @@ const Home = (props) => {
     };
 
     const [api, contextHolder] = notification.useNotification();
-
     const [transmit, setTransmit] = useState();
-
 
     return (
         <div>
@@ -186,18 +184,22 @@ const Home = (props) => {
                                 times={times}
                                 setTransmit={setTransmit}
                                 setOther={props.setOther}/>}/>
-                            {tags.map((tag, index) => {
-                                return (
-                                    <Route key={'/' + tag} path={'/' + tag}
-                                           element={<Dynamicbody
-                                               tag={tagsEn[index]}
-                                               newDynamic={newDynamic}
-                                               isLogin={isLogin}
-                                               times={times}
-                                               setTransmit={setTransmit}
-                                               setOther={props.setOther}/>}/>
-                                )
-                            })}
+                            {
+
+                                tags.map((tag, index) => {
+                                    return (
+                                        <Route key={'/' + tag} path={'/' + tag}
+                                               element={<Dynamicbody
+                                                   tag={tagsEn[index]}
+                                                   newDynamic={newDynamic}
+                                                   isLogin={isLogin}
+                                                   times={times}
+                                                   setTransmit={setTransmit}
+                                                   setOther={props.setOther}/>}/>
+                                    )
+                                })
+
+                            }
                             <Route path='/搜索'
                                    element={<Dynamicbody
                                        newDynamic={newDynamic}

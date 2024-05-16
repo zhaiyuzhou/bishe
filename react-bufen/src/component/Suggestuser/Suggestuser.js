@@ -7,25 +7,25 @@ const Suggestuser = (props) => {
 
     const [userList, setUserList] = useState([]);
     const [gz, setGz] = useState(false);
-    const guanzhu = () => {
+    const guanzhu = (id) => {
         setGz(true);
         axios.post("/api/attention", {
-            userId: props.author.id,
+            userId: id,
         });
     }
 
-    const quguan = () => {
+    const quguan = (id) => {
         setGz(false);
         axios.post("/api/calAttention", {
-            userId: props.author.id,
+            userId: id,
         });
     }
 
-    const gzfun = () => {
+    const gzfun = (id) => {
         if (!gz) {
-            guanzhu();
+            guanzhu(id);
         } else {
-            quguan();
+            quguan(id);
         }
     }
 
